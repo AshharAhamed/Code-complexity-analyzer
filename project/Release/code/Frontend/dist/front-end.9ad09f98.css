@@ -1,0 +1,107 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Header styles */
+header {
+    background-color: #003366;
+    padding: 30px;
+    text-align: center;
+    font-size: 35px;
+    color: white;
+}
+
+/* Login page styles */
+.login-content{
+    color: white;
+    width: 100%;
+    margin: auto;
+    padding-left: 37%;
+    padding-top: 12.5%;
+    padding-bottom: 12.5%;
+    background-color: #e6f2ff;
+    color: #003366;
+}
+
+input{
+    width: 100%;
+    padding: 7px 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #c6d9eb;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#mainLoginBodySection{
+    margin: auto;
+}
+
+#loginText{
+    padding-right: 12px ;
+    font-weight: bold ;
+}
+
+#loginButton{
+    background-color: #006699;
+    border: none;
+    color: white;
+    padding: 7px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#loginButton:hover {background-color: #004177}
+
+#loginButton:active {
+    background-color: #5CA8C6;
+    transform: translateY(3px);
+}
+
+/* The content page styles */
+#ccaMainBody{
+    margin-left: 15px;
+    width: 100%;
+    padding-top: 2%;
+    padding-bottom: 23%;
+    background-color: #e6f2ff;
+    color: #003366;
+}
+
+.basicButton{
+    background-color: #006699;
+    border: none;
+    color: white;
+    padding: 7px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.basicButton:hover {background-color: #004177}
+
+.basicButton:active {
+    background-color: #5CA8C6;
+    transform: translateY(3px);
+}
+
+/* Footer Styles */
+footer {
+    background-color: #006699;
+    padding: 10px;
+    text-align: center;
+    color: white;
+}
+
+/*# sourceMappingURL=/front-end.9ad09f98.css.map */
