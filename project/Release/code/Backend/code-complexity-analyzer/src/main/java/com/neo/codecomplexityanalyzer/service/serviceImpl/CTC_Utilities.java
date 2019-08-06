@@ -5,24 +5,21 @@ public class CTC_Utilities {
     private General_Utilities general_Utils;
 
     public CTC_Utilities(String filePath) {
-        this.sourceCode = new General_Utilities().getSourceCode(filePath);
+        general_Utils = new General_Utilities();
+        this.sourceCode = general_Utils.getSourceCode(filePath);
     }
 
     public int getControlScore() {
-        int classNameStartIndex = 0, classNameEndIndex = 0, ifCount = 0, logicalCount = 0;
-        String subString;
-        char strTemp;
-        int startTemp;
-        while (true) {
-            startTemp = 0;
-            classNameStartIndex = sourceCode.indexOf("if", classNameEndIndex) + 3;
-            if (classNameStartIndex == 2)
+        int ifEndIndex = 0, ifStartIndex, ifCount = 0, logicalCount = 0;
+        do {
+            ifStartIndex = sourceCode.indexOf("if", ifEndIndex) + 3;
+            if (ifStartIndex == 2)
                 break;
             ++ifCount;
-            startTemp = classNameStartIndex;
+            int startIndexTemp = ifStartIndex;
             Stack s1 = new Stack(100);
             while (true) {
-                strTemp = sourceCode.charAt(startTemp);
+                char strTemp = sourceCode.charAt(startIndexTemp);
                 if (strTemp == '(')
                     s1.push("(");
                 else if (strTemp == ')' && !s1.isEmpty()) {
@@ -30,10 +27,10 @@ public class CTC_Utilities {
                 } else if (s1.isEmpty()) {
                     break;
                 }
-                ++startTemp;
+                ++startIndexTemp;
             }
-            classNameEndIndex = startTemp;
-            subString = sourceCode.substring(classNameStartIndex, classNameEndIndex);
+            ifEndIndex = startIndexTemp;
+            String subString = sourceCode.substring(ifStartIndex, ifEndIndex);
             if ((subString.contains("&&") || subString.contains("||") || subString.contains("&") || subString.contains("|"))) {
                 int andOccourences = General_Utilities.countOccurences(subString, "&&");
                 int orOccourences = General_Utilities.countOccurences(subString, "||");
@@ -41,9 +38,10 @@ public class CTC_Utilities {
                 int bitOrOccourences = General_Utilities.countOccurences(subString, "|");
                 logicalCount += andOccourences + orOccourences + bitAndOccourences + bitOrOccourences;
             }
-        }
-        System.out.println("If Count : " + ifCount + "Logical Count : " + logicalCount);
-        return (ifCount + logicalCount);
+        } while (true);
+        System.out.println("If Count : " + ifCount + " Logical Count : " + logicalCount);
+        final int totalScore = ifCount + logicalCount;
+        return totalScore;
     }
 
 
