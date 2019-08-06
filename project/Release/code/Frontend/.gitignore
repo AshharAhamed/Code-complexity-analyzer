@@ -802,4 +802,6 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 
+#added By Ashhar to ignore dist folder
+dist/
 # End of https://www.gitignore.io/api/node,webstorm,reactnative,sublimetext,visualstudio,visualstudiocode
