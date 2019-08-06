@@ -1,19 +1,27 @@
+/*
+-------------------------------------------------------------------------------------------------------
+--  Date        Sign    History
+--  ----------  ------  --------------------------------------------------------------------------------
+--  2019-08-05  Sathira  185817, Created Stack.
+--  ----------  ------  --------------------------------------------------------------------------------
+*/
+
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
 public class Stack {
-    private String arr[];
+    private char arr[];
     private int top;
     private int capacity;
 
     // Constructor to initialize stack
     Stack(int size) {
-        arr = new String[size];
+        arr = new char[size];
         capacity = size;
         top = -1;
     }
 
     // Utility function to add an element x in the stack
-    public void push(String x) {
+    public void push(char x) {
         if (isFull()) {
             System.out.println("OverFlow\nProgram Terminated\n");
             System.exit(1);
@@ -22,7 +30,7 @@ public class Stack {
     }
 
     // Utility function to pop top element from the stack
-    public String pop() {
+    public char pop() {
         // check for stack underflow
         if (isEmpty()) {
             System.out.println("UnderFlow\nProgram Terminated");
@@ -33,13 +41,13 @@ public class Stack {
     }
 
     // Utility function to return top element in a stack
-    public String peek() {
+    public char peek() {
         if (!isEmpty())
             return arr[top];
         else
             System.exit(1);
 
-        return "error";
+        return 'e';
     }
 
     // Utility function to return the size of the stack

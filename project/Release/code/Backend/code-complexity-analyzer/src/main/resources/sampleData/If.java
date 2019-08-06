@@ -59,22 +59,5 @@ public class TestIF {
                 printf(".%d", netId4);
         }
         puts("");
-
     }
-
 }
-
-    public int findSourceCodeLineCount(String sourceCode) {
-        int lineCount = 0;
-        BufferedReader sourceCodeTemp = new BufferedReader(new StringReader(sourceCode));
-
-        try {
-            while (sourceCodeTemp.readLine() != null) {
-                lineCount++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return lineCount;
-    }

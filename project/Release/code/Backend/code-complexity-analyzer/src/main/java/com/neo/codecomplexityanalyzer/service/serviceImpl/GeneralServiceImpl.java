@@ -1,3 +1,12 @@
+/*
+-------------------------------------------------------------------------------------------------------
+--  Date        Sign    History
+--  ----------  ------  --------------------------------------------------------------------------------
+--  2019-08-06  Sathira  185817, Created General Service Impl.
+--  ----------  ------  --------------------------------------------------------------------------------
+*/
+
+
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
 import java.io.BufferedReader;
@@ -8,9 +17,16 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class General_Utilities {
+public class GeneralServiceImpl implements GeneralService{
     private String sourceCode;
+    private Long sourceCodeLength;
     private Scanner scanner = null;
+
+    public Long getSourceCodeLength(){
+        if (sourceCodeLength == null)
+            sourceCodeLength = Long.valueOf(sourceCode.length());
+        return (sourceCodeLength);
+    }
 
     public String getSourceCode(String path) {
         File file = new File(path);
@@ -57,7 +73,7 @@ public class General_Utilities {
         return sourceCodeLines;
     }
 
-    public static int countOccurences(String str, String word) {
+    public int countOccurences(String str, String word) {
         // split the string by spaces in a
         String a[] = str.split(" ");
 
@@ -71,5 +87,16 @@ public class General_Utilities {
         return count;
     }
 
+    public int getLogicalCount(String subString){
+        int logicalCount = 0;
+        if ((subString.contains("&&") || subString.contains("||") || subString.contains("&") || subString.contains("|"))) {
+            int andOccourences = this.countOccurences(subString, "&&");
+            int orOccourences = this.countOccurences(subString, "||");
+            int bitAndOccourences = this.countOccurences(subString, "&");
+            int bitOrOccourences = this.countOccurences(subString, "|");
+            logicalCount += andOccourences + orOccourences + bitAndOccourences + bitOrOccourences;
+        }
+        return logicalCount;
+    }
 }
 

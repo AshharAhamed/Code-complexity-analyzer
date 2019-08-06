@@ -1,21 +1,9 @@
-package com.neo.ccaServices.resources;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
 public class TestIF {
-    private static int time;
-
-    public void printMessage() {
-        if (time < 10) {
-            System.out.println("Good morning.");
-        } else if (time < 20) {
-            System.out.println("Good day.");
-        } else {
-            System.out.println("Good evening.");
-        }
-    }
 
     public void netIdcal(int resultArr[], int prefix) {
         int prefix = 12;
@@ -25,6 +13,11 @@ public class TestIF {
 
         for (count = 0; count < prefix; ++count) {
             netArr[count] = resultArr[count];
+        }
+
+        while (i <= 10 && i == 3) {
+            System.out.println(i);
+            i++;
         }
 
         for (count = 0; count < prefix; ++count) {
@@ -41,7 +34,10 @@ public class TestIF {
             --i;
         }
 
-        printf("Netword Address = %d.%d.%d.%d\n", netId1, netId2, netId3, netId4);
+        do {
+            System.out.println(i);
+            i--;
+        } while (i > 1 && i == 10);
 
         printf("Network ID = ");
         for (count = 1; count <= 4 && count == 1; ++count) {
@@ -58,23 +54,5 @@ public class TestIF {
             if ((count == 4) && (netId4 != 0) && (netId4 != 0) && (netId4 != 0))
                 printf(".%d", netId4);
         }
-        puts("");
-
     }
-
 }
-
-    public int findSourceCodeLineCount(String sourceCode) {
-        int lineCount = 0;
-        BufferedReader sourceCodeTemp = new BufferedReader(new StringReader(sourceCode));
-
-        try {
-            while (sourceCodeTemp.readLine() != null) {
-                lineCount++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return lineCount;
-    }
