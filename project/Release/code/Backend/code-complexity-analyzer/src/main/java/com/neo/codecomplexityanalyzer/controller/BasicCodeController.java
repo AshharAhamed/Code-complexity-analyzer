@@ -2,9 +2,7 @@ package com.neo.codecomplexityanalyzer.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CCA_Uilities;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CTC_Utilities;
@@ -42,9 +40,9 @@ public class BasicCodeController {
         return (new ResponseEntity<String[]>(lineArr, HttpStatus.OK));
     }
 
-    @GetMapping(path = "/get-ctc")
-    public ResponseEntity<Integer> getCTCScore() {
-        CTC_Utilities cctUtil = new CTC_Utilities();
+    @GetMapping(path = "/get-ctc/")
+    public ResponseEntity<Integer> getCTCScore(@RequestHeader("file-path") String FilePath) {
+        CTC_Utilities cctUtil = new CTC_Utilities(FilePath);
         return (new ResponseEntity<Integer>(cctUtil.getControlScore(), HttpStatus.OK));
     }
 }

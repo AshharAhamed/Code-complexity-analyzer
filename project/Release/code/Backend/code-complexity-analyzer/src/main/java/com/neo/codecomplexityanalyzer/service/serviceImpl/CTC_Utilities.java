@@ -4,8 +4,8 @@ public class CTC_Utilities {
     private String sourceCode;
     private General_Utilities general_Utils;
 
-    public CTC_Utilities() {
-        this.sourceCode = new General_Utilities().getSourceCode("C:\\Student\\sampleCodes\\TestIF.java");
+    public CTC_Utilities(String filePath) {
+        this.sourceCode = new General_Utilities().getSourceCode(filePath);
     }
 
     public int getControlScore() {
