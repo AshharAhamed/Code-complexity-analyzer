@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CCA_Uilities;
+import com.neo.codecomplexityanalyzer.service.serviceImpl.GeneralServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
 
 @CrossOrigin(origins = {"http://localhost:3000"})
@@ -21,12 +21,12 @@ public class BasicCodeController {
 
     // REST service to get the line count
     @GetMapping(path = "/line-count")
-    public ResponseEntity<Integer> getLineCount() {
+    public ResponseEntity<Integer> getLineCount(@RequestHeader("file-path") String FilePath) {
         String code = "";
         int lineCount = 0;
-        CCA_Uilities ccaUtil = new CCA_Uilities();
+        GeneralServiceImpl ccaUtil = new GeneralServiceImpl();
 
-        code = ccaUtil.getSourceCode();
+        code = ccaUtil.getSourceCode(FilePath);
         lineCount = ccaUtil.findSourceCodeLineCount(code);
 
         return (new ResponseEntity<Integer>(lineCount, HttpStatus.OK));
@@ -34,20 +34,20 @@ public class BasicCodeController {
 
     // REST service to get the source code as an array
     @GetMapping(path = "/get-code")
-    public ResponseEntity<String[]> getSourceCode() {
+    public ResponseEntity<String[]> getSourceCode(@RequestHeader("file-path") String FilePath) {
         String code = "";
         int lineCount = 0;
         String[] lineArr;
-        CCA_Uilities ccaUtil = new CCA_Uilities();
+        GeneralServiceImpl ccaUtil = new GeneralServiceImpl();
 
-        code = ccaUtil.getSourceCode();
+        code = ccaUtil.getSourceCode(FilePath);
         lineCount = ccaUtil.findSourceCodeLineCount(code);
         lineArr = ccaUtil.collectAllSourceCodeLines(code, lineCount);
 
         return (new ResponseEntity<String[]>(lineArr, HttpStatus.OK));
     }
+    
 //--------------------------------------- CTC End Points ---------------------------------------------------------------
-
     @GetMapping(path = "/get-ctc/if")
     public ResponseEntity<Integer> getCTCScore(@RequestHeader("file-path") String FilePath) {
         CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
@@ -78,4 +78,5 @@ public class BasicCodeController {
         int ctcTotal = cctUtil.getControlScore() + cctUtil.getIterativeControlScore();
         return (new ResponseEntity<Integer>(ctcTotal, HttpStatus.OK));
     }
+    
 }

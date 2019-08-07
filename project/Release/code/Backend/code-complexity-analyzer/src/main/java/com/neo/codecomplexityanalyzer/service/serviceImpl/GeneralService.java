@@ -17,4 +17,10 @@ public interface GeneralService {
     public ArrayList<String> getSourceCodeLine(int lineNumber);
     public int countOccurences(String str, String word);
     public int getLogicalCount(String subString);
+    
+    public int findSourceCodeLineCount(String sourceCode);
+    public String[] collectAllSourceCodeLines(String sourceCode, int lineCount);
+    public String[] removeCommentsFromTheCode(String [] sourceCode);
+    public String removeMultipleLineComments(String lineOfCode);
+    public int checkExtension();
 }
