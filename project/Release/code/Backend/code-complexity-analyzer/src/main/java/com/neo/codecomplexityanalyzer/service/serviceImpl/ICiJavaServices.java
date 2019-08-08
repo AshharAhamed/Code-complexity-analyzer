@@ -9,7 +9,7 @@ package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
 import java.util.ArrayList;
 
-public interface ICiServices {
+public interface ICiJavaServices {
 	public ArrayList<String> getClassNames();
 
 	public int getNumberOfAnsestors(String className);

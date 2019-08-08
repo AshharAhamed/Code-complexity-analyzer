@@ -1,7 +1,7 @@
 
  class InheritanceSample {
 	 class Vehicle {
-
+		 
 	}
 
 	 class Car extends Vehicle {
