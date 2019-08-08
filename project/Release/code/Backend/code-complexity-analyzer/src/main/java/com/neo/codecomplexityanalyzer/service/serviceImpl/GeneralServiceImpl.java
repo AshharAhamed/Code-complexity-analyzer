@@ -21,15 +21,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-<<<<<<< HEAD
-import ch.qos.logback.core.net.SyslogOutputStream;
-
-public class GeneralServiceImpl implements GeneralService{
-    private String sourceCode="";
-=======
 public class GeneralServiceImpl implements GeneralService {
     private StringBuilder sourceCode = new StringBuilder();
->>>>>>> effbb0959a45804bdf559451cf2711d0e19565e8
+//    private String sourceCode="";
     private Long sourceCodeLength;
     private Scanner scanner = null;
     private boolean multipleLineComment = false;
@@ -154,7 +148,6 @@ public class GeneralServiceImpl implements GeneralService {
     }
 
     // Function to find the line count. i.e, the LOC  
-<<<<<<< HEAD
 	@Override
 	public int findSourceCodeLineCount(String sourceCode) {
 		int lineCount = 0;
@@ -346,155 +339,5 @@ public class GeneralServiceImpl implements GeneralService {
 			return (findNumberOfCoccurences(tempstring, token) + 1);
 		}
 	}
-=======
 
-    @Override
-    public int findSourceCodeLineCount(String sourceCode) {
-        int lineCount = 0;
-        BufferedReader sourceCodeTemp = new BufferedReader(new StringReader(sourceCode));
-
-        try {
-            while (sourceCodeTemp.readLine() != null) {
-                lineCount++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return lineCount;
-    }
-
-    // Function to return all lines of code as an array
-    // Only to be used by the REACT application to display the source code on the page
-
-    @Override
-    public String[] collectAllSourceCodeLines(String sourceCode, int lineCount) {
-        String[] sourceCodeLines = new String[lineCount];
-        BufferedReader sourceCodeTemp = new BufferedReader(new StringReader(sourceCode));
-        String str;
-        int i = 0;
-
-        try {
-            while ((str = sourceCodeTemp.readLine()) != null) {
-                sourceCodeLines[i] = str;
-                i++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return sourceCodeLines;
-    }
-
-    // Function to remove comments from the source code
-    // Removes comments and return the source as an array of strings
-
-    @Override
-    public String[] removeCommentsFromTheCode(String[] sourceCode) {
-        String tempCodeLine;
-        String[] outputSourceCode = new String[sourceCode.length];
-        int singleLineCommentStartingPoint;
-
-        for (int i = 0; i < sourceCode.length; i++) {
-            tempCodeLine = sourceCode[i];
-            singleLineCommentStartingPoint = tempCodeLine.indexOf("//");
-            if (singleLineCommentStartingPoint == -1) {
-                outputSourceCode[i] = removeMultipleLineComments(tempCodeLine);
-//                System.out.println(removeMultipleLineComments(tempCodeLine));
-            } else {
-                tempCodeLine = tempCodeLine.substring(0, singleLineCommentStartingPoint);
-                outputSourceCode[i] = removeMultipleLineComments(tempCodeLine);
-//                System.out.println(removeMultipleLineComments(tempCodeLine));
-            }
-        }
-        return outputSourceCode;
-    }
-
-
-    // Recursive method to remove multiple line comments
-    public String removeMultipleLineComments(String lineOfCode) {
-        int multiLineCommentEntryPoint, multiLineCommentExitPoint;
-        String stringAfterRemoval;
-
-        if (isMultipleLineComment()) {
-            if (isMultipleLineCommentAtTheEnd()) {
-                multiLineCommentEntryPoint = -1;
-            } else {
-                multiLineCommentEntryPoint = 0;
-            }
-        } else {
-            multiLineCommentEntryPoint = lineOfCode.indexOf("/*");
-        }
-
-        if (multiLineCommentEntryPoint == -1) {
-            /*
-             * This is the base condition Return the line of code as it is since there is no
-             * multiple line comment entry point here
-             */
-            if (isMultipleLineCommentAtTheEnd()) {
-                setMultipleLineCommentAtTheEnd(false);
-            } else {
-                setMultipleLineComment(false);
-            }
-            return lineOfCode;
-        } else {
-            /*
-             * This is where the recursive call is
-             * This code unit runs when there is a multiple line comment starter is in the code
-             */
-            multiLineCommentExitPoint = lineOfCode.indexOf("*/");
-
-            if (multiLineCommentExitPoint == -1) {
-                // No Closing literal. Means the comment continues to the next line
-                setMultipleLineComment(true);
-                if (multiLineCommentEntryPoint == 0) {
-                    return replaceWhiteSpaceForComment(lineOfCode, multiLineCommentEntryPoint, lineOfCode.length());
-                } else {
-                    stringAfterRemoval = replaceWhiteSpaceForComment(lineOfCode, multiLineCommentEntryPoint, lineOfCode.length());
-                    setMultipleLineCommentAtTheEnd(true);
-                    return removeMultipleLineComments(stringAfterRemoval);
-                }
-            } else {
-                // There is a closing literal, means that some bugger has put a multiple line comment within a single line
-                setMultipleLineComment(false);
-                stringAfterRemoval = replaceWhiteSpaceForComment(lineOfCode, multiLineCommentEntryPoint, multiLineCommentExitPoint + 2);
-                return removeMultipleLineComments(stringAfterRemoval);
-            }
-        }
-    }
-
-    // This function place white spaces for all the comment characters
-    private String replaceWhiteSpaceForComment(String code, int entry, int exit) {
-        String stringWithComment;
-        String remainingString;
-        String stringWithCommentRemoved;
-        String stringAfterRemoval;
-
-        remainingString = code.substring(exit); // The String segment after the comment
-        stringWithComment = code.substring(0, exit);
-
-        // Replace the comment with white spaces
-        StringBuilder tempString = new StringBuilder(stringWithComment);
-        int commentLength = exit - entry;
-
-        for (int i = 0; i < commentLength; i++) {
-            tempString.setCharAt((i + entry), ' ');
-        }
-        stringWithCommentRemoved = tempString.toString();
-        stringAfterRemoval = stringWithCommentRemoved + remainingString;
-
-        return stringAfterRemoval;
-    }
-
-    // Function to detect if the file is .cpp or .java
-    // Returns integer value 1, if the file has a .cpp extension, means it is a C++ file
-    // Returns integer value 2, if the file has a .java extension, means it is a Java file
-    // Returns integer value 0, if the file has any other extension, means it is an unsupported file type
-    @Override
-    public int checkExtension() {
-        // Implementation to be done here
-
-        return 2;
-    }
->>>>>>> effbb0959a45804bdf559451cf2711d0e19565e8
 }
