@@ -13,8 +13,9 @@
 */
 
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
+import com.neo.codecomplexityanalyzer.service.CTCService;
 
-public class CTCServiceImpl implements CTCService{
+public class CTCServiceImpl implements CTCService {
     private static final int stackSize = 100;
     private static final String errorMessage1 = "Missing } , not properly ended !";
     private static final String errorMessage2 = "Missing ) , not properly ended !";
@@ -110,7 +111,7 @@ public class CTCServiceImpl implements CTCService{
             String subString = sourceCode.substring(forStartIndex, forEndIndex);
             logicalCount += general_Utils.getLogicalCount(subString);
         } while (true);
-        System.out.println("For Count : " + forCount + " Logical Operator Count (For) : " + logicalCount);
+        System.out.println("Iterative Operator Count : " + forCount + " Logical Operator Count (For) : " + logicalCount);
         return (forCount + logicalCount) * 2;
     }
 
@@ -163,6 +164,7 @@ public class CTCServiceImpl implements CTCService{
             ++catchCount;
             forEndIndex = forStartIndex;
         } while (true);
+        System.out.println("Catch Count : " + catchCount);
         return (catchCount);
     }
 
@@ -201,6 +203,7 @@ public class CTCServiceImpl implements CTCService{
                 caseCount += caseOccourences;
             }
         } while (true);
+        System.out.println("Switch Cases Count : " + caseCount);
         return (caseCount);
     }
 }

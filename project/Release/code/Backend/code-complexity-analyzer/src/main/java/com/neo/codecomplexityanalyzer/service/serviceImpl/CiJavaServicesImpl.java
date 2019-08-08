@@ -30,18 +30,18 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.DepthFirstIterator;
 
-public class CiServicesImpl implements ICiServices {
+public class CiJavaServicesImpl implements ICiJavaServices {
 
 	private String code = "";
 
-	public CiServicesImpl(String filePath) {
+	public CiJavaServicesImpl(String filePath) {
 		GeneralServiceImpl gs = new GeneralServiceImpl();
 		this.code = gs.getSourceCode(filePath);
 	}
 
 	// Loading the Code File that need to be analyzed.
 
-	private static final Logger LOGGER = Logger.getLogger(CiServicesImpl.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(CiJavaServicesImpl.class.getName());
 
 	private static final String CLASS_KEY_WORD = " class ";
 	private static final String EXTENDS_KEYWORD = " extends ";

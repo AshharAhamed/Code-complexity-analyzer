@@ -6,7 +6,7 @@
 --  ----------  ------  --------------------------------------------------------------------------------
 */
 
-package com.neo.codecomplexityanalyzer.service.serviceImpl;
+package com.neo.codecomplexityanalyzer.service;
 
 public interface CTCService {
     int getControlScore();

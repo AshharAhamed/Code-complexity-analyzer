@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.neo.codecomplexityanalyzer.service.serviceImpl.GeneralServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CiServicesImpl;
+import com.neo.codecomplexityanalyzer.service.serviceImpl.CiJavaServicesImpl;
 
 @CrossOrigin(origins = { "http://localhost:3000" })
 
@@ -93,7 +93,7 @@ public class BasicCodeController {
 	@GetMapping(path = "/get-ci/ansestors")
 	public ArrayList<String> getAnsestorClassNames(@RequestHeader("file-path") String FilePath,
 			@RequestParam String nameOfTheClass) {
-		CiServicesImpl ci = new CiServicesImpl(FilePath);
+		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		ArrayList<String> classNames = ci.getAnsestorClassNames(nameOfTheClass);
 		return classNames;
 	}
@@ -101,33 +101,33 @@ public class BasicCodeController {
 	// This service is giving a console log as a briefing of all the details
 	@GetMapping(path = "/get-ci/class-level-data")
 	public void getClassLevelDetails(@RequestHeader("file-path") String FilePath) {
-		CiServicesImpl ci = new CiServicesImpl(FilePath);
+		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		ci.getClassLevelDetails();
 	}
 
 	@GetMapping(path = "/get-ci/class-map")
 	public HashMap<String, String> getClassMap(@RequestHeader("file-path") String FilePath) {
-		CiServicesImpl ci = new CiServicesImpl(FilePath);
+		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		return ci.getClassMapping();
 	}
 
 	@GetMapping(path = "/get-ci/class-names")
 	public ArrayList<String> getClassNames(@RequestHeader("file-path") String FilePath) {
-		CiServicesImpl ci = new CiServicesImpl(FilePath);
+		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		return ci.getClassNames();
 	}
 
 	@GetMapping(path = "/get-ci/num-of-ancestors")
 	public int getNumberOfAnsestorClasses(@RequestHeader("file-path") String FilePath,
 			@RequestParam String nameOfTheClass) {
-		CiServicesImpl ci = new CiServicesImpl(FilePath);
+		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		return ci.getNumberOfAnsestors(nameOfTheClass);
 	}
 
 	//This method is for future usages
 	@GetMapping(path = "/get-ci/conneted-points")
 	public void getStronglyConnectedPoints(@RequestHeader("file-path") String FilePath) {
-		CiServicesImpl ci = new CiServicesImpl(FilePath);
+		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		ci.identifyStronglyConnectedClasses();
 	}
 
