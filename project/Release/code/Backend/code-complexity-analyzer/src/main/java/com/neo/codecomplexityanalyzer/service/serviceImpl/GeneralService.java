@@ -23,4 +23,7 @@ public interface GeneralService {
     public String[] removeCommentsFromTheCode(String [] sourceCode);
     public String removeMultipleLineComments(String lineOfCode);
     public int checkExtension();
+    
+    public String removeDoubleQuotedText(String lineOfCode);
+    public int findNumberOfCoccurences(String lineOfCode, String token);
 }
