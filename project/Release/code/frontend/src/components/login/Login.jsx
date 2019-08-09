@@ -1,6 +1,6 @@
 import React, { Component } from 'react' ;
 import ReactDOM from 'react-dom';
-import CodeAnalyser from "../CodeAnalyser_Components/CodeAnalyser";
+import CodeAnalyser from "../home/CodeAnalyser";
 
 class Login extends Component{
     constructor(props) {

@@ -190,3 +190,25 @@ nbdist/
 .nb-gradle/
 
 # End of https://www.gitignore.io/api/java,eclipse,netbeans,intellij
+
+
+# Created by https://www.gitignore.io/api/sonar,sonarqube
+# Edit at https://www.gitignore.io/?templates=sonar,sonarqube
+
+### Sonar ###
+#Sonar generated dir
+/.sonar/
+
+### SonarQube ###
+# SonarQube ignore files.
+#
+# https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner
+# Sonar Scanner working directories
+.sonar/
+.scannerwork/
+
+# http://www.sonarlint.org/commandline/
+# SonarLint working directories, configuration files (including credentials)
+.sonarlint/
+
+# End of https://www.gitignore.io/api/sonar,sonarqube

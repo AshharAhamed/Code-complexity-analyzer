@@ -18,7 +18,7 @@ import com.neo.codecomplexityanalyzer.service.serviceImpl.GeneralServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CiJavaServicesImpl;
 
-@CrossOrigin(origins = { "http://localhost:3000" })
+@CrossOrigin(origins = { "http://localhost:1234", "http://localhost:3000" })
 
 @RestController
 public class BasicCodeController {
@@ -76,11 +76,18 @@ public class BasicCodeController {
 		return (new ResponseEntity<Integer>(cctUtil.getSwitchScore(), HttpStatus.OK));
 	}
 
-	@GetMapping(path = "/get-ctc/")
-	public ResponseEntity<Integer> getCTCTotalScore(@RequestHeader("file-path") String FilePath) {
+	@GetMapping(path = "/get-ctc")
+	public ResponseEntity<HashMap> getCTCTotalScore(@RequestHeader("file-path") String FilePath) {
+		HashMap<String, String> hashMap = new HashMap<>();
 		CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
-		int ctcTotal = cctUtil.getControlScore() + cctUtil.getIterativeControlScore();
-		return (new ResponseEntity<Integer>(ctcTotal, HttpStatus.OK));
+		int ctcTotal = cctUtil.getControlScore() + cctUtil.getIterativeControlScore() + cctUtil.getCatchScore() + cctUtil.getSwitchScore();
+		hashMap.put("SourceCode", cctUtil.getSourceCode());
+		hashMap.put("ControlScore", String.valueOf(cctUtil.getControlScore()));
+		hashMap.put("ITCScore", String.valueOf(cctUtil.getIterativeControlScore()));
+		hashMap.put("CatchScore", String.valueOf(cctUtil.getCatchScore()));
+		hashMap.put("SwitchScore", String.valueOf(cctUtil.getSwitchScore()));
+		hashMap.put("TotalCTCScore", String.valueOf(ctcTotal));
+		return (new ResponseEntity<HashMap>(hashMap, HttpStatus.OK));
 	}
 
 	/*

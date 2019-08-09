@@ -41,6 +41,10 @@ public class CTCServiceImpl{
         this.sourceCodeLength = general_Utils.getSourceCodeLength();
     }
 
+    public String getSourceCode(){
+        return this.sourceCode;
+    }
+
     public int getControlScore() {
         int ifStartIndex, ifEndIndex = 0, ifCount = 0, logicalCount = 0;
         do {
