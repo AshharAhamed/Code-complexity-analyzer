@@ -20,6 +20,16 @@ public class TestIF {
             i++;
         }
 
+//        while (i <= 10 && i == 3) {
+//            System.out.println(i);
+//            i++;
+//        }
+
+        /*while (i <= 10 && i == 3) {
+            System.out.println(i);
+            i++;
+        }*/
+
         for (count = 0; count < prefix; ++count) {
             if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))
                 i = 7;
@@ -34,10 +44,48 @@ public class TestIF {
             --i;
         }
 
+//        for (count = 0; count < prefix; ++count) {
+//            if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))
+//                i = 7;
+//            if (count < 8)
+//                netId1 += netArr[count] * (pow(2, i));
+//            else if (count < 16)
+//                netId2 += netArr[count] * (pow(2, i));
+//            else if (count < 24)
+//                netId3 += netArr[count] * (pow(2, i));
+//            else if (count < 32)
+//                netId4 += netArr[count] * (pow(2, i));
+//            --i;
+//        }
+
+         /*for (count = 0; count < prefix; ++count) {
+            if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))
+                i = 7;
+            if (count < 8)
+                netId1 += netArr[count] * (pow(2, i));
+            else if (count < 16)
+                netId2 += netArr[count] * (pow(2, i));
+            else if (count < 24)
+                netId3 += netArr[count] * (pow(2, i));
+            else if (count < 32)
+                netId4 += netArr[count] * (pow(2, i));
+            --i;
+        }*/
+
         do {
             System.out.println(i);
             i--;
         } while (i > 1 && i == 10);
+
+//        do {
+//            System.out.println(i);
+//            i--;
+//        } while (i > 1 && i == 10);
+
+                /*do {
+            System.out.println(i);
+            i--;
+        } while (i > 1 && i == 10);*/
 
         printf("Network ID = ");
         for (count = 1; count <= 4 && count == 1; ++count) {

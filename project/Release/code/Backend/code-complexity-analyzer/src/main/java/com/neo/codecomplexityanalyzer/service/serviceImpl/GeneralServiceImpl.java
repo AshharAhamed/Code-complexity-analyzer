@@ -2,14 +2,16 @@
 -------------------------------------------------------------------------------------------------------
 --  Date        Sign    History
 --  ----------  ------  --------------------------------------------------------------------------------
+--  2019-08-08  Sathira  185834, modified the getSourceCode.
+--  2019-08-07  Indunil  185834, Created functions to remove all comments from the source code
 --  2019-08-06  Sathira  185817, Created General Service Impl.
---  ----------  ------  --------------------------------------------------------------------------------
---  2019-08-07  Indunil  185817, Created functions to remove all comments from the source code
 --  ----------  ------  --------------------------------------------------------------------------------
 */
 
 
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
+
+import com.neo.codecomplexityanalyzer.service.GeneralService;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,37 +21,44 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class GeneralServiceImpl implements GeneralService{
-    private String sourceCode="";
+public class GeneralServiceImpl implements GeneralService {
+    private StringBuilder sourceCode = new StringBuilder();
+//    private String sourceCode="";
     private Long sourceCodeLength;
     private Scanner scanner = null;
-    boolean multipleLineComment = false ; 
-    boolean multipleLineCommentAtTheEnd = false ; 
+    private boolean multipleLineComment = false;
+    private boolean multipleLineCommentAtTheEnd = false;
 
-    public boolean isMultipleLineCommentAtTheEnd() {
-		return multipleLineCommentAtTheEnd;
-	}
-	public void setMultipleLineCommentAtTheEnd(boolean multipleLineCommentAtTheEnd) {
-		this.multipleLineCommentAtTheEnd = multipleLineCommentAtTheEnd;
-	}
-	// Get Multiple line comment status
-    public boolean isMultipleLineComment() {
-		return multipleLineComment;
-	}
-    // Set multiple line comment status 
-	public void setMultipleLineComment(boolean multipleLineComment) {
-		this.multipleLineComment = multipleLineComment;
-	}
+    private boolean isMultipleLineCommentAtTheEnd() {
+        return multipleLineCommentAtTheEnd;
+    }
 
-	public Long getSourceCodeLength(){
+    private void setMultipleLineCommentAtTheEnd(boolean multipleLineCommentAtTheEnd) {
+        this.multipleLineCommentAtTheEnd = multipleLineCommentAtTheEnd;
+    }
+
+    // Get Multiple line comment status
+    private boolean isMultipleLineComment() {
+        return multipleLineComment;
+    }
+
+    // Set multiple line comment status
+    private void setMultipleLineComment(boolean multipleLineComment) {
+        this.multipleLineComment = multipleLineComment;
+    }
+
+    // Get Source Code character length
+    public Long getSourceCodeLength() {
         if (sourceCodeLength == null)
-            sourceCodeLength = Long.valueOf(sourceCode.length());
+            sourceCodeLength = (long) sourceCode.length();
         return (sourceCodeLength);
     }
 
-    // Function to read the file and return the source code as a String 
+    // Function to read the file and return the source code as a String
+    // Comments are removed from the source code
     public String getSourceCode(String path) {
         File file = new File(path);
+        String tempLine;
         try {
             scanner = new Scanner(file);
         } catch (FileNotFoundException e) {
@@ -57,14 +66,35 @@ public class GeneralServiceImpl implements GeneralService{
         }
 
         while (scanner.hasNextLine()) {
-            sourceCode += (scanner.nextLine() + "\n");
+            tempLine = scanner.nextLine() + "\n";
+            sourceCode.append(tempLine);
         }
-        return this.sourceCode;
+        String[] sourceCodeArray = new String[this.findSourceCodeLineCount(sourceCode.toString())];
+
+        try {
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        int i = 0;
+        while (scanner.hasNextLine()) {
+            sourceCodeArray[i] = (scanner.nextLine() + "\n");
+            ++i;
+        }
+
+        StringBuilder resultSourceCode = new StringBuilder();
+        String[] sourceCodeArrayresult = this.removeCommentsFromTheCode(sourceCodeArray);
+        for (String line : sourceCodeArrayresult) {
+            resultSourceCode.append(line);
+        }
+        return resultSourceCode.toString();
     }
 
+    // Get Lines of Source Code upto a certain line
     public ArrayList<String> getSourceCodeLinesUpto(int lineNumber) {
-        ArrayList<String> sourceCodeLines = new ArrayList<String>();
-        BufferedReader sourceCodeTemp = new BufferedReader(new StringReader(this.sourceCode));
+        ArrayList<String> sourceCodeLines = new ArrayList<>();
+        BufferedReader sourceCodeTemp = new BufferedReader(new StringReader(this.sourceCode.toString()));
         String str;
         try {
             for (int i = 0; ((str = sourceCodeTemp.readLine()) != null) && (i <= lineNumber); ++i) {
@@ -76,9 +106,10 @@ public class GeneralServiceImpl implements GeneralService{
         return sourceCodeLines;
     }
 
+    // Get a specific line of code
     public ArrayList<String> getSourceCodeLine(int lineNumber) {
-        ArrayList<String> sourceCodeLines = new ArrayList<String>();
-        BufferedReader sourceCodeTemp = new BufferedReader(new StringReader(this.sourceCode));
+        ArrayList<String> sourceCodeLines = new ArrayList<>();
+        BufferedReader sourceCodeTemp = new BufferedReader(new StringReader(this.sourceCode.toString()));
         String str;
         try {
             for (int i = 0; ((str = sourceCodeTemp.readLine()) != null); ++i) {
@@ -93,21 +124,18 @@ public class GeneralServiceImpl implements GeneralService{
         return sourceCodeLines;
     }
 
+    // Get occurrences of a word in a String
     public int countOccurences(String str, String word) {
-        // split the string by spaces in a
-        String a[] = str.split(" ");
-
-        // search for pattern in a
+        String[] wordArray = str.split(" ");
         int count = 0;
-        for (int i = 0; i < a.length; i++) {
-            // if match found increase count
-            if (word.equals(a[i]))
-                count++;
+        for (String temp : wordArray) {
+            if (word.equals(temp))
+                ++count;
         }
         return count;
     }
 
-    public int getLogicalCount(String subString){
+    public int getLogicalCount(String subString) {
         int logicalCount = 0;
         if ((subString.contains("&&") || subString.contains("||") || subString.contains("&") || subString.contains("|"))) {
             int andOccourences = this.countOccurences(subString, "&&");
@@ -118,9 +146,8 @@ public class GeneralServiceImpl implements GeneralService{
         }
         return logicalCount;
     }
-    
-    // Function to find the line count. i.e, the LOC  
 
+    // Function to find the line count. i.e, the LOC  
 	@Override
 	public int findSourceCodeLineCount(String sourceCode) {
 		int lineCount = 0;
@@ -139,7 +166,6 @@ public class GeneralServiceImpl implements GeneralService{
 	
 	// Function to return all lines of code as an array  
 	// Only to be used by the REACT application to display the source code on the page 
-
 	@Override
 	public String[] collectAllSourceCodeLines(String sourceCode, int lineCount) {
 		String[] sourceCodeLines = new String[lineCount];
@@ -220,23 +246,23 @@ public class GeneralServiceImpl implements GeneralService{
 				// No Closing literal. Means the comment continues to the next line
 				setMultipleLineComment(true);
 				if(multiLineCommentEntryPoint == 0) {
-					return replaceWhiteSpaceForComment(lineOfCode, multiLineCommentEntryPoint, lineOfCode.length()); 
+					return replaceWithWhiteSpaces(lineOfCode, multiLineCommentEntryPoint, lineOfCode.length()); 
 				}else {
-					stringAfterRemoval = replaceWhiteSpaceForComment(lineOfCode, multiLineCommentEntryPoint, lineOfCode.length()) ;
+					stringAfterRemoval = replaceWithWhiteSpaces(lineOfCode, multiLineCommentEntryPoint, lineOfCode.length()) ;
 					setMultipleLineCommentAtTheEnd(true);
 					return removeMultipleLineComments(stringAfterRemoval);
 				}
 			}else {
 				// There is a closing literal, means that some bugger has put a multiple line comment within a single line
 				setMultipleLineComment(false);
-				stringAfterRemoval = replaceWhiteSpaceForComment(lineOfCode, multiLineCommentEntryPoint, multiLineCommentExitPoint+2) ;
+				stringAfterRemoval = replaceWithWhiteSpaces(lineOfCode, multiLineCommentEntryPoint, multiLineCommentExitPoint+2) ;
 				return removeMultipleLineComments(stringAfterRemoval);
 			}
 		}
 	}
 	
 	// This function place white spaces for all the comment characters
-	public String replaceWhiteSpaceForComment(String code, int entry, int exit) {
+	public String replaceWithWhiteSpaces(String code, int entry, int exit) {
 		String stringWithComment;
 		String remainingString ; 
 		String stringWithCommentRemoved; 
@@ -268,4 +294,50 @@ public class GeneralServiceImpl implements GeneralService{
 		
 				return 2;
 	}
+	
+	// This function would remove the double quoted text from a given line of code 
+	@Override
+	public String removeDoubleQuotedText(String lineOfCode) {
+		int textEntryPoint, textExitPoint;
+		String stringAfterRemoval, tempstring;
+
+		textEntryPoint = lineOfCode.indexOf("\"");
+		if(textEntryPoint == -1) { // Base condition 01
+			// No double quoted text, return as it is 
+			return lineOfCode; 
+		}else if((lineOfCode.substring(textEntryPoint+1)).indexOf("\"") == -1){ // Base condition 2, some bugger has an unclosed double quotes.
+			//This is just for error handling 
+			stringAfterRemoval = replaceWithWhiteSpaces(lineOfCode, textEntryPoint, lineOfCode.length());
+			return (removeDoubleQuotedText(stringAfterRemoval));
+		}else {
+			textExitPoint = lineOfCode.indexOf("\"", (lineOfCode.indexOf("\"")+1));
+			stringAfterRemoval = replaceWithWhiteSpaces(lineOfCode, textEntryPoint, textExitPoint+1);
+			return (removeDoubleQuotedText(stringAfterRemoval));
+		}
+	}
+	
+	/* This function would accept any String token such as "for", "cout", "+", "+=", ">>>" etc .... This can be anything  
+	 * And return the number of occurrences of that token in the given line of code
+	 */
+	@Override
+	public int findNumberOfCoccurences(String lineOfCode, String token) {
+		int tokenEntryPoint, tokenExitPoint;
+		String tempstring;
+		int tokenLength = token.length();
+		tokenEntryPoint = lineOfCode.indexOf(token);
+		
+		if(tokenEntryPoint == -1) { // Base condition, No token found, return 0 
+			System.out.println(lineOfCode);
+			return 0; 
+		}else {
+			tokenExitPoint = lineOfCode.indexOf(token, (lineOfCode.indexOf(token)+1));
+			if(tokenExitPoint == -1) {
+				tempstring = ""; 
+			}else {
+				tempstring = lineOfCode.substring(tokenExitPoint);
+			}
+			return (findNumberOfCoccurences(tempstring, token) + 1);
+		}
+	}
+
 }
