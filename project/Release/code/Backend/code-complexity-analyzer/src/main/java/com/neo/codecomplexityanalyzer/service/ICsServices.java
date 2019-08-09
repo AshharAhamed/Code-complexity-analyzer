@@ -1,9 +1,11 @@
-package com.neo.codecomplexityanalyzer.service.serviceImpl;
+package com.neo.codecomplexityanalyzer.service;
+
+import com.neo.codecomplexityanalyzer.service.serviceImpl.GeneralServiceImpl;
 
 public interface ICsServices {
 	public int[] getAllCsValues(String sourceCode);
 //	public int refAndDerefComplexity(String lineOfCode);
-	
+
 	public int keywordsComplexity(String lineOfCode);
 
 //	public int arithmeticOperatorsComplexity(String lineOfCode);
@@ -13,6 +15,7 @@ public interface ICsServices {
 //	public int miscOperatorsComplexity(String lineOfCode);
 //	public int assignmentOperatorsComplexity(String lineOfCode);
 	public int manipulatorsComplexity(String lineOfCode, GeneralServiceImpl gs);
+
 	public int textWithinQuotesComplexity(String lineOfCode);
 //	public int identifierComplexity(String lineOfCode);
 //	public int numericalValuesComplexity(String lineOfCode);

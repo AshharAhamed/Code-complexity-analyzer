@@ -10,7 +10,7 @@ package com.neo.codecomplexityanalyzer.service;
 
 import java.util.ArrayList;
 
-public interface GeneralService {
+public interface IGeneralService {
     public Long getSourceCodeLength();
     public String getSourceCode(String path);
     public ArrayList<String> getSourceCodeLinesUpto(int lineNumber);

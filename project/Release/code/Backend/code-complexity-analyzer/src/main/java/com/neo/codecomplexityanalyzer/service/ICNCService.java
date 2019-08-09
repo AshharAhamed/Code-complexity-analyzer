@@ -1,6 +1,6 @@
 package com.neo.codecomplexityanalyzer.service;
 
-public interface CNCService {
+public interface ICNCService {
 
 	public int getNestedControlScore();
 }

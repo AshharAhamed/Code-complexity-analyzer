@@ -1,4 +1,4 @@
-package com.neo.codecomplexityanalyzer.service.serviceImpl;
+package com.neo.codecomplexityanalyzer.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;

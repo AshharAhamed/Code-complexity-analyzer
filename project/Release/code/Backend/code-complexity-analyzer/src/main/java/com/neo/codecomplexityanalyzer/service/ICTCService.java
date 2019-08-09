@@ -8,7 +8,7 @@
 
 package com.neo.codecomplexityanalyzer.service;
 
-public interface CTCService {
+public interface ICTCService {
     int getControlScore();
     int getIterativeControlScore();
     int getCatchScore();

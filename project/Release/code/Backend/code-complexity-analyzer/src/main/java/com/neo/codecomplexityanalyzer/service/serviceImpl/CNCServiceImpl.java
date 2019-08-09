@@ -1,9 +1,9 @@
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
 import com.neo.codecomplexityanalyzer.Util.Queue;
-import com.neo.codecomplexityanalyzer.service.CNCService;
+import com.neo.codecomplexityanalyzer.service.ICNCService;
 
-public class CNCServiceImpl implements CNCService {
+public class CNCServiceImpl implements ICNCService {
 	private static final int stackSize = 100;
 	private static final int queueSize = 100;
 	private static final int arraySize = 100;
