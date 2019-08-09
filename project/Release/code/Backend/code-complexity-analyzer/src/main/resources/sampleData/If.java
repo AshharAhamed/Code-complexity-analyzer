@@ -55,6 +55,20 @@ public class TestIF {
             --i;
         }
 
+
+        String test = "        for (count = 0; count < prefix; ++count) {\n" +
+                "            if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))\n" +
+                "                i = 7;\n" +
+                "            if (count < 8)\n" +
+                "                netId1 += netArr[count] * (pow(2, i));\n" +
+                "            else if (count < 16)\n" +
+                "                netId2 += netArr[count] * (pow(2, i));\n" +
+                "            else if (count < 24)\n" +
+                "                netId3 += netArr[count] * (pow(2, i));\n" +
+                "            else if (count < 32)\n" +
+                "                netId4 += netArr[count] * (pow(2, i));\n" +
+                "            --i;\n" +
+                "        }";
 //        for (count = 0; count < prefix; ++count) {
 //            if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))
 //                i = 7;

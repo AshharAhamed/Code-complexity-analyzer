@@ -20,6 +20,7 @@ import java.util.Scanner;
 
 public class GeneralServiceImpl {
     private StringBuilder sourceCode = new StringBuilder();
+    private String originalSourceCode;
     //    private String sourceCode="";
     private Long sourceCodeLength;
     private Scanner scanner = null;
@@ -67,7 +68,7 @@ public class GeneralServiceImpl {
             sourceCode.append(tempLine);
         }
         String[] sourceCodeArray = new String[this.findSourceCodeLineCount(sourceCode.toString())];
-
+        originalSourceCode = String.valueOf(sourceCode);
         try {
             scanner = new Scanner(file);
         } catch (FileNotFoundException e) {
@@ -85,7 +86,8 @@ public class GeneralServiceImpl {
         for (String line : sourceCodeArrayresult) {
             resultSourceCode.append(line);
         }
-        return resultSourceCode.toString();
+        String finalCode = removeDoubleQuotedText(String.valueOf(resultSourceCode));
+        return finalCode;
     }
 
     // Get Lines of Source Code upto a certain line
@@ -206,6 +208,10 @@ public class GeneralServiceImpl {
             }
         }
         return outputSourceCode;
+    }
+
+    public String getOriginalSourceCode() {
+        return originalSourceCode;
     }
 
     // Recursive method to remove multiple line comments

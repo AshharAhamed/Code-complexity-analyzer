@@ -43,8 +43,8 @@ public class BasicCodeController {
 		int lineCount = 0;
 		String[] lineArr;
 		GeneralServiceImpl ccaUtil = new GeneralServiceImpl();
-
-		code = ccaUtil.getSourceCode(FilePath);
+		ccaUtil.getSourceCode(FilePath);
+		code = ccaUtil.getOriginalSourceCode();
 		lineCount = ccaUtil.findSourceCodeLineCount(code);
 		lineArr = ccaUtil.collectAllSourceCodeLines(code, lineCount);
 

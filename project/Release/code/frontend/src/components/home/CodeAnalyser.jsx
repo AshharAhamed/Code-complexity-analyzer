@@ -13,7 +13,8 @@ export default class CodeAnalyser extends Component {
             catchScore: '',
             switchScore: '',
             controlScore: '',
-            iTCScore: ''
+            iTCScore: '',
+            lineNo: 0
         };
         this.generateComplexityTable = this.generateComplexityTable.bind(this);
         this.CCAService = new CCAService();
@@ -31,12 +32,18 @@ export default class CodeAnalyser extends Component {
     getScore() {
         this.CCAService.getScore(this.state.filePath).then(response => {
             this.setState({
-                sourceCode: response.data.SourceCode,
+                // sourceCode: response.data.SourceCode,
                 catchScore: response.data.CatchScore,
                 switchScore: response.data.SwitchScore,
                 controlScore: response.data.ControlScore,
                 iTCScore: response.data.ITCScore,
                 totalCTCScore: response.data.TotalCTCScore
+            })
+        }).then( () => {
+            this.CCAService.getCode(this.state.filePath).then( response => {
+                this.setState({
+                    sourceCode: response.data
+                })
             })
         }).catch(function (error) {
             console.log(error);
@@ -86,40 +93,32 @@ export default class CodeAnalyser extends Component {
                     <section id="complexityTable">
                         <p>The code analysis should be plugged into this section element</p>
                     </section>
+
+                    <table border="1">
+                        <tr>
+                            <th rowSpan="2">Code</th>
+                            <th colSpan="5">Score</th>
+                        </tr>
+                        <tr>
+                            <td>Catch</td>
+                            <td>Switch</td>
+                            <td>Control</td>
+                            <td>ITC</td>
+                            <td>Total CTC</td>
+                        </tr>
+                        <tr>
+                            {/*<td><pre>{this.state.sourceCode}</pre></td>*/}
+                            { this.state.sourceCode &&  this.state.sourceCode.map((line, index) => { return (
+                                <tr><td>{index + 1}</td><td key={index}><pre>{line}</pre></td></tr>
+                            )})}
+                            <td>{this.state.catchScore}</td>
+                            <td>{this.state.switchScore}</td>
+                            <td>{this.state.controlScore}</td>
+                            <td>{this.state.iTCScore}</td>
+                            <td>{this.state.totalCTCScore}</td>
+                        </tr>
+                    </table>
                 </div>
-
-                <table border="1">
-                    <thead>
-                    <tr>
-                        <th>Code</th>
-                        <tr>
-                            <th>Score</th>
-                        </tr>
-                        <tr>
-                        <th>Catch</th>
-                        <th>Switch</th>
-                        <th>Control</th>
-                        <th>ITC</th>
-                        <th>Total CTC</th>
-                        </tr>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>
-                            <pre>{this.state.sourceCode}</pre>
-                        </td>
-                        <td>{this.state.catchScore}</td>
-                        <td>{this.state.switchScore}</td>
-                        <td>{this.state.controlScore}</td>
-                        <td>{this.state.iTCScore}</td>
-                        <td>{this.state.totalCTCScore}</td>
-                    </tr>
-
-                    </tbody>
-
-                </table>
-
                 <Footer/>
             </div>
         )

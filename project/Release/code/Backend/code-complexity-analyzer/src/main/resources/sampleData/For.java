@@ -102,5 +102,20 @@ public class TestIF {
             if ((count == 4) && (netId4 != 0) && (netId4 != 0) && (netId4 != 0))
                 printf(".%d", netId4);
         }
+
+        String test = "        for (count = 1; count <= 4 && count == 1; ++count) {\n" +
+                "            if (count ==\n" +
+                "                    1)\n" +
+                "                printf(\"%d\", netId1);\n" +
+                "\n" +
+                "            if ((count == 2) && (netId2 != 0))\n" +
+                "                printf(\".%d\", netId2);\n" +
+                "\n" +
+                "            if ((count == 3) && (netId3 != 0))\n" +
+                "                printf(\".%d\", netId3);\n" +
+                "\n" +
+                "            if ((count == 4) && (netId4 != 0) && (netId4 != 0) && (netId4 != 0))\n" +
+                "                printf(\".%d\", netId4);\n" +
+                "        }"
     }
 }

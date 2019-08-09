@@ -32,6 +32,7 @@ public class CTCServiceImpl{
     private static final char closeSquareBrace = '}';
 
     private String sourceCode;
+    private String originalSourceCode;
     private long sourceCodeLength;
     private GeneralServiceImpl general_Utils;
 
@@ -39,10 +40,15 @@ public class CTCServiceImpl{
         general_Utils = new GeneralServiceImpl();
         this.sourceCode = general_Utils.getSourceCode(filePath);
         this.sourceCodeLength = general_Utils.getSourceCodeLength();
+        this.originalSourceCode = general_Utils.getOriginalSourceCode();
     }
 
     public String getSourceCode(){
         return this.sourceCode;
+    }
+
+    public String getOriginalSourceCode() {
+        return originalSourceCode;
     }
 
     public int getControlScore() {
@@ -115,17 +121,17 @@ public class CTCServiceImpl{
             String subString = sourceCode.substring(forStartIndex, forEndIndex);
             logicalCount += general_Utils.getLogicalCount(subString);
         } while (true);
-        System.out.println("Iterative Operator Count : " + forCount + " Logical Operator Count (For) : " + logicalCount);
+        System.out.println("Iterative Operator Count (For) : " + forCount + " Logical Operator Count (For) : " + logicalCount);
         return (forCount + logicalCount) * 2;
     }
 
     private int getIterativeWhileScore() {
-        int forStartIndex, forEndIndex = 0, forCount = 0, logicalCount = 0;
+        int forStartIndex, forEndIndex = 0, whileCount = 0, logicalCount = 0;
         do {
             forStartIndex = sourceCode.indexOf(searchWhile, forEndIndex) + 5;
             if (forStartIndex == 4)
                 break;
-            ++forCount;
+            ++whileCount;
             int indexTemp = forStartIndex;
             Stack s1 = new Stack(stackSize);
             while (true) {
@@ -152,7 +158,8 @@ public class CTCServiceImpl{
             String subString = sourceCode.substring(forStartIndex, forEndIndex);
             logicalCount += general_Utils.getLogicalCount(subString);
         } while (true);
-        return ((forCount + logicalCount) * 2);
+        System.out.println("Iterative Operator Count (While) : " + whileCount + " Logical Operator Count (While) : " + logicalCount);
+        return ((whileCount + logicalCount) * 2);
     }
 
     public int getIterativeControlScore() {

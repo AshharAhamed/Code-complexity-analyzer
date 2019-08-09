@@ -33,4 +33,5 @@ public class CTCServiceImplTest {
         int output = underTest.getSwitchScore();
         assertEquals(7, output);
     }
+
 }
