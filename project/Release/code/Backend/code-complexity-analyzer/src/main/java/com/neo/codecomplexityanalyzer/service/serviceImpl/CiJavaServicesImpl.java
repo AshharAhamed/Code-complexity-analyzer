@@ -72,7 +72,9 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 			classNameEndIndex = code.indexOf(SINGLE_SPACE_CHARACTOR, classNameStartIndex);
 
 			currentIndex1 = classNameEndIndex;
-
+			if (currentIndex1 < initialIndex1) {
+				break;
+			}
 			if (classNameStartIndex > 0 && classNameEndIndex > 0 && (classNameStartIndex != classNameEndIndex)) {
 				classNames.add(code.substring(classNameStartIndex, classNameEndIndex));
 			} else {

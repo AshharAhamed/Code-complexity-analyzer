@@ -13,9 +13,9 @@
 */
 
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
-import com.neo.codecomplexityanalyzer.service.CTCService;
 
-public class CTCServiceImpl implements CTCService {
+
+public class CTCServiceImpl{
     private static final int stackSize = 100;
     private static final String errorMessage1 = "Missing } , not properly ended !";
     private static final String errorMessage2 = "Missing ) , not properly ended !";
