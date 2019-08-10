@@ -70,18 +70,20 @@ public class CNCServiceImpl implements ICNCService {
    }*/
    
    
-   public int getNestedControlScore() {
+   public int getNestedIfControlScore() {
        int nestedIfStartIndex[], nestedIfEndIndex[], ifStartIndex, ifEndIndex = 0, ifCount = 0, logicalCount = 0, score=0;
        nestedIfStartIndex=new int[arraySize];
        nestedIfEndIndex=new int[arraySize];
+       Queue queue = new Queue(queueSize);
+       char tempCloseSquareBra;
        do {
     	   int tempNestedIfStart = sourceCode.indexOf(searchIf, ifEndIndex);
     	   ifStartIndex = tempNestedIfStart + 3;
     	   if (ifStartIndex == 2)
                break;
+    	   ++ifCount;
     	   
     	   int indexTemp = ifStartIndex;
-           Queue queue = new Queue(queueSize);
            
            while (true) {
                if (indexTemp >= sourceCodeLength) {
@@ -89,26 +91,93 @@ public class CNCServiceImpl implements ICNCService {
                    return -1;
                }
                char strTemp = sourceCode.charAt(indexTemp);
-               String strTempS = Character.toString(openBrace);
-               if (strTemp == openBrace)
-                   queue.enqueue(strTempS);
-               else if (strTemp == closeBrace) {
+               tempCloseSquareBra = strTemp;
+               String strTempS = Character.toString(openSquareBrace);
+               if (strTemp == openSquareBrace) {
+            	   String subStringIfWithOps = sourceCode.substring(tempNestedIfStart, indexTemp-1);  
+            	   System.out.println("String which was cut for CNC IF complex calculation "+(indexTemp-1)+" is "+ subStringIfWithOps);
+            	   queue.enqueue(subStringIfWithOps);
+            	   break;
+               }else if (tempCloseSquareBra == closeSquareBrace) {
                    if (!queue.isEmpty()) {
-                	   queue.dequeue();
+//                	   queue.dequeue();
                        if (queue.isEmpty())
                            break;
                    } else {
-                       System.out.println(errorMessage2);
+                       System.out.println(errorMessage1);
                        return -1;
                    }
                }
                ++indexTemp;
            }
+           if (tempCloseSquareBra == closeSquareBrace) {
+        	   break; 
+           }
+           ifEndIndex = indexTemp;
            
        }while(true);
+       int iter = 0;
+       while(queue.isEmpty()){
+    	   ++iter;
+    	   score = score + iter;
+    	   queue.dequeue();
+       }
        
        return score;
+   }
+   
+   public int getNestedForScore() {
+       int nestedForStartIndex[], nestedForEndIndex[], forStartIndex, forEndIndex = 0, forCount = 0, logicalCount = 0, score=0;
+       nestedForStartIndex=new int[arraySize];
+       nestedForEndIndex=new int[arraySize];
+       Queue queue = new Queue(queueSize);
+       char tempCloseSquareBra;
+       do {
+    	   int tempNestedForStart = sourceCode.indexOf(searchIf, forEndIndex);
+    	   forStartIndex = tempNestedForStart + 3;
+    	   if (forStartIndex == 2)
+               break;
+    	   ++forCount;
+    	   
+    	   int indexTemp = forStartIndex;
+           
+           while (true) {
+               if (indexTemp >= sourceCodeLength) {
+                   System.out.println(errorMessage2);
+                   return -1;
+               }
+               char strTemp = sourceCode.charAt(indexTemp);
+               tempCloseSquareBra = strTemp;
+               String strTempS = Character.toString(openSquareBrace);
+               if (strTemp == openSquareBrace) {
+            	   String subStringIfWithOps = sourceCode.substring(tempNestedForStart, indexTemp);  
+            	   queue.enqueue(subStringIfWithOps);
+               }else if (tempCloseSquareBra == closeSquareBrace) {
+                   if (!queue.isEmpty()) {
+//                	   queue.dequeue();
+                       if (queue.isEmpty())
+                           break;
+                   } else {
+                       System.out.println(errorMessage1);
+                       return -1;
+                   }
+               }
+               ++indexTemp;
+           }
+           if (tempCloseSquareBra == closeSquareBrace) {
+        	   break; 
+           }
+           forEndIndex = indexTemp;
+           
+       }while(true);
+       int iter = 0;
+       while(queue.isEmpty()){
+    	   ++iter;
+    	   score = score + iter;
+    	   queue.dequeue();
+       }
        
+       return score;
    }
 }
    
