@@ -179,6 +179,12 @@ public class CNCServiceImpl implements ICNCService {
        
        return score;
    }
+
+@Override
+public int getNestedWhileScore() {
+	// TODO Auto-generated method stub
+	return 0;
+}
 }
    
    
