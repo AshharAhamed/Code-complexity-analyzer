@@ -117,7 +117,7 @@ public class CNCServiceImpl implements ICNCService {
            
        }while(true);
        int iter = 0;
-       while(queue.isEmpty()){
+       while(!queue.isEmpty()){
     	   ++iter;
     	   score = score + iter;
     	   queue.dequeue();
@@ -133,9 +133,9 @@ public class CNCServiceImpl implements ICNCService {
        Queue queue = new Queue(queueSize);
        char tempCloseSquareBra;
        do {
-    	   int tempNestedForStart = sourceCode.indexOf(searchIf, forEndIndex);
-    	   forStartIndex = tempNestedForStart + 3;
-    	   if (forStartIndex == 2)
+    	   int tempNestedForStart = sourceCode.indexOf(searchFor, forEndIndex);
+    	   forStartIndex = tempNestedForStart + 4;
+    	   if (forStartIndex == 3)
                break;
     	   ++forCount;
     	   
@@ -180,11 +180,61 @@ public class CNCServiceImpl implements ICNCService {
        return score;
    }
 
-@Override
-public int getNestedWhileScore() {
-	// TODO Auto-generated method stub
-	return 0;
-}
+   	@Override
+	public int getNestedWhileScore() {
+		// TODO Auto-generated method stub
+		int nestedWhileStartIndex[], nestedWhileEndIndex[], whileStartIndex, whileEndIndex = 0, whileCount = 0, logicalCount = 0, score=0;
+		nestedWhileStartIndex=new int[arraySize];
+		nestedWhileEndIndex=new int[arraySize];
+	    Queue queue = new Queue(queueSize);
+	    char tempCloseSquareBra;
+	    do {
+	 	   int tempNestedForStart = sourceCode.indexOf(searchWhile, whileEndIndex);
+	 	  whileStartIndex = tempNestedForStart + 3;
+	 	   if (whileStartIndex == 2)
+	            break;
+	 	   ++whileCount;
+	 	   
+	 	   int indexTemp = whileStartIndex;
+	        
+	        while (true) {
+	            if (indexTemp >= sourceCodeLength) {
+	                System.out.println(errorMessage2);
+	                return -1;
+	            }
+	            char strTemp = sourceCode.charAt(indexTemp);
+	            tempCloseSquareBra = strTemp;
+	            String strTempS = Character.toString(openSquareBrace);
+	            if (strTemp == openSquareBrace) {
+	         	   String subStringIfWithOps = sourceCode.substring(tempNestedForStart, indexTemp);  
+	         	   queue.enqueue(subStringIfWithOps);
+	            }else if (tempCloseSquareBra == closeSquareBrace) {
+	                if (!queue.isEmpty()) {
+	//             	   queue.dequeue();
+	                    if (queue.isEmpty())
+	                        break;
+	                } else {
+	                    System.out.println(errorMessage1);
+	                    return -1;
+	                }
+	            }
+	            ++indexTemp;
+	        }
+	        if (tempCloseSquareBra == closeSquareBrace) {
+	     	   break; 
+	        }
+	        whileEndIndex = indexTemp;
+	        
+	    }while(true);
+	    int iter = 0;
+	    while(queue.isEmpty()){
+	 	   ++iter;
+	 	   score = score + iter;
+	 	   queue.dequeue();
+	    }
+	    
+	    return score;
+	}
 }
    
    

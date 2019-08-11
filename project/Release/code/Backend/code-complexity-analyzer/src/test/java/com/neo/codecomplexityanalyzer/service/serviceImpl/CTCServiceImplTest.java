@@ -33,5 +33,11 @@ public class CTCServiceImplTest {
         int output = underTest.getSwitchScore();
         assertEquals(7, output);
     }
+    
+    @Test
+    public void getSwitchScore1() {
+        CrServicesImpl underTest = new CrServicesImpl("src/main/resources/sampleData/Recursive.java");
+        int output = underTest.getControlScore();
+    }
 
 }

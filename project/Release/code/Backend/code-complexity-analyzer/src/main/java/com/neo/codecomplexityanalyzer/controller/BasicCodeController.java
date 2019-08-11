@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.neo.codecomplexityanalyzer.service.serviceImpl.GeneralServiceImpl;
+import com.neo.codecomplexityanalyzer.service.ICNCService;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CNCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CiJavaServicesImpl;
@@ -184,6 +185,8 @@ public class BasicCodeController {
 	 * 
 	 * -----------------------------------------------------------------------------
 	 */
+	
+	
 	/*
 	 * -----------------------------------------------------------------------------
 	 * CNC Service End Points
@@ -191,12 +194,37 @@ public class BasicCodeController {
 	 * 
 	 */
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	@GetMapping(path = "/get-ctc/nested-if")
+	@GetMapping(path = "/get-cnc/nested-if")
 	public ResponseEntity<Integer> getCNCNestedIfScore(@RequestHeader("file-path") String FilePath) {
-		CNCServiceImpl cncService = new CNCServiceImpl(FilePath);
+		ICNCService cncService = new CNCServiceImpl(FilePath);
 		return (new ResponseEntity<Integer>(cncService.getNestedIfControlScore(), HttpStatus.OK));
 	}
+	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	@GetMapping(path = "/get-cnc/nested-for")
+	public ResponseEntity<Integer> getCNCNestedForScore(@RequestHeader("file-path") String FilePath) {
+		ICNCService cncService = new CNCServiceImpl(FilePath);
+		return (new ResponseEntity<Integer>(cncService.getNestedForScore(), HttpStatus.OK));
+	}
+	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	@GetMapping(path = "/get-cnc/nested-While")
+	public ResponseEntity<Integer> getCNCNestedWhileScore(@RequestHeader("file-path") String FilePath) {
+		ICNCService cncService = new CNCServiceImpl(FilePath);
+		return (new ResponseEntity<Integer>(cncService.getNestedWhileScore(), HttpStatus.OK));
+	}
+	
+	
+	/*
+	 * -----------------------------------------------------------------------------
+	 * 
+	 * -----------------------------------------------------------------------------
+	 * 
+	 */
 
+	
+	
+	
 	// --------------------------------------- Cs service End Points
 	// ------------------------------------------------------
 	@GetMapping(path = "/get-cs")
