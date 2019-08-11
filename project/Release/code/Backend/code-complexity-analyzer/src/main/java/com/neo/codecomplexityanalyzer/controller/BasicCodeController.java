@@ -112,7 +112,7 @@ public class BasicCodeController {
 	// This service will give the names of the ancestor class Names when a class
 	// Name is given
 	@GetMapping(path = "/get-ci/ansestors")
-	public ArrayList<String> getAnsestorClassNames(@RequestHeader("file-path") String FilePath,
+	public ArrayList<String> getNamesOfTheAncestorClasses(@RequestHeader("file-path") String FilePath,
 			@RequestParam String nameOfTheClass) {
 		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		ArrayList<String> classNames = ci.getAnsestorClassNames(nameOfTheClass);
@@ -142,7 +142,7 @@ public class BasicCodeController {
 
 	// This service is to give the number of ancestor classes of a given class name
 	@GetMapping(path = "/get-ci/num-of-ancestors")
-	public int getNumberOfAnsestorClasses(@RequestHeader("file-path") String FilePath,
+	public int getNumberOfAncestors(@RequestHeader("file-path") String FilePath,
 			@RequestParam String nameOfTheClass) {
 		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		return ci.getNumberOfAnsestors(nameOfTheClass);
@@ -155,31 +155,22 @@ public class BasicCodeController {
 		return ci.complexityOfAllClassesDueToInheritance();
 	}
 
-	// This service is to give the complexity due to inheritance when given a class
-	// Name
-	@GetMapping(path = "/get-ci/num-of-ancestors")
-	public int getComplexityOfaClassDueToInheritance(@RequestHeader("file-path") String FilePath,
-			@RequestParam String nameOfTheClass) {
-		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
-		return ci.calComplexityDueToInheritance(nameOfTheClass);
-	}
+//	// This service is to give the complexity due to inheritance when given a class
+//	// Name
+//	@GetMapping(path = "/get-ci/num-of-ancestors")
+//	public int getComplexityOfaClass(@RequestHeader("file-path") String FilePath,
+//			@RequestParam String nameOfTheClass) {
+//		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
+//		return ci.calComplexityDueToInheritance(nameOfTheClass);
+//	}
 
-	// This service is to give complexity of all the classes due to inheritance in
-	// map a separately
-	@GetMapping(path = "/get-ci/complexity-map")
-	public int getComplexityOfAllClassesInaMap(@RequestHeader("file-path") String FilePath,
-			@RequestParam String nameOfTheClass) {
-		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
-		return ci.calComplexityDueToInheritance(nameOfTheClass);
-	}
-
-	// This service is to give the total complexity of a code due to inheritance
-
-	@GetMapping(path = "/get-ci/complexity-map")
-	public int getTotalComplexityDueToInheritance(@RequestHeader("file-path") String FilePath) {
-		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
-		return ci.calTotalComplexityDueToInheritance();
-	}
+//	// This service is to give the total complexity of a code due to inheritance
+//
+//	@GetMapping(path = "/get-ci/complexity-map")
+//	public int getTotalComplexityDueToInheritance(@RequestHeader("file-path") String FilePath) {
+//		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
+//		return ci.calTotalComplexityDueToInheritance();
+//	}
 
 	// This method is for future usages
 	@GetMapping(path = "/get-ci/conneted-points")

@@ -343,8 +343,10 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 	@Override
 	public HashMap<String, Integer> complexityOfAllClassesDueToInheritance() {
 		ArrayList<String> classesOfTheCode = this.getClassNames();
-		HashMap<String, Integer> complexityMapWithClassNames = null;
+		HashMap<String, Integer> complexityMapWithClassNames = new HashMap<String, Integer>();
 		for (String clzName : classesOfTheCode) {
+			int count = this.getNumberOfAnsestors(clzName);
+			
 			complexityMapWithClassNames.put(clzName, (this.getNumberOfAnsestors(clzName) + 1));
 		}
 		return complexityMapWithClassNames;
