@@ -15,6 +15,7 @@ public class DemoMainApp {
 		for (String string : ci.getAncestorClasses("TA")) {
 			System.out.print(string);
 		}
+		
 //		for (String string : ciJ.getAnsestorClassNames("SportsCar")) {
 //			System.out.println(string);
 //		}
