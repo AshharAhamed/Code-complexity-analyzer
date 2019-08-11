@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class CTCServiceImplTest {
 
-    /*@Test
+    @Test
     public void getControlScore() {
         CTCServiceImpl underTest = new CTCServiceImpl("C://Student//SPM//Code-complexity-analyzer//project//Release//code//Backend//code-complexity-analyzer//src//main//resources//sampleData//If.java");
         int output = underTest.getControlScore();
@@ -32,7 +32,7 @@ public class CTCServiceImplTest {
         CTCServiceImpl underTest = new CTCServiceImpl("C://Student//SPM//Code-complexity-analyzer//project//Release//code//Backend//code-complexity-analyzer//src//main//resources//sampleData//Switch.java");
         int output = underTest.getSwitchScore();
         assertEquals(7, output);
-    }*/
+    }
     
     @Test
     public void getSwitchScore1() {

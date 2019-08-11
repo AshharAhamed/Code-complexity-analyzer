@@ -117,7 +117,7 @@ public class CNCServiceImpl implements ICNCService {
            
        }while(true);
        int iter = 0;
-       while(queue.isEmpty()){
+       while(!queue.isEmpty()){
     	   ++iter;
     	   score = score + iter;
     	   queue.dequeue();
