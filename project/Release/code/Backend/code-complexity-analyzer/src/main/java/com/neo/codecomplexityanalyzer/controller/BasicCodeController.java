@@ -164,21 +164,21 @@ public class BasicCodeController {
 	 * 
 	 */
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	@GetMapping(path = "/get-ctc/nested-if")
+	@GetMapping(path = "/get-cnc/nested-if")
 	public ResponseEntity<Integer> getCNCNestedIfScore(@RequestHeader("file-path") String FilePath) {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
 		return (new ResponseEntity<Integer>(cncService.getNestedIfControlScore(), HttpStatus.OK));
 	}
 	
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	@GetMapping(path = "/get-ctc/nested-for")
+	@GetMapping(path = "/get-cnc/nested-for")
 	public ResponseEntity<Integer> getCNCNestedForScore(@RequestHeader("file-path") String FilePath) {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
 		return (new ResponseEntity<Integer>(cncService.getNestedForScore(), HttpStatus.OK));
 	}
 	
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	@GetMapping(path = "/get-ctc/nested-While")
+	@GetMapping(path = "/get-cnc/nested-While")
 	public ResponseEntity<Integer> getCNCNestedWhileScore(@RequestHeader("file-path") String FilePath) {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
 		return (new ResponseEntity<Integer>(cncService.getNestedWhileScore(), HttpStatus.OK));

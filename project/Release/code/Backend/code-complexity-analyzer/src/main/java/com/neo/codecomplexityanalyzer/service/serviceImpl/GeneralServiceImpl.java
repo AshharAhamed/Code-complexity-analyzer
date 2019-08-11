@@ -373,5 +373,19 @@ public class GeneralServiceImpl {
             return (findNumberOfCoccurences(tempstring, token) + 1);
         }
     }
+    
+    public int countRecursiveOccurrences(String str, String word) {
+        str = str.replace("(", " ");
+        str = str.replace(")", " ");
+        word = word.replace(" ", "");
+        String[] wordArray = str.split(" ");
+        int count = 0;
+        for (String temp : wordArray) {
+            if (word.equals(temp)) {
+                ++count;
+            }
+        }
+        return count;
+    }
 
 }
