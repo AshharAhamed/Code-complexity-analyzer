@@ -20,8 +20,6 @@ import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CiJavaServicesImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CsServicesImpl;
 
-import org.apache.commons.io.FilenameUtils;
-
 @CrossOrigin(origins = { "http://localhost:1234", "http://localhost:3000" })
 
 @RestController
@@ -47,7 +45,7 @@ public class BasicCodeController {
 		String type = ccaUtil.getSourceCodeType(FilePath);
 		return (new ResponseEntity<String>(type, HttpStatus.OK));
 	}
-	
+
 	// REST service to get the source code as an array
 	@GetMapping(path = "/get-code")
 	public ResponseEntity<String[]> getSourceCode(@RequestHeader("file-path") String FilePath) {
@@ -92,7 +90,8 @@ public class BasicCodeController {
 	public ResponseEntity<HashMap> getCTCTotalScore(@RequestHeader("file-path") String FilePath) {
 		HashMap<String, String> hashMap = new HashMap<>();
 		CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
-		int ctcTotal = cctUtil.getControlScore() + cctUtil.getIterativeControlScore() + cctUtil.getCatchScore() + cctUtil.getSwitchScore();
+		int ctcTotal = cctUtil.getControlScore() + cctUtil.getIterativeControlScore() + cctUtil.getCatchScore()
+				+ cctUtil.getSwitchScore();
 		hashMap.put("SourceCode", cctUtil.getSourceCode());
 		hashMap.put("ControlScore", String.valueOf(cctUtil.getControlScore()));
 		hashMap.put("ITCScore", String.valueOf(cctUtil.getIterativeControlScore()));
@@ -143,7 +142,7 @@ public class BasicCodeController {
 		return ci.getNumberOfAnsestors(nameOfTheClass);
 	}
 
-	//This method is for future usages
+	// This method is for future usages
 	@GetMapping(path = "/get-ci/conneted-points")
 	public void getStronglyConnectedPoints(@RequestHeader("file-path") String FilePath) {
 		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
@@ -155,7 +154,7 @@ public class BasicCodeController {
 	 * 
 	 * -----------------------------------------------------------------------------
 	 */
-	 /*
+	/*
 	 * -----------------------------------------------------------------------------
 	 * CNC Service End Points
 	 * -----------------------------------------------------------------------------
@@ -167,14 +166,15 @@ public class BasicCodeController {
 		CNCServiceImpl cncService = new CNCServiceImpl(FilePath);
 		return (new ResponseEntity<Integer>(cncService.getNestedIfControlScore(), HttpStatus.OK));
 	}
-	
-	//--------------------------------------- Cs service End Points ------------------------------------------------------
+
+	// --------------------------------------- Cs service End Points
+	// ------------------------------------------------------
 	@GetMapping(path = "/get-cs")
 	public ResponseEntity<int[]> getCsScore(@RequestHeader("file-path") String FilePath) {
 		CsServicesImpl cs = new CsServicesImpl();
 		GeneralServiceImpl gs = new GeneralServiceImpl();
 		String sourceCode = gs.getSourceCode(FilePath);
-		int [] csValueArray = cs.getAllCsValues(sourceCode);
+		int[] csValueArray = cs.getAllCsValues(sourceCode);
 		return (new ResponseEntity<int[]>(csValueArray, HttpStatus.OK));
 	}
 
