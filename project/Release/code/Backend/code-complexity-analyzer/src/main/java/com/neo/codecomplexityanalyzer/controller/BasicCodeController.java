@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.neo.codecomplexityanalyzer.service.serviceImpl.GeneralServiceImpl;
+import com.neo.codecomplexityanalyzer.service.serviceImpl.CNCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CiJavaServicesImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CsServicesImpl;
