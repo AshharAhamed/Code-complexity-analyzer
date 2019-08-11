@@ -18,6 +18,8 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.apache.commons.io.FilenameUtils;
+
 public class GeneralServiceImpl {
     private StringBuilder sourceCode = new StringBuilder();
     private String originalSourceCode;
@@ -35,6 +37,23 @@ public class GeneralServiceImpl {
         this.multipleLineCommentAtTheEnd = multipleLineCommentAtTheEnd;
     }
 
+    /* Detect the Source Code type
+     * return 1 - .java 
+     * return 2 - .cpp
+     * return 0 - others  
+     */
+	public String getSourceCodeType(String path) { 
+		String ext = FilenameUtils.getExtension(path);
+		
+		if("java".equalsIgnoreCase(ext)) {
+			return "java";
+		}else if("cpp".equalsIgnoreCase(ext)) {
+			return "cpp";
+		}else {
+			return "other";
+		}
+	}
+    
     // Get Multiple line comment status
     private boolean isMultipleLineComment() {
         return multipleLineComment;
