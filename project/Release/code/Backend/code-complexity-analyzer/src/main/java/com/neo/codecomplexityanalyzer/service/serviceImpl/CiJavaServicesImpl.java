@@ -322,4 +322,42 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 		}
 		System.out.println();
 	}
+
+	@Override
+	public int calComplexityDueToInheritance(String className) {
+		int numOfAnsestors = this.getNumberOfAnsestors(className);
+		return (numOfAnsestors + 1);
+	}
+
+	@Override
+	public int calTotalComplexityDueToInheritance() {
+		int complexity = 0;
+		ArrayList<String> classList = this.getClassNames();
+		for (String clzName : classList) {
+			complexity += (this.getNumberOfAnsestors(clzName) + 1);
+		}
+		return complexity;
+	}
+
+	@SuppressWarnings("null")
+	@Override
+	public HashMap<String, Integer> complexityOfAllClassesDueToInheritance() {
+		ArrayList<String> classesOfTheCode = this.getClassNames();
+		HashMap<String, Integer> complexityMapWithClassNames = null;
+		for (String clzName : classesOfTheCode) {
+			complexityMapWithClassNames.put(clzName, (this.getNumberOfAnsestors(clzName) + 1));
+		}
+		return complexityMapWithClassNames;
+	}
+
+	@SuppressWarnings("null")
+	@Override
+	public HashMap<String, Integer> getClassWithTheNumberOfAnsestors() {
+		ArrayList<String> classesOfTheCode = this.getClassNames();
+		HashMap<String, Integer> numOfAnsestorsWithClassMap = null;
+		for (String clzName : classesOfTheCode) {
+			numOfAnsestorsWithClassMap.put(clzName, this.getNumberOfAnsestors(clzName));
+		}
+		return numOfAnsestorsWithClassMap;
+	}
 }
