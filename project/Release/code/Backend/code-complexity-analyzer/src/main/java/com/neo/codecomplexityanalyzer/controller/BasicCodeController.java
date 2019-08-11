@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.GeneralServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CiJavaServicesImpl;
+import com.neo.codecomplexityanalyzer.service.serviceImpl.CsServicesImpl;
+
+import org.apache.commons.io.FilenameUtils;
 
 @CrossOrigin(origins = { "http://localhost:1234", "http://localhost:3000" })
 
@@ -36,6 +39,14 @@ public class BasicCodeController {
 		return (new ResponseEntity<Integer>(lineCount, HttpStatus.OK));
 	}
 
+	// REST service to get the file type
+	@GetMapping(path = "/file-type")
+	public ResponseEntity<String> getFileType(@RequestHeader("file-path") String FilePath) {
+		GeneralServiceImpl ccaUtil = new GeneralServiceImpl();
+		String type = ccaUtil.getSourceCodeType(FilePath);
+		return (new ResponseEntity<String>(type, HttpStatus.OK));
+	}
+	
 	// REST service to get the source code as an array
 	@GetMapping(path = "/get-code")
 	public ResponseEntity<String[]> getSourceCode(@RequestHeader("file-path") String FilePath) {
@@ -154,6 +165,16 @@ public class BasicCodeController {
 	public ResponseEntity<Integer> getCNCNestedIfScore(@RequestHeader("file-path") String FilePath) {
 		CNCService cncService = new CNCServiceImpl(FilePath);
 		return (new ResponseEntity<Integer>(cncService.getNestedIfControlScore(), HttpStatus.OK));
+	}
+	
+	//--------------------------------------- Cs service End Points ------------------------------------------------------
+	@GetMapping(path = "/get-cs")
+	public ResponseEntity<int[]> getCsScore(@RequestHeader("file-path") String FilePath) {
+		CsServicesImpl cs = new CsServicesImpl();
+		GeneralServiceImpl gs = new GeneralServiceImpl();
+		String sourceCode = gs.getSourceCode(FilePath);
+		int [] csValueArray = cs.getAllCsValues(sourceCode);
+		return (new ResponseEntity<int[]>(csValueArray, HttpStatus.OK));
 	}
 
 }
