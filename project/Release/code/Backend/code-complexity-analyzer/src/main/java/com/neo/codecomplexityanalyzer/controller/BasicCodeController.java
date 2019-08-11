@@ -169,6 +169,22 @@ public class BasicCodeController {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
 		return (new ResponseEntity<Integer>(cncService.getNestedIfControlScore(), HttpStatus.OK));
 	}
+	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	@GetMapping(path = "/get-ctc/nested-for")
+	public ResponseEntity<Integer> getCNCNestedForScore(@RequestHeader("file-path") String FilePath) {
+		ICNCService cncService = new CNCServiceImpl(FilePath);
+		return (new ResponseEntity<Integer>(cncService.getNestedForScore(), HttpStatus.OK));
+	}
+	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	@GetMapping(path = "/get-ctc/nested-While")
+	public ResponseEntity<Integer> getCNCNestedWhileScore(@RequestHeader("file-path") String FilePath) {
+		ICNCService cncService = new CNCServiceImpl(FilePath);
+		return (new ResponseEntity<Integer>(cncService.getNestedWhileScore(), HttpStatus.OK));
+	}
+	
+	
 	/*
 	 * -----------------------------------------------------------------------------
 	 * 
