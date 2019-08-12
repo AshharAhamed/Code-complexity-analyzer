@@ -84,7 +84,7 @@ public class CTCServiceImpl{
             String subString = sourceCode.substring(ifStartIndex, ifEndIndex);
             logicalCount += general_Utils.getLogicalCount(subString);
         } while (true);
-        System.out.println("If Count : " + ifCount + " Logical Operator Count : " + logicalCount);
+        System.out.println("If Count                         : " + ifCount + " Logical Operator Count         : " + logicalCount);
         return (ifCount + logicalCount);
     }
 
@@ -121,7 +121,7 @@ public class CTCServiceImpl{
             String subString = sourceCode.substring(forStartIndex, forEndIndex);
             logicalCount += general_Utils.getLogicalCount(subString);
         } while (true);
-        System.out.println("Iterative Operator Count (For) : " + forCount + " Logical Operator Count (For) : " + logicalCount);
+        System.out.println("Iterative Operator Count (For)   : " + forCount + " Logical Operator Count (For)   : " + logicalCount);
         return (forCount + logicalCount) * 2;
     }
 
@@ -175,7 +175,7 @@ public class CTCServiceImpl{
             ++catchCount;
             forEndIndex = forStartIndex;
         } while (true);
-        System.out.println("Catch Count : " + catchCount);
+        System.out.println("Catch Count                      : " + catchCount);
         return (catchCount);
     }
 
@@ -214,7 +214,7 @@ public class CTCServiceImpl{
                 caseCount += caseOccourences;
             }
         } while (true);
-        System.out.println("Switch Cases Count : " + caseCount);
+        System.out.println("Switch Cases Count               : " + caseCount);
         return (caseCount);
     }
 }

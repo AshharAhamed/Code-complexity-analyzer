@@ -92,16 +92,25 @@ public class BasicCodeController {
 	public ResponseEntity<HashMap> getCTCTotalScore(@RequestHeader("file-path") String FilePath) {
 		HashMap<String, String> hashMap = new HashMap<>();
 		CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
-		int ctcTotal = cctUtil.getControlScore() + cctUtil.getIterativeControlScore() + cctUtil.getCatchScore()
-				+ cctUtil.getSwitchScore();
-		hashMap.put("SourceCode", cctUtil.getSourceCode());
-		hashMap.put("ControlScore", String.valueOf(cctUtil.getControlScore()));
-		hashMap.put("ITCScore", String.valueOf(cctUtil.getIterativeControlScore()));
-		hashMap.put("CatchScore", String.valueOf(cctUtil.getCatchScore()));
-		hashMap.put("SwitchScore", String.valueOf(cctUtil.getSwitchScore()));
+		int itcScore = cctUtil.getIterativeControlScore();
+		int controlScore = cctUtil.getControlScore();
+		int catchScore = cctUtil.getCatchScore();
+		int switchScore = cctUtil.getSwitchScore();
+		int ctcTotal = itcScore + catchScore + switchScore + controlScore;
+
+		if(controlScore == -1){
+			controlScore = 0;
+			hashMap.put("Control Score Error : ", String.valueOf(ctcTotal));
+		}
+
+		hashMap.put("ControlScore", String.valueOf(controlScore));
+		hashMap.put("ITCScore", String.valueOf(itcScore));
+		hashMap.put("CatchScore", String.valueOf(catchScore));
+		hashMap.put("SwitchScore", String.valueOf(switchScore));
 		hashMap.put("TotalCTCScore", String.valueOf(ctcTotal));
 		return (new ResponseEntity<HashMap>(hashMap, HttpStatus.OK));
 	}
+
 
 	/*
 	 * -----------------------------------------------------------------------------
