@@ -32,27 +32,12 @@ export default class CodeAnalyser extends Component {
     getScore() {
         this.CCAService.getScore(this.state.filePath).then(response => {
             this.setState({
-                // sourceCode: response.data.SourceCode,
-                catchScore: response.data.CatchScore,
-                switchScore: response.data.SwitchScore,
-                controlScore: response.data.ControlScore,
-                iTCScore: response.data.ITCScore,
-                totalCTCScore: response.data.TotalCTCScore
+                ctcLineScore: response.data.lineScore,
+                sourceCode: response.data.code,
+                totalCTCScore: response.data.totalCtcCount
             })
-        }).then(() => {
-            this.CCAService.getCode(this.state.filePath).then(response => {
-                this.setState({
-                    sourceCode: response.data
-                })
-            }).then(() => {
-                this.CCAService.getCTCLineScore(this.state.filePath).then(response => {
-                    this.setState({
-                        ctcLineScore: response.data
-                    })
-                })
-            })
-        }).catch(function (error) {
-            console.log(error);
+        }).catch( (err) => {
+            console.log(err);
         });
     }
 
@@ -85,7 +70,7 @@ export default class CodeAnalyser extends Component {
                         <thead>
                         <th rowSpan="2">Line No</th>
                         <th rowSpan="2">Code</th>
-                        <th rowSpan="2">ctc</th>
+                        <th rowSpan="2">Ctc</th>
                         </thead>
                         <tbody>
                         {this.state.sourceCode && this.state.sourceCode.map((line, index) => {

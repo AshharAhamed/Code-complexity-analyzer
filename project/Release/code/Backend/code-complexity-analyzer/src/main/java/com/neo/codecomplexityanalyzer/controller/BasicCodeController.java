@@ -8,12 +8,9 @@
 */
 package com.neo.codecomplexityanalyzer.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +26,7 @@ import com.neo.codecomplexityanalyzer.service.serviceImpl.CsServicesImpl;
 @RestController
 public class BasicCodeController {
 
+    //--------------------------------------- General End Points ---------------------------------------------------------------
     // REST service to get the line count
     @GetMapping(path = "/line-count")
     public ResponseEntity<Integer> getLineCount(@RequestHeader("file-path") String FilePath) {
@@ -65,44 +63,56 @@ public class BasicCodeController {
         return (new ResponseEntity<String[]>(lineArr, HttpStatus.OK));
     }
 
-    @GetMapping(path = "/get-code-formatted")
-    public ResponseEntity<String[]> getSourceCodeFormatted(@RequestHeader("file-path") String FilePath) {
+    @GetMapping(path = "/get-score")
+    public ResponseEntity<?> getSourceCodeFormatted(@RequestHeader("file-path") String FilePath) {
         String code;
-        int lineCount;
-        String[] lineArr;
         GeneralServiceImpl ccaUtil = new GeneralServiceImpl();
         code = ccaUtil.getSourceCode(FilePath);
-        lineCount = ccaUtil.findSourceCodeLineCount(code);
-        lineArr = ccaUtil.collectAllSourceCodeLines(code, lineCount);
+        ResponseClass r1 = new ResponseClass();
+        r1.setCode(Arrays.asList(ccaUtil.collectAllSourceCodeLines(code, ccaUtil.findSourceCodeLineCount(code))));
 
+        CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
+        int itcScore = cctUtil.getIterativeControlScore();
+        int controlScore = cctUtil.getControlScore();
+        int catchScore = cctUtil.getCatchScore();
+        int switchScore = cctUtil.getSwitchScore();
 
-
-        return (new ResponseEntity<String[]>(lineArr, HttpStatus.OK));
+        HashMap<Integer, Integer> m1 = cctUtil.getLineScore();
+        Integer[] lineScoreArray = new Integer[m1.size()];
+        int i = 0;
+        for (Map.Entry<Integer, Integer> entry : m1.entrySet()) {
+            int value = entry.getValue();
+            lineScoreArray[i] = value;
+            ++i;
+        }
+        r1.setLineScore(Arrays.asList(lineScoreArray));
+        r1.setTotalCtcCount(itcScore + controlScore + catchScore + switchScore);
+        return (new ResponseEntity<>(r1, HttpStatus.OK));
     }
 
     //--------------------------------------- CTC End Points ---------------------------------------------------------------
     @GetMapping(path = "/get-ctc/if")
     public ResponseEntity<Integer> getCTCScore(@RequestHeader("file-path") String FilePath) {
         CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
-        return (new ResponseEntity<Integer>(cctUtil.getControlScore(), HttpStatus.OK));
+        return (new ResponseEntity<>(cctUtil.getControlScore(), HttpStatus.OK));
     }
 
     @GetMapping(path = "/get-ctc/itc")
     public ResponseEntity<Integer> getCTCITCScore(@RequestHeader("file-path") String FilePath) {
         CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
-        return (new ResponseEntity<Integer>(cctUtil.getIterativeControlScore(), HttpStatus.OK));
+        return (new ResponseEntity<>(cctUtil.getIterativeControlScore(), HttpStatus.OK));
     }
 
     @GetMapping(path = "/get-ctc/catch")
     public ResponseEntity<Integer> getCTCCatchScore(@RequestHeader("file-path") String FilePath) {
         CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
-        return (new ResponseEntity<Integer>(cctUtil.getCatchScore(), HttpStatus.OK));
+        return (new ResponseEntity<>(cctUtil.getCatchScore(), HttpStatus.OK));
     }
 
     @GetMapping(path = "/get-ctc/case")
     public ResponseEntity<Integer> getCTCSwitchScore(@RequestHeader("file-path") String FilePath) {
         CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
-        return (new ResponseEntity<Integer>(cctUtil.getSwitchScore(), HttpStatus.OK));
+        return (new ResponseEntity<>(cctUtil.getSwitchScore(), HttpStatus.OK));
     }
 
     @GetMapping(path = "/get-ctc")
@@ -128,7 +138,7 @@ public class BasicCodeController {
 
         HashMap<Integer, Integer> m1 = cctUtil.getLineScore();
 
-        return (new ResponseEntity<HashMap>(hashMap, HttpStatus.OK));
+        return (new ResponseEntity<>(hashMap, HttpStatus.OK));
     }
 
     @GetMapping(path = "/get-ctc-line-score")
@@ -146,16 +156,10 @@ public class BasicCodeController {
             lineScoreArray[i] = String.valueOf(value);
             ++i;
         }
-        return (new ResponseEntity<String[]>(lineScoreArray, HttpStatus.OK));
+        return (new ResponseEntity<>(lineScoreArray, HttpStatus.OK));
     }
 
-
-    /*
-     * -----------------------------------------------------------------------------
-     * Ci Service End Points
-     * -----------------------------------------------------------------------------
-     *
-     */
+    //--------------------------------------- Ci End Points ---------------------------------------------------------------
 
     // This service will give the names of the ancestor class Names when a class
     // Name is given
@@ -227,19 +231,8 @@ public class BasicCodeController {
         ci.identifyStronglyConnectedClasses();
     }
 
-    /*
-     * -----------------------------------------------------------------------------
-     *
-     * -----------------------------------------------------------------------------
-     */
 
-
-    /*
-     * -----------------------------------------------------------------------------
-     * CNC Service End Points
-     * -----------------------------------------------------------------------------
-     *
-     */
+    //--------------------------------------- CNC End Points ---------------------------------------------------------------
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(path = "/get-cnc/nested-if")
     public ResponseEntity<Integer> getCNCNestedIfScore(@RequestHeader("file-path") String FilePath) {
@@ -262,16 +255,7 @@ public class BasicCodeController {
     }
 
 
-    /*
-     * -----------------------------------------------------------------------------
-     *
-     * -----------------------------------------------------------------------------
-     *
-     */
-
-
-    // --------------------------------------- Cs service End Points
-    // ------------------------------------------------------
+    //--------------------------------------- Cs End Points ---------------------------------------------------------------
     @GetMapping(path = "/get-cs")
     public ResponseEntity<int[]> getCsScore(@RequestHeader("file-path") String FilePath) {
         CsServicesImpl cs = new CsServicesImpl();
@@ -281,4 +265,35 @@ public class BasicCodeController {
         return (new ResponseEntity<int[]>(csValueArray, HttpStatus.OK));
     }
 
+}
+
+class ResponseClass {
+    private int totalCtcCount;
+
+    public int getTotalCtcCount() {
+        return totalCtcCount;
+    }
+
+    public void setTotalCtcCount(int totalCtcCount) {
+        this.totalCtcCount = totalCtcCount;
+    }
+
+    public List<String> getCode() {
+        return code;
+    }
+
+    public void setCode(List<String> code) {
+        this.code = code;
+    }
+
+    public List<Integer> getLineScore() {
+        return lineScore;
+    }
+
+    public void setLineScore(List<Integer> lineScore) {
+        this.lineScore = lineScore;
+    }
+
+    private List<String> code;
+    private List<Integer> lineScore;
 }
