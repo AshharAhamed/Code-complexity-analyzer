@@ -15,6 +15,7 @@ public class TestIF {
         } else {
             System.out.println("Good evening.");
         }
+
 //        if (time < 10) {
 //            System.out.println("Good morning.");
 //        } else if (time < 20) {
@@ -22,13 +23,7 @@ public class TestIF {
 //        } else {
 //            System.out.println("Good evening.");
 //        }
-/*        if (time < 10) {
-            System.out.println("Good morning.");
-        } else if (time < 20) {
-            System.out.println("Good day.");
-        } else {
-            System.out.println("Good evening.");
-        }*/
+
     }
 
     public void netIdcal(int resultArr[], int prefix) {
@@ -54,34 +49,6 @@ public class TestIF {
                 netId4 += netArr[count] * (pow(2, i));
             --i;
         }
-
-
-        String test = "        for (count = 0; count < prefix; ++count) {\n" +
-                "            if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))\n" +
-                "                i = 7;\n" +
-                "            if (count < 8)\n" +
-                "                netId1 += netArr[count] * (pow(2, i));\n" +
-                "            else if (count < 16)\n" +
-                "                netId2 += netArr[count] * (pow(2, i));\n" +
-                "            else if (count < 24)\n" +
-                "                netId3 += netArr[count] * (pow(2, i));\n" +
-                "            else if (count < 32)\n" +
-                "                netId4 += netArr[count] * (pow(2, i));\n" +
-                "            --i;\n" +
-                "        }";
-//        for (count = 0; count < prefix; ++count) {
-//            if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))
-//                i = 7;
-//            if (count < 8)
-//                netId1 += netArr[count] * (pow(2, i));
-//            else if (count < 16)
-//                netId2 += netArr[count] * (pow(2, i));
-//            else if (count < 24)
-//                netId3 += netArr[count] * (pow(2, i));
-//            else if (count < 32)
-//                netId4 += netArr[count] * (pow(2, i));
-//            --i;
-//        }
 
         printf("Netword Address = %d.%d.%d.%d\n", netId1, netId2, netId3, netId4);
 

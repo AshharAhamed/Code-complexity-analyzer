@@ -1,6 +1,10 @@
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
+import com.neo.codecomplexityanalyzer.controller.BasicCodeController;
 import org.junit.Test;
+import org.springframework.http.ResponseEntity;
+
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
 
@@ -33,11 +37,11 @@ public class CTCServiceImplTest {
         int output = underTest.getSwitchScore();
         assertEquals(7, output);
     }
-    
+
     @Test
-    public void getSwitchScore1() {
-        CrServicesImpl underTest = new CrServicesImpl("src/main/resources/sampleData/Recursive.java");
-        int output = underTest.getControlScore();
+    public void geTotalCTCScore() {
+        BasicCodeController underTest = new BasicCodeController();
+        ResponseEntity<HashMap> output = underTest.getCTCTotalScore("C://Student//SPM//Code-complexity-analyzer//project//Release//code//Backend//code-complexity-analyzer//src//main//resources//sampleData//CheckBraces.java");
     }
 
 }

@@ -15,8 +15,11 @@
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
 
+import java.util.HashMap;
+
 public class CTCServiceImpl{
     private static final int stackSize = 100;
+
     private static final String errorMessage1 = "Missing } , not properly ended !";
     private static final String errorMessage2 = "Missing ) , not properly ended !";
     private static final String searchIf    = "if";
@@ -32,32 +35,23 @@ public class CTCServiceImpl{
     private static final char closeSquareBrace = '}';
 
     private String sourceCode;
-    private String originalSourceCode;
     private long sourceCodeLength;
     private GeneralServiceImpl general_Utils;
+    private HashMap<Integer, Integer> lineScore;
 
     public CTCServiceImpl(String filePath) {
         general_Utils = new GeneralServiceImpl();
         this.sourceCode = general_Utils.getSourceCode(filePath);
         this.sourceCodeLength = general_Utils.getSourceCodeLength();
-        this.originalSourceCode = general_Utils.getOriginalSourceCode();
-    }
-
-    public String getSourceCode(){
-        return this.sourceCode;
-    }
-
-    public String getOriginalSourceCode() {
-        return originalSourceCode;
+        this.lineScore = general_Utils.getLineHashMap();
     }
 
     public int getControlScore() {
-        int ifStartIndex, ifEndIndex = 0, ifCount = 0, logicalCount = 0;
+        int ifStartIndex, ifEndIndex = 0, ifCount = 0, logicalCount = 0, lineNo, logicalCountTemp;
         do {
-            ifStartIndex = sourceCode.indexOf(searchIf, ifEndIndex) + 3;
-            if (ifStartIndex == 2)
+            ifStartIndex = sourceCode.indexOf(searchIf, ifEndIndex) + 2;
+            if (ifStartIndex == 1)
                 break;
-            ++ifCount;
             int indexTemp = ifStartIndex;
             Stack s1 = new Stack(stackSize);
             while (true) {
@@ -81,20 +75,29 @@ public class CTCServiceImpl{
                 ++indexTemp;
             }
             ifEndIndex = indexTemp;
+            ++ifCount;
+
+            lineNo = general_Utils.getFormattedLineByIndex(ifStartIndex - 1);
+            lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
+
             String subString = sourceCode.substring(ifStartIndex, ifEndIndex);
-            logicalCount += general_Utils.getLogicalCount(subString);
+            logicalCountTemp = general_Utils.getLogicalCount(subString);
+            if(logicalCountTemp > 0){
+                lineNo = general_Utils.getFormattedLineByIndex(ifStartIndex - 1);
+                lineScore.put(lineNo, (lineScore.get(lineNo) + logicalCountTemp));
+            }
+            logicalCount += logicalCountTemp;
         } while (true);
         System.out.println("If Count                         : " + ifCount + " Logical Operator Count         : " + logicalCount);
         return (ifCount + logicalCount);
     }
 
     private int getIterativeForScore() {
-        int forStartIndex, forEndIndex = 0, forCount = 0, logicalCount = 0;
+        int forStartIndex, forEndIndex = 0, forCount = 0, logicalCount = 0, lineNo, logicalCountTemp;
         do {
-            forStartIndex = sourceCode.indexOf(searchFor, forEndIndex) + 4;
-            if (forStartIndex == 3)
+            forStartIndex = sourceCode.indexOf(searchFor, forEndIndex) + 3;
+            if (forStartIndex == 2)
                 break;
-            ++forCount;
             int indexTemp = forStartIndex;
             Stack s1 = new Stack(stackSize);
             while (true) {
@@ -118,20 +121,29 @@ public class CTCServiceImpl{
                 ++indexTemp;
             }
             forEndIndex = indexTemp;
+            ++forCount;
+            lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 2);
+            lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
+
             String subString = sourceCode.substring(forStartIndex, forEndIndex);
-            logicalCount += general_Utils.getLogicalCount(subString);
+
+            logicalCountTemp = general_Utils.getLogicalCount(subString);
+            if(logicalCountTemp > 0){
+                lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 2);
+                lineScore.put(lineNo, (lineScore.get(lineNo) + logicalCountTemp));
+            }
+            logicalCount += logicalCountTemp;
         } while (true);
         System.out.println("Iterative Operator Count (For)   : " + forCount + " Logical Operator Count (For)   : " + logicalCount);
         return (forCount + logicalCount) * 2;
     }
 
     private int getIterativeWhileScore() {
-        int forStartIndex, forEndIndex = 0, whileCount = 0, logicalCount = 0;
+        int forStartIndex, forEndIndex = 0, whileCount = 0, logicalCount = 0, lineNo, logicalCountTemp;
         do {
             forStartIndex = sourceCode.indexOf(searchWhile, forEndIndex) + 5;
             if (forStartIndex == 4)
                 break;
-            ++whileCount;
             int indexTemp = forStartIndex;
             Stack s1 = new Stack(stackSize);
             while (true) {
@@ -155,8 +167,18 @@ public class CTCServiceImpl{
                 ++indexTemp;
             }
             forEndIndex = indexTemp;
+            ++whileCount;
+            lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 4);
+            lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
+
             String subString = sourceCode.substring(forStartIndex, forEndIndex);
-            logicalCount += general_Utils.getLogicalCount(subString);
+
+            logicalCountTemp = general_Utils.getLogicalCount(subString);
+            if(logicalCountTemp > 0){
+                lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 4);
+                lineScore.put(lineNo, (lineScore.get(lineNo) + logicalCountTemp));
+            }
+            logicalCount += logicalCountTemp;
         } while (true);
         System.out.println("Iterative Operator Count (While) : " + whileCount + " Logical Operator Count (While) : " + logicalCount);
         return ((whileCount + logicalCount) * 2);
@@ -167,12 +189,14 @@ public class CTCServiceImpl{
     }
 
     public int getCatchScore() {
-        int forStartIndex, forEndIndex = 0, catchCount = 0;
+        int forStartIndex, forEndIndex = 0, catchCount = 0, lineNo;
         do {
-            forStartIndex = sourceCode.indexOf("catch", forEndIndex) + 6;
-            if (forStartIndex == 5)
+            forStartIndex = sourceCode.indexOf("catch", forEndIndex) + 5;
+            if (forStartIndex == 4)
                 break;
             ++catchCount;
+            lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 4);
+            lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
             forEndIndex = forStartIndex;
         } while (true);
         System.out.println("Catch Count                      : " + catchCount);
@@ -180,10 +204,10 @@ public class CTCServiceImpl{
     }
 
     public int getSwitchScore() {
-        int forStartIndex, forEndIndex = 0, caseCount = 0;
+        int forStartIndex, forEndIndex = 0, caseCount = 0, lineNo;
         do {
-            forStartIndex = sourceCode.indexOf(searchSwitch, forEndIndex) + 7;
-            if (forStartIndex == 6)
+            forStartIndex = sourceCode.indexOf(searchSwitch, forEndIndex) + 6;
+            if (forStartIndex == 5)
                 break;
             int indexTemp = forStartIndex;
             Stack s1 = new Stack(stackSize);
@@ -212,9 +236,15 @@ public class CTCServiceImpl{
             if ((subString.contains("case"))) {
                 int caseOccourences = general_Utils.countOccurences(subString, searchCase);
                 caseCount += caseOccourences;
+                lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 5);
+                lineScore.put(lineNo, (lineScore.get(lineNo) + caseCount));
             }
         } while (true);
         System.out.println("Switch Cases Count               : " + caseCount);
         return (caseCount);
+    }
+
+    public HashMap<Integer, Integer> getLineScore() {
+        return lineScore;
     }
 }

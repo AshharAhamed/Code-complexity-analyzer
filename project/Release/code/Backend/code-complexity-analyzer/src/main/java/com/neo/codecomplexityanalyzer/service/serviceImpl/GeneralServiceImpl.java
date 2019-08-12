@@ -16,6 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import org.apache.commons.io.FilenameUtils;
@@ -23,11 +24,16 @@ import org.apache.commons.io.FilenameUtils;
 public class GeneralServiceImpl {
     private StringBuilder sourceCode = new StringBuilder();
     private String originalSourceCode;
-    //    private String sourceCode="";
+    private String finalCode;
     private Long sourceCodeLength;
     private Scanner scanner = null;
     private boolean multipleLineComment = false;
     private boolean multipleLineCommentAtTheEnd = false;
+    private HashMap<Integer, Integer> lineScore;
+
+    public GeneralServiceImpl(){
+        this.lineScore = new HashMap<>();
+    }
 
     private boolean isMultipleLineCommentAtTheEnd() {
         return multipleLineCommentAtTheEnd;
@@ -38,22 +44,22 @@ public class GeneralServiceImpl {
     }
 
     /* Detect the Source Code type
-     * return 1 - .java 
+     * return 1 - .java
      * return 2 - .cpp
-     * return 0 - others  
+     * return 0 - others
      */
-	public String getSourceCodeType(String path) { 
-		String ext = FilenameUtils.getExtension(path);
-		
-		if("java".equalsIgnoreCase(ext)) {
-			return "java";
-		}else if("cpp".equalsIgnoreCase(ext)) {
-			return "cpp";
-		}else {
-			return "other";
-		}
-	}
-    
+    public String getSourceCodeType(String path) {
+        String ext = FilenameUtils.getExtension(path);
+
+        if ("java".equalsIgnoreCase(ext)) {
+            return "java";
+        } else if ("cpp".equalsIgnoreCase(ext)) {
+            return "cpp";
+        } else {
+            return "other";
+        }
+    }
+
     // Get Multiple line comment status
     private boolean isMultipleLineComment() {
         return multipleLineComment;
@@ -81,8 +87,9 @@ public class GeneralServiceImpl {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
+        int lineNo = 1;
         while (scanner.hasNextLine()) {
+            lineScore.put(lineNo++, 0);
             tempLine = scanner.nextLine() + "\n";
             sourceCode.append(tempLine);
         }
@@ -105,7 +112,7 @@ public class GeneralServiceImpl {
         for (String line : sourceCodeArrayresult) {
             resultSourceCode.append(line);
         }
-        String finalCode = removeDoubleQuotedText(String.valueOf(resultSourceCode));
+        finalCode = removeDoubleQuotedText(String.valueOf(resultSourceCode));
         return finalCode;
     }
 
@@ -373,7 +380,7 @@ public class GeneralServiceImpl {
             return (findNumberOfCoccurences(tempstring, token) + 1);
         }
     }
-    
+
     public int countRecursiveOccurrences(String str, String word) {
         str = str.replace("(", " ");
         str = str.replace(")", " ");
@@ -388,4 +395,55 @@ public class GeneralServiceImpl {
         return count;
     }
 
+    public int getLineByIndex(int index) {
+        int startIndex, endIndex = 0;
+        int indexCounter = 0;
+        int lineCount = 0;
+        String line;
+        do {
+            if(indexCounter >= originalSourceCode.length())
+                break;
+            startIndex = originalSourceCode.indexOf("\n", endIndex) + 1;
+            if (startIndex == 0)
+                break;
+            ++lineCount;
+            line = originalSourceCode.substring(endIndex, startIndex);
+            for(int i = 0 ; i < line.length() ; ++i){
+                if(index == indexCounter){
+                    return lineCount;
+                }
+                ++indexCounter;
+            }
+            endIndex = startIndex;
+        } while (true);
+        return -1;
+    }
+
+    public int getFormattedLineByIndex(int index) {
+        int startIndex, endIndex = 0;
+        int indexCounter = 0;
+        int lineCount = 0;
+        String line;
+        do {
+            if(indexCounter >= finalCode.length())
+                break;
+            startIndex = finalCode.indexOf("\n", endIndex) + 1;
+            if (startIndex == 0)
+                break;
+            ++lineCount;
+            line = finalCode.substring(endIndex, startIndex);
+            for(int i = 0 ; i < line.length() ; ++i){
+                if(index == indexCounter){
+                    return lineCount;
+                }
+                ++indexCounter;
+            }
+            endIndex = startIndex;
+        } while (true);
+        return -1;
+    }
+
+    public HashMap<Integer, Integer> getLineHashMap() {
+        return lineScore;
+    }
 }
