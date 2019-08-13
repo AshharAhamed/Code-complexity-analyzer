@@ -17,21 +17,18 @@ package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
 import java.util.HashMap;
 
-public class CTCServiceImpl{
+public class CTCServiceImpl {
     private static final int stackSize = 100;
 
-    private static final String errorMessage1 = "Missing } , not properly ended !";
-    private static final String errorMessage2 = "Missing ) , not properly ended !";
-    private static final String searchIf    = "if";
-    private static final String searchFor   = "for";
+    private static final String searchIf = "if";
+    private static final String searchFor = "for";
     private static final String searchWhile = "while";
     private static final String searchSwitch = "switch";
     private static final String searchCase = "case";
 
-
-    private static final char openBrace  = '(';
+    private static final char openBrace = '(';
     private static final char closeBrace = ')';
-    private static final char openSquareBrace  = '{';
+    private static final char openSquareBrace = '{';
     private static final char closeSquareBrace = '}';
 
     private String sourceCode;
@@ -46,148 +43,88 @@ public class CTCServiceImpl{
         this.lineScore = general_Utils.getLineHashMap();
     }
 
+    //calculate score for if conditions and their logical operators
     public int getControlScore() {
         int ifStartIndex, ifEndIndex = 0, ifCount = 0, logicalCount = 0, lineNo, logicalCountTemp;
         do {
-            ifStartIndex = sourceCode.indexOf(searchIf, ifEndIndex) + 2;
-            if (ifStartIndex == 1)
-                break;
-            int indexTemp = ifStartIndex;
-            Stack s1 = new Stack(stackSize);
-            while (true) {
-                if (indexTemp >= sourceCodeLength) {
-                    System.out.println(errorMessage2);
-                    return -1;
-                }
-                char strTemp = sourceCode.charAt(indexTemp);
-                if (strTemp == openBrace)
-                    s1.push(openBrace);
-                else if (strTemp == closeBrace) {
-                    if (!s1.isEmpty()) {
-                        s1.pop();
-                        if (s1.isEmpty())
-                            break;
-                    } else {
-                        System.out.println(errorMessage2);
-                        return -1;
+            ifStartIndex = searchNextIf(ifEndIndex);
+            if (ifStartIndex != 1) {
+                ifEndIndex = getLastRoundClosingBrace(ifStartIndex);
+                if (ifEndIndex != -1) {
+                    ++ifCount;
+                    lineNo = general_Utils.getFormattedLineByIndex(ifStartIndex - 1);
+                    lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
+                    logicalCountTemp = general_Utils.getLogicalCount(sourceCode.substring(ifStartIndex, ifEndIndex + 1));
+                    if (logicalCountTemp > 0) {
+                        lineNo = general_Utils.getFormattedLineByIndex(ifStartIndex - 1);
+                        lineScore.put(lineNo, (lineScore.get(lineNo) + logicalCountTemp));
                     }
+                    logicalCount += logicalCountTemp;
                 }
-                ++indexTemp;
-            }
-            ifEndIndex = indexTemp;
-            ++ifCount;
+            } else
+                break;
+        } while (ifEndIndex < sourceCodeLength);
 
-            lineNo = general_Utils.getFormattedLineByIndex(ifStartIndex - 1);
-            lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
-
-            String subString = sourceCode.substring(ifStartIndex, ifEndIndex);
-            logicalCountTemp = general_Utils.getLogicalCount(subString);
-            if(logicalCountTemp > 0){
-                lineNo = general_Utils.getFormattedLineByIndex(ifStartIndex - 1);
-                lineScore.put(lineNo, (lineScore.get(lineNo) + logicalCountTemp));
-            }
-            logicalCount += logicalCountTemp;
-        } while (true);
         System.out.println("If Count                         : " + ifCount + " Logical Operator Count         : " + logicalCount);
         return (ifCount + logicalCount);
     }
 
+    //calculate score for for loops and their logical operators
     private int getIterativeForScore() {
         int forStartIndex, forEndIndex = 0, forCount = 0, logicalCount = 0, lineNo, logicalCountTemp;
         do {
-            forStartIndex = sourceCode.indexOf(searchFor, forEndIndex) + 3;
-            if (forStartIndex == 2)
-                break;
-            int indexTemp = forStartIndex;
-            Stack s1 = new Stack(stackSize);
-            while (true) {
-                if (indexTemp >= sourceCodeLength) {
-                    System.out.println(errorMessage2);
-                    return -1;
-                }
-                char strTemp = sourceCode.charAt(indexTemp);
-                if (strTemp == openBrace)
-                    s1.push(openBrace);
-                else if ((strTemp == closeBrace)) {
-                    if (!s1.isEmpty()) {
-                        s1.pop();
-                        if (s1.isEmpty())
-                            break;
-                    } else {
-                        System.out.println(errorMessage2);
-                        return -1;
+            forStartIndex = searchNextFor(forEndIndex);
+            if (forStartIndex != 2) {
+                forEndIndex = getLastRoundClosingBrace(forStartIndex);
+                if (forEndIndex != -1) {
+                    ++forCount;
+                    lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 2);
+                    lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
+                    logicalCountTemp = general_Utils.getLogicalCount(sourceCode.substring(forStartIndex, forEndIndex));
+                    if (logicalCountTemp > 0) {
+                        lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 2);
+                        lineScore.put(lineNo, (lineScore.get(lineNo) + logicalCountTemp));
                     }
+                    logicalCount += logicalCountTemp;
                 }
-                ++indexTemp;
-            }
-            forEndIndex = indexTemp;
-            ++forCount;
-            lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 2);
-            lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
-
-            String subString = sourceCode.substring(forStartIndex, forEndIndex);
-
-            logicalCountTemp = general_Utils.getLogicalCount(subString);
-            if(logicalCountTemp > 0){
-                lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 2);
-                lineScore.put(lineNo, (lineScore.get(lineNo) + logicalCountTemp));
-            }
-            logicalCount += logicalCountTemp;
+            } else
+                break;
         } while (true);
         System.out.println("Iterative Operator Count (For)   : " + forCount + " Logical Operator Count (For)   : " + logicalCount);
         return (forCount + logicalCount) * 2;
     }
 
+    //calculate score for do, do-while loops and their logical operators
     private int getIterativeWhileScore() {
-        int forStartIndex, forEndIndex = 0, whileCount = 0, logicalCount = 0, lineNo, logicalCountTemp;
+        int whileStartIndex, whileEndIndex = 0, whileCount = 0, logicalCount = 0, lineNo, logicalCountTemp;
         do {
-            forStartIndex = sourceCode.indexOf(searchWhile, forEndIndex) + 5;
-            if (forStartIndex == 4)
-                break;
-            int indexTemp = forStartIndex;
-            Stack s1 = new Stack(stackSize);
-            while (true) {
-                if (indexTemp >= sourceCodeLength) {
-                    System.out.println(errorMessage2);
-                    return -1;
-                }
-                char strTemp = sourceCode.charAt(indexTemp);
-                if (strTemp == openBrace)
-                    s1.push(openBrace);
-                else if ((strTemp == closeBrace)) {
-                    if (!s1.isEmpty()) {
-                        s1.pop();
-                        if (s1.isEmpty())
-                            break;
-                    } else {
-                        System.out.println(errorMessage2);
-                        return -1;
+            whileStartIndex = searchNextWhile(whileEndIndex);
+            if (whileStartIndex != 4) {
+                whileEndIndex = getLastRoundClosingBrace(whileStartIndex);
+                if (whileEndIndex != -1) {
+                    ++whileCount;
+                    lineNo = general_Utils.getFormattedLineByIndex(whileStartIndex - 4);
+                    lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
+                    logicalCountTemp = general_Utils.getLogicalCount(sourceCode.substring(whileStartIndex, whileEndIndex));
+                    if (logicalCountTemp > 0) {
+                        lineNo = general_Utils.getFormattedLineByIndex(whileStartIndex - 4);
+                        lineScore.put(lineNo, (lineScore.get(lineNo) + logicalCountTemp));
                     }
+                    logicalCount += logicalCountTemp;
                 }
-                ++indexTemp;
-            }
-            forEndIndex = indexTemp;
-            ++whileCount;
-            lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 4);
-            lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
-
-            String subString = sourceCode.substring(forStartIndex, forEndIndex);
-
-            logicalCountTemp = general_Utils.getLogicalCount(subString);
-            if(logicalCountTemp > 0){
-                lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 4);
-                lineScore.put(lineNo, (lineScore.get(lineNo) + logicalCountTemp));
-            }
-            logicalCount += logicalCountTemp;
+            } else
+                break;
         } while (true);
         System.out.println("Iterative Operator Count (While) : " + whileCount + " Logical Operator Count (While) : " + logicalCount);
         return ((whileCount + logicalCount) * 2);
     }
 
+    //returns value of both for and while loops
     public int getIterativeControlScore() {
         return (this.getIterativeForScore() + this.getIterativeWhileScore());
     }
 
+    //calculate score of catch statements
     public int getCatchScore() {
         int forStartIndex, forEndIndex = 0, catchCount = 0, lineNo;
         do {
@@ -203,45 +140,111 @@ public class CTCServiceImpl{
         return (catchCount);
     }
 
+    //calculate score of switch statements
     public int getSwitchScore() {
-        int forStartIndex, forEndIndex = 0, caseCount = 0, lineNo;
+        int switchStartIndex, switchEndIndex = 0, caseCount = 0, lineNo;
         do {
-            forStartIndex = sourceCode.indexOf(searchSwitch, forEndIndex) + 6;
-            if (forStartIndex == 5)
-                break;
-            int indexTemp = forStartIndex;
-            Stack s1 = new Stack(stackSize);
-            while (true) {
-                if (indexTemp >= sourceCodeLength) {
-                    System.out.println(errorMessage1);
-                    return -1;
-                }
-                char strTemp = sourceCode.charAt(indexTemp);
-                if (strTemp == openSquareBrace)
-                    s1.push(openSquareBrace);
-                else if ((strTemp == closeSquareBrace)) {
-                    if (!s1.isEmpty()) {
-                        s1.pop();
-                        if (s1.isEmpty())
-                            break;
-                    } else {
-                        System.out.println(errorMessage1);
-                        return -1;
+            switchStartIndex = searchNextSwitch(switchEndIndex);
+            if (switchStartIndex != 5) {
+                switchEndIndex = getLastClosingCurlyBrace(switchStartIndex);
+                if (switchEndIndex != -1) {
+                    String subString = sourceCode.substring(switchStartIndex, switchEndIndex);
+                    if ((subString.contains("case"))) {
+                        int caseOccourences = general_Utils.countOccurences(subString, searchCase);
+                        caseCount += caseOccourences;
+                        lineNo = general_Utils.getFormattedLineByIndex(switchStartIndex - 5);
+                        lineScore.put(lineNo, (lineScore.get(lineNo) + caseCount));
                     }
                 }
-                ++indexTemp;
-            }
-            forEndIndex = indexTemp;
-            String subString = sourceCode.substring(forStartIndex, forEndIndex);
-            if ((subString.contains("case"))) {
-                int caseOccourences = general_Utils.countOccurences(subString, searchCase);
-                caseCount += caseOccourences;
-                lineNo = general_Utils.getFormattedLineByIndex(forStartIndex - 5);
-                lineScore.put(lineNo, (lineScore.get(lineNo) + caseCount));
-            }
+            } else
+                break;
         } while (true);
         System.out.println("Switch Cases Count               : " + caseCount);
         return (caseCount);
+    }
+
+    //returns the index of next switch
+    private int searchNextSwitch(int forEndIndex) {
+        int switchStartIndex = sourceCode.indexOf(searchSwitch, forEndIndex) + 6;
+        if (sourceCode.charAt(switchStartIndex) == ' ' || sourceCode.charAt(switchStartIndex) == '(')
+            return switchStartIndex;
+        else
+            return 5;
+    }
+
+    //returns the index of next if
+    private int searchNextIf(int ifEndIndex) {
+        int ifStartIndex = sourceCode.indexOf(searchIf, ifEndIndex) + 2;
+        if (sourceCode.charAt(ifStartIndex) == ' ' || sourceCode.charAt(ifStartIndex) == '(')
+            return ifStartIndex;
+        else
+            return 1;
+    }
+
+    //returns the index of next for
+    private int searchNextFor(int forEndIndex) {
+        int forStartIndex = sourceCode.indexOf(searchFor, forEndIndex) + 3;
+        if (sourceCode.charAt(forStartIndex) == ' ' || sourceCode.charAt(forStartIndex) == '(')
+            return forStartIndex;
+        else
+            return 2;
+    }
+
+    //returns the index of next while
+    private int searchNextWhile(int forEndIndex) {
+        int whileStartIndex = sourceCode.indexOf(searchWhile, forEndIndex) + 5;
+        if (sourceCode.charAt(whileStartIndex) == ' ' || sourceCode.charAt(whileStartIndex) == '(')
+            return whileStartIndex;
+        else
+            return 4;
+    }
+
+    //Function returns the last closing curly braces of a parenthesis
+    private int getLastClosingCurlyBrace(int startIndex) {
+        int indexTemp = startIndex;
+        char charTemp;
+        Stack s1 = new Stack(stackSize);
+        while (indexTemp < sourceCodeLength) {
+            charTemp = sourceCode.charAt(indexTemp);
+            if (charTemp == openSquareBrace)
+                s1.push(openSquareBrace);
+            else if (charTemp == closeSquareBrace) {
+                if (!s1.isEmpty()) {
+                    s1.pop();
+                    if (s1.isEmpty()) {
+                        return (indexTemp + 1);
+                    }
+                } else {
+                    return -1;
+                }
+            }
+            ++indexTemp;
+        }
+        return -1;
+    }
+
+    //Function returns the last closing round braces of a parenthesis
+    private int getLastRoundClosingBrace(int startIndex) {
+        int indexTemp = startIndex;
+        char charTemp;
+        Stack s1 = new Stack(stackSize);
+        while (indexTemp < sourceCodeLength) {
+            charTemp = sourceCode.charAt(indexTemp);
+            if (charTemp == openBrace)
+                s1.push(openBrace);
+            else if (charTemp == closeBrace) {
+                if (!s1.isEmpty()) {
+                    s1.pop();
+                    if (s1.isEmpty()) {
+                        return (indexTemp + 1);
+                    }
+                } else {
+                    return -1;
+                }
+            }
+            ++indexTemp;
+        }
+        return -1;
     }
 
     public HashMap<Integer, Integer> getLineScore() {

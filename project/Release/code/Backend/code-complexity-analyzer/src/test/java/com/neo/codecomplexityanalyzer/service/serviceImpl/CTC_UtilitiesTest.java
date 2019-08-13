@@ -115,7 +115,7 @@ public class CTC_UtilitiesTest {
                 "    }\n" +
                 "}");
         System.out.println(t1);
-//        CTCServiceImpl cctUtil = new CTCServiceImpl("C://Student//sampleCodes//TestIF.java");
+//        CTCServiceImpl cctUtil = new CTCServiceImpl("C://Student//sampleCodes//Catch.java");
 //        int output = cctUtil.getControlScore();
 //        assertEquals(20, output);
     }
