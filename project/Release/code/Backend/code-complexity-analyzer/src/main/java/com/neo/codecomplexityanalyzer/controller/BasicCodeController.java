@@ -8,18 +8,15 @@
 */
 package com.neo.codecomplexityanalyzer.controller;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
+import com.neo.codecomplexityanalyzer.service.serviceImpl.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.neo.codecomplexityanalyzer.service.serviceImpl.GeneralServiceImpl;
 import com.neo.codecomplexityanalyzer.service.ICNCService;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CNCServiceImpl;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CiJavaServicesImpl;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CsServicesImpl;
 
 @CrossOrigin(origins = {"http://localhost:1234", "http://localhost:3000"})
 
@@ -63,31 +60,56 @@ public class BasicCodeController {
         return (new ResponseEntity<String[]>(lineArr, HttpStatus.OK));
     }
 
-    @GetMapping(path = "/get-score")
+    @RequestMapping(value = "/get-score", method = RequestMethod.GET, produces = {"application/json"})
     public ResponseEntity<?> getSourceCodeFormatted(@RequestHeader("file-path") String FilePath) {
-        String code;
-        GeneralServiceImpl ccaUtil = new GeneralServiceImpl();
-        code = ccaUtil.getSourceCode(FilePath);
-        ResponseClass r1 = new ResponseClass();
-        r1.setCode(Arrays.asList(ccaUtil.collectAllSourceCodeLines(code, ccaUtil.findSourceCodeLineCount(code))));
+        try {
 
-        CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
-        int itcScore = cctUtil.getIterativeControlScore();
-        int controlScore = cctUtil.getControlScore();
-        int catchScore = cctUtil.getCatchScore();
-        int switchScore = cctUtil.getSwitchScore();
+            ResponseClass r1 = new ResponseClass();
+            GeneralServiceImpl generalService = new GeneralServiceImpl();
+            JavaSyntaxChecker javaSyntaxChecker = new JavaSyntaxChecker(FilePath);
+            List<String> errorList = javaSyntaxChecker.check();
+            String code = generalService.getSourceCode(FilePath);
+            r1.setCode(Arrays.asList(generalService.collectAllSourceCodeLines(code, generalService.findSourceCodeLineCount(code))));
 
-        HashMap<Integer, Integer> m1 = cctUtil.getLineScore();
-        Integer[] lineScoreArray = new Integer[m1.size()];
-        int i = 0;
-        for (Map.Entry<Integer, Integer> entry : m1.entrySet()) {
-            int value = entry.getValue();
-            lineScoreArray[i] = value;
-            ++i;
+            CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
+            int itcScore = cctUtil.getIterativeControlScore();
+            int controlScore = cctUtil.getControlScore();
+            int catchScore = cctUtil.getCatchScore();
+            int switchScore = cctUtil.getSwitchScore();
+
+            HashMap<Integer, Integer> m1 = cctUtil.getLineScore();
+            String[] lineScoreArray = new String[m1.size()];
+            if (!errorList.isEmpty()) {
+                Arrays.fill(lineScoreArray, "-");
+                r1.setLineScore(Arrays.asList(lineScoreArray));
+                r1.setErrorList(errorList);
+                r1.setTotalCtcCount("Error");
+                r1.setStatusCode("500");
+                r1.setErrorMessage("Please fix the errors in the code !");
+                return (new ResponseEntity<>(r1, HttpStatus.OK));
+            }
+
+            int i = 0;
+            for (Map.Entry<Integer, Integer> entry : m1.entrySet()) {
+                int value = entry.getValue();
+                lineScoreArray[i] = String.valueOf(value);
+                ++i;
+            }
+            r1.setLineScore(Arrays.asList(lineScoreArray));
+            r1.setTotalCtcCount(String.valueOf((itcScore + controlScore + catchScore + switchScore)));
+            r1.setStatusCode("200");
+            return (new ResponseEntity<>(r1, HttpStatus.OK));
+        }catch (IllegalArgumentException e){
+            ResponseClass responseClass = new ResponseClass();
+            responseClass.setErrorMessage("Invalid file or file path !");
+            responseClass.setTotalCtcCount("0");
+            responseClass.setStatusCode("501");
+            return (new ResponseEntity<>(responseClass, HttpStatus.OK));
         }
-        r1.setLineScore(Arrays.asList(lineScoreArray));
-        r1.setTotalCtcCount(itcScore + controlScore + catchScore + switchScore);
-        return (new ResponseEntity<>(r1, HttpStatus.OK));
+        catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
     }
 
     //--------------------------------------- CTC End Points ---------------------------------------------------------------
@@ -268,13 +290,45 @@ public class BasicCodeController {
 }
 
 class ResponseClass {
-    private int totalCtcCount;
+    private String totalCtcCount;
+    private List<String> errorList;
+    private List<String> lineScore;
+    private List<String> code;
 
-    public int getTotalCtcCount() {
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    private String errorMessage;
+
+    public String getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    private String statusCode;
+
+
+    public List<String> getErrorList() {
+        return errorList;
+    }
+
+    public void setErrorList(List<String> errorList) {
+        this.errorList = errorList;
+    }
+
+    public String getTotalCtcCount() {
         return totalCtcCount;
     }
 
-    public void setTotalCtcCount(int totalCtcCount) {
+    public void setTotalCtcCount(String totalCtcCount) {
         this.totalCtcCount = totalCtcCount;
     }
 
@@ -286,14 +340,11 @@ class ResponseClass {
         this.code = code;
     }
 
-    public List<Integer> getLineScore() {
+    public List<String> getLineScore() {
         return lineScore;
     }
 
-    public void setLineScore(List<Integer> lineScore) {
+    public void setLineScore(List<String> lineScore) {
         this.lineScore = lineScore;
     }
-
-    private List<String> code;
-    private List<Integer> lineScore;
 }

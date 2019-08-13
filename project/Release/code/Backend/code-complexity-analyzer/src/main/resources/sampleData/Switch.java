@@ -2,6 +2,7 @@ class Day {
     public static void main(String[] args) {
         int week = 4;
         String day;
+
         switch (week) {
             case 1:
                 day = "Sunday";
@@ -28,6 +29,7 @@ class Day {
                 day = "Invalid day";
                 break;
         }
+
 //        switch (week) {
 //            case 1:
 //                day = "Sunday";
