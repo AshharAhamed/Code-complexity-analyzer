@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import Header from '../layouts/Header' ;
 import Footer from '../layouts/Footer';
 import CCAService from "../services/CCAService";
-
+import Modal from "react-awesome-modal";
+import 'bootstrap/dist/css/bootstrap.css';
 export default class CodeAnalyser extends Component {
     constructor(props) {
         super(props);
@@ -10,17 +11,16 @@ export default class CodeAnalyser extends Component {
             filePath: '',
             sourceCode: '',
             totalCTCScore: '',
-            catchScore: '',
-            switchScore: '',
-            controlScore: '',
-            iTCScore: '',
-            lineNo: 0
+            ctcLineScore: '',
+            errorList: '',
+            showErrorFlag: false,
+            errorMessage: ''
         };
-        this.generateComplexityTable = this.generateComplexityTable.bind(this);
         this.CCAService = new CCAService();
         this.getScore = this.getScore.bind(this);
         this.onChange = this.onChange.bind(this);
     }
+
 
     onChange(e) {
         this.setState({
@@ -32,93 +32,132 @@ export default class CodeAnalyser extends Component {
     getScore() {
         this.CCAService.getScore(this.state.filePath).then(response => {
             this.setState({
-                // sourceCode: response.data.SourceCode,
-                catchScore: response.data.CatchScore,
-                switchScore: response.data.SwitchScore,
-                controlScore: response.data.ControlScore,
-                iTCScore: response.data.ITCScore,
-                totalCTCScore: response.data.TotalCTCScore
-            })
-        }).then( () => {
-            this.CCAService.getCode(this.state.filePath).then( response => {
-                this.setState({
-                    sourceCode: response.data
-                })
-            })
-        }).catch(function (error) {
-            console.log(error);
+                ctcLineScore: response.data.lineScore,
+                sourceCode: response.data.code,
+                totalCTCScore: response.data.totalCtcCount,
+                errorList: response.data.errorList,
+                errorMessage: response.data.errorMessage
+            });
+
+            if (this.state.errorList != null) {
+                this.setState({showErrorFlag: true})
+            } else
+                this.setState({showErrorFlag: false})
+
+            if (this.state.errorMessage != null) {
+                alert(this.state.errorMessage)
+            }
+        }).catch((err) => {
+            console.log(err);
         });
     }
 
-    // Function to generate Initial table
-    generateComplexityTable() {
-        alert(this.state.FileName);
-        // let tableHolder = document.getElementById('complexityTable');
-        // let messageToDevelopers = "You get a type error, probably because of a CORS misconfiguration. \n" +
-        //     "Please look at the fetch method inside the \'CodeAnalyser.jsx\'. \n" +
-        //     "That resource url works fine!. \n" +
-        //     "Lets find a solution to this next week!\n";
-        // tableHolder.innerHTML = messageToDevelopers; // Clearing out the element
-        //
-        // let fetchInput = 'http://localhost:8080/get-code';
-        // fetch(fetchInput, {
-        //     method: 'GET',
-        //     headers: {'Content-Type': 'application/json'},
-        // }).then(response => {
-        //     return response.json();
-        // }).then(data => {
-        //     console.log(data);
-        //     // tableHolder.innerHTML = data ;
-        // }).catch(err => {
-        //     alert(err);
-        // })
+    closeModal() {
+        this.setState({
+            showErrorFlag: false
+        });
     }
+
 
     // The Essential render function
     render() {
+        let errorTable = () => {
+            if (this.state.errorList) {
+                return <table>
+                    <tbody>
+
+                    <tr>
+                        {this.state.errorList && this.state.errorList.map((line, index) => {
+                            return (
+
+                                <td style={{paddingRight: 100}}>
+                                    <pre style={{fontSize: 15}}>{line}</pre>
+                                </td>
+
+                            )
+                        })}
+                    </tr>
+
+                    </tbody>
+                </table>
+            }
+        };
+        let analyzedResult = () => {
+            if (this.state.sourceCode) {
+                return <table border="1" style={{marginLeft: "auto", marginRight: "auto",width:"90%"}} className="table table-striped">
+                    <thead>
+                    <tr>
+                        <th rowSpan="2">Line No</th>
+                        <th rowSpan="2">Code</th>
+                        <th rowSpan="2">Ctc</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {this.state.sourceCode && this.state.sourceCode.map((line, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td style={{paddingRight: 100}}>
+                                    <pre style={{fontSize: 15}}>{line}</pre>
+                                </td>
+                                <td style={{paddingRight: 100}}>
+                                    <pre style={{fontSize: 15}}>{this.state.ctcLineScore[index]}</pre>
+                                </td>
+                            </tr>
+                        )
+                    })}
+                    </tbody>
+                </table>
+            }
+        };
         return (
             <div>
                 <Header/>
-                <div id="ccaMainBody">
-                    <section id="mainBodySection">
+                <div id="ccaMainBody" style={{margin: 0}}>
+                    <section id="mainBodySection" style={{margin: "2%"}}>
                         <h3>Generate Complexity Matrices</h3>
-                        <div style={{width: 1500}}>
-                            <input name="filePath" type="text" className="btn btn-info" placeholder="File Path"
+                        <div style={{width: '100%'}} className="form-group">
+                            <input name="filePath" type="text" placeholder="File Path"
                                    onChange={this.onChange}/>
                         </div>
                         <button className="basicButton" ref="calcButton"
                                 onClick={this.getScore}>Calculate
                         </button>
+                        <section id="complexityTable">
+                            <p>* Note - Comments , text inside double quotes will be removed</p>
+                        </section>
+                        <br/>
+                        <br/>
                     </section>
                     <section id="complexityTable">
-                        <p>The code analysis should be plugged into this section element</p>
                     </section>
 
-                    <table border="1">
-                        <tr>
-                            <th rowSpan="2">Code</th>
-                            <th colSpan="5">Score</th>
-                        </tr>
-                        <tr>
-                            <td>Catch</td>
-                            <td>Switch</td>
-                            <td>Control</td>
-                            <td>ITC</td>
-                            <td>Total CTC</td>
-                        </tr>
-                        <tr>
-                            {/*<td><pre>{this.state.sourceCode}</pre></td>*/}
-                            { this.state.sourceCode &&  this.state.sourceCode.map((line, index) => { return (
-                                <tr><td>{index + 1}</td><td key={index}><pre>{line}</pre></td></tr>
-                            )})}
-                            <td>{this.state.catchScore}</td>
-                            <td>{this.state.switchScore}</td>
-                            <td>{this.state.controlScore}</td>
-                            <td>{this.state.iTCScore}</td>
-                            <td>{this.state.totalCTCScore}</td>
-                        </tr>
-                    </table>
+                    {analyzedResult()}
+
+
                 </div>
+
+                {/*Here comes the pop up windows*/}
+                <Modal visible={this.state.showErrorFlag} width="2000" height="400" effect="fadeInRight"
+                       onClickAway={() => this.closeModal()}>
+
+                    <div className="container p-2" style={{marginBottom: '500px', paddingBottom: '500px'}}>
+                        <div className="wrap-input100 validate-input" data-validate="Name is required">
+                            <span className="label-input100"
+                                  style={{color: 'red', marginLeft: 980, size: 100}}>Error</span>
+                            <div style={{height: 100}}>
+                                <div className={"body"}>
+                                    {errorTable()}
+                                </div>
+                                <div className="col-lg mt-3">
+                                    <input type="button" className="btn btn-info btn-block" value="Close"
+                                           onClick={() => this.closeModal()}/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
+
                 <Footer/>
             </div>
         )

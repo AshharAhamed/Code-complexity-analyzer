@@ -1,16 +1,27 @@
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
+import org.jgrapht.alg.interfaces.StrongConnectivityAlgorithm;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.io.DOTExporter;
+import org.jgrapht.io.GraphExporter;
+import org.jgrapht.traverse.BreadthFirstIterator;
 import org.jgrapht.traverse.DepthFirstIterator;
+import org.jgrapht.traverse.GraphIterator;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import com.neo.codecomplexityanalyzer.service.ICiCppServices;
 
@@ -206,10 +217,134 @@ public class CiCppServicesImpl implements ICiCppServices {
 
 	}
 
+	public void identifyClassStructure() {
+
+		ArrayList<String> classNames = new ArrayList<String>();
+		classNames = this.getAllClassNames();
+
+		Map<String, String> classMap = new HashMap<String, String>();
+		classMap = this.getClassMapping();
+
+		Iterator<Entry<String, String>> it = classMap.entrySet().iterator();
+
+		// Creating a Graph
+		Graph<String, DefaultEdge> g = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+
+		// Adding the Vertices of the Graph
+		for (String clsName : classNames) {
+			if (clsName.contains(",")) {
+				String clsArr[] = clsName.split(",");
+				for (int q = 0; q < clsArr.length; q++) {
+					clsArr[q] = clsArr[q].trim();
+				}
+				for (String cls : clsArr) {
+					System.out.println("Vertex : " + cls);
+					g.addVertex(cls);
+				}
+			} else {
+				g.addVertex(clsName);
+			}
+		}
+
+		// Adding the edges of the Graph
+		while (it.hasNext()) {
+			Entry<String, String> pair = it.next();
+			if (pair.getValue() != "") {
+				String key = pair.getKey().trim(), value = pair.getValue().trim();
+				if (value.contains(",")) {
+					String tempArr[] = value.split(",");
+					for (int i = 0; i < tempArr.length; i++) {
+						tempArr[i] = tempArr[i].trim();
+						System.out.println("Key : " + key + " Value : " + tempArr[i]);
+						g.addEdge(key, tempArr[i]);
+					}
+				} else {
+					System.out.println("Key : " + key + " Value : " + value);
+					g.addEdge(key, value);
+				}
+			}
+		}
+
+		System.out.println();
+		System.out.println(g.toString());
+	}
+
 	@Override
 	public int getNumberOfAncestorClasses(String childClass) {
-		return 0;
+		ArrayList<String> classNames = new ArrayList<String>();
+		classNames = this.getAllClassNames();
+
+		Map<String, String> classMap = new HashMap<String, String>();
+		classMap = this.getClassMapping();
+
+		Iterator<Entry<String, String>> it = classMap.entrySet().iterator();
+
+		// Creating a Graph
+		Graph<String, DefaultEdge> g = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+
+		// Adding the Vertices of the Graph
+		for (String clsName : classNames) {
+			if (clsName.contains(",")) {
+				String clsArr[] = clsName.split(",");
+				for (int q = 0; q < clsArr.length; q++) {
+					clsArr[q] = clsArr[q].trim();
+				}
+				for (String cls : clsArr) {
+					System.out.println("Vertex : " + cls);
+					g.addVertex(cls);
+				}
+			} else {
+				g.addVertex(clsName);
+			}
+		}
+
+		// Adding the edges of the Graph
+		while (it.hasNext()) {
+			Entry<String, String> pair = it.next();
+			if (pair.getValue() != "") {
+				String key = pair.getKey().trim(), value = pair.getValue().trim();
+				if (value.contains(",")) {
+					String tempArr[] = value.split(",");
+					for (int i = 0; i < tempArr.length; i++) {
+						tempArr[i] = tempArr[i].trim();
+						System.out.println("Key : " + key + " Value : " + tempArr[i]);
+						g.addEdge(key, tempArr[i]);
+					}
+				} else {
+					System.out.println("Key : " + key + " Value : " + value);
+					g.addEdge(key, value);
+				}
+			}
+		}
+
+		System.out.println();
+		System.out.println(g.toString());
+
+		Iterator<String> iterator = new BreadthFirstIterator<>(g, childClass);
+		int count = 0;
+		while (iterator.hasNext()) {
+			if (iterator.hasNext()) {
+				count++;
+			}
+			System.out.println(iterator.next());
+		}
+		/*
+		 * Since this is counting the class it self so, to count only ancestor classes 1
+		 * is reduced from the count
+		 */
+		return (count - 1);
 
 	}
 
+	public HashMap<String, Integer> getAncestorCountMapForAllClasses() {
+		HashMap<String, Integer> classNameWithNumberOfAncestorsMap = new HashMap<String, Integer>();
+		ArrayList<String> classNames = new ArrayList<String>();
+		classNames = this.getAllClassNames();
+
+		for (String clzName : classNames) {
+			int numOfAncestors = this.getNumberOfAncestorClasses(clzName);
+			classNameWithNumberOfAncestorsMap.put(clzName, numOfAncestors);
+		}
+		return classNameWithNumberOfAncestorsMap;
+	}
 }

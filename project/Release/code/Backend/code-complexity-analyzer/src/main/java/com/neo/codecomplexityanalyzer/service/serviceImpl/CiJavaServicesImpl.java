@@ -45,7 +45,7 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 
 	private static final Logger LOGGER = Logger.getLogger(CiJavaServicesImpl.class.getName());
 
-	private static final String CLASS_KEY_WORD = " class ";
+	private static final String CLASS_KEY_WORD = "class ";
 	private static final String EXTENDS_KEYWORD = " extends ";
 	private static final String OPENING_BRACE = "{";
 	private static final String SINGLE_SPACE_CHARACTOR = " ";
@@ -64,7 +64,7 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 
 		while (initialIndex1 < currentIndex1) {
 			// From here it will search for the class keyword in the code.
-			classNameStartIndex = code.indexOf(CLASS_KEY_WORD, classNameEndIndex) + 7;
+			classNameStartIndex = code.indexOf(CLASS_KEY_WORD, classNameEndIndex) + 6;
 
 			if (classNameStartIndex > 0 && count1 == 0) {
 				count1++;
@@ -321,5 +321,43 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 			System.out.println(stronglyConnectedSubgraphs.get(i));
 		}
 		System.out.println();
+	}
+
+	@Override
+	public int calComplexityDueToInheritance(String className) {
+		int numOfAnsestors = this.getNumberOfAnsestors(className);
+		return (numOfAnsestors + 1);
+	}
+
+	@Override
+	public int calTotalComplexityDueToInheritance() {
+		int complexity = 0;
+		ArrayList<String> classList = this.getClassNames();
+		for (String clzName : classList) {
+			complexity = calComplexityDueToInheritance(clzName);
+		}
+		return complexity;
+	}
+
+	@SuppressWarnings("null")
+	@Override
+	public HashMap<String, Integer> complexityOfAllClassesDueToInheritance() {
+		ArrayList<String> classesOfTheCode = this.getClassNames();
+		HashMap<String, Integer> complexityMapWithClassNames = new HashMap<String, Integer>();
+		for (String clzName : classesOfTheCode) {
+			complexityMapWithClassNames.put(clzName, (this.getNumberOfAnsestors(clzName) + 1));
+		}
+		return complexityMapWithClassNames;
+	}
+
+	@SuppressWarnings("null")
+	@Override
+	public HashMap<String, Integer> getClassWithTheNumberOfAnsestors() {
+		ArrayList<String> classesOfTheCode = this.getClassNames();
+		HashMap<String, Integer> numOfAnsestorsWithClassMap = null;
+		for (String clzName : classesOfTheCode) {
+			numOfAnsestorsWithClassMap.put(clzName, this.getNumberOfAnsestors(clzName));
+		}
+		return numOfAnsestorsWithClassMap;
 	}
 }

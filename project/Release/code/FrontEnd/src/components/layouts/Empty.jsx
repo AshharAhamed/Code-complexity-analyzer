@@ -1,9 +1,9 @@
-import React, { Component } from 'react' ;
+import React, {Component} from 'react' ;
 
 // you can use this as a template !
 // If this is useful to you, make sure to make a copy before editing
 
-class Empty extends Component{
+class Empty extends Component {
     constructor(props) {
         super(props);
     }
@@ -19,4 +19,4 @@ class Empty extends Component{
     }
 }
 
-export default Empty ;
+export default Empty;

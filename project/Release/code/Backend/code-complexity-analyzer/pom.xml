@@ -50,7 +50,7 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>

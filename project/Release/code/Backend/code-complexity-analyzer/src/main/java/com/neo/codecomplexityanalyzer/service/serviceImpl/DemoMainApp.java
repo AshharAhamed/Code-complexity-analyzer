@@ -1,7 +1,5 @@
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
-import java.util.HashMap;
-
 public class DemoMainApp {
 	public static void main(String[] args) {
 
@@ -11,10 +9,16 @@ public class DemoMainApp {
 		CiJavaServicesImpl ciJ = new CiJavaServicesImpl(
 				"/home/sahan/Documents/My Documents/SLIIT/SPM/Code-complexity-analyzer/project/Release/code/Backend/code-complexity-analyzer/src/main/resources/sampleData/InheritanceSample.java");
 
-		ci.getAncestorClasses("Person");
+//		 System.out.println(ciJ.calComplexityDueToInheritance("SportsCar"));
+//		ci.identifyClassStructure();
+//		System.out.println(ci.getNumberOfAncestorClasses("TA"));
+//		System.out.println(ci.getAncestorCountMapForAllClasses());
+//		System.out.println(ciJ.getClassNames());
+//		//ciJ.complexityOfAllClassesDueToInheritance();
 //		for (String string : ci.getAncestorClasses("TA")) {
 //			System.out.print(string);
 //		}
+
 //		for (String string : ciJ.getAnsestorClassNames("SportsCar")) {
 //			System.out.println(string);
 //		}
@@ -26,6 +30,8 @@ public class DemoMainApp {
 //			System.out.println(key + " " + value);
 //		}
 		// System.out.println("Count Returned : " + count);
+	System.out.println(ciJ.calTotalComplexityDueToInheritance());
+	
 	}
 
 }

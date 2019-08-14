@@ -4,20 +4,16 @@ import Login from './components/login/Login'
 import Home from './components/home/CodeAnalyser'
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-        <Router>
-          <div>
-            <Route exact path="/login" component={Login}/>
-              <Route exact path="/home" component={Home}/>
-          </div>
-        </Router>
-    );
-  }
+    render() {
+        return (
+            <Router>
+                <div>
+                    <Route exact path="/login" component={Login}/>
+                    <Route exact path="/home" component={Home}/>
+                </div>
+            </Router>
+        );
+    }
 }
 
 export default App;

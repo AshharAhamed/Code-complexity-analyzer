@@ -3,16 +3,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
-public class TestIF {
+class TestIF {
 
-    public void netIdcal(int resultArr[], int prefix) {
-        int prefix = 12;
-        int netArr[ prefix];
-        int count, i;
-        int netId1 = 0, netId2 = 0, netId3 = 0, netId4 = 0;
+    public void netIdcal() {
+        int count, i = 0, prefix = 10, netId = 121;
+        int num1 = 30, num2 = 6, num3 = 0;
 
-        for (count = 0; count < prefix; ++count) {
-            netArr[count] = resultArr[count];
+        for (count = 0; count < prefix && count == 1; ++count) {
+            System.out.println(count);
         }
 
         while (i <= 10 && i == 3) {
@@ -20,102 +18,210 @@ public class TestIF {
             i++;
         }
 
-//        while (i <= 10 && i == 3) {
-//            System.out.println(i);
-//            i++;
-//        }
+        int firstInt = 2;
 
-        /*while (i <= 10 && i == 3) {
-            System.out.println(i);
-            i++;
-        }*/
 
         for (count = 0; count < prefix; ++count) {
-            if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))
-                i = 7;
-            if (count < 8)
-                netId1 += netArr[count] * (pow(2, i));
-            else if (count < 16)
-                netId2 += netArr[count] * (pow(2, i));
-            else if (count < 24)
-                netId3 += netArr[count] * (pow(2, i));
-            else if (count < 32)
-                netId4 += netArr[count] * (pow(2, i));
+            System.out.println(i);
             --i;
         }
-
-//        for (count = 0; count < prefix; ++count) {
-//            if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))
-//                i = 7;
-//            if (count < 8)
-//                netId1 += netArr[count] * (pow(2, i));
-//            else if (count < 16)
-//                netId2 += netArr[count] * (pow(2, i));
-//            else if (count < 24)
-//                netId3 += netArr[count] * (pow(2, i));
-//            else if (count < 32)
-//                netId4 += netArr[count] * (pow(2, i));
-//            --i;
-//        }
-
-         /*for (count = 0; count < prefix; ++count) {
-            if ((count == 0) || (count == 8) || (count == 16) || (count == 24) | (count = 1))
-                i = 7;
-            if (count < 8)
-                netId1 += netArr[count] * (pow(2, i));
-            else if (count < 16)
-                netId2 += netArr[count] * (pow(2, i));
-            else if (count < 24)
-                netId3 += netArr[count] * (pow(2, i));
-            else if (count < 32)
-                netId4 += netArr[count] * (pow(2, i));
-            --i;
-        }*/
 
         do {
             System.out.println(i);
             i--;
         } while (i > 1 && i == 10);
 
+        String test = "        for (count = 0; count < prefix; ++count) {\n" +
+                "            System.out.println(count);\n" +
+                "        }\n" +
+                "\n" +
+                "        while (i <= 10 && i == 3) {\n" +
+                "            System.out.println(i);\n" +
+                "            i++;\n" +
+                "        }\n" +
+                "\n" +
+                "        int firstInt = 2;\n" +
+                "\n" +
+                "\n" +
+                "        for (count = 0; count < prefix; ++count) {\n" +
+                "            System.out.println(i);\n" +
+                "            --i;\n" +
+                "        }\n" +
+                "\n" +
+                "        do {\n" +
+                "            System.out.println(i);\n" +
+                "            i--;\n" +
+                "        } while (i > 1 && i == 10);";
+    }
+
+//    public void netIdcal() {
+//        int count, i = 0, prefix = 10, netId = 121;
+//        int num1 = 30, num2 = 6, num3 =0;
+//
+//        for (count = 0; count < prefix; ++count) {
+//            System.out.println(count);
+//        }
+//
+//        while (i <= 10 && i == 3) {
+//            System.out.println(i);
+//            i++;
+//        }
+//
+//        int firstInt = 2;
+//
+//        if ((firstInt & 1) != 0)
+//            if ((firstInt & 1) > 0)
+//                if ((firstInt | 1) == 1)
+//                    System.out.println(i);
+//
+//
+//        for (count = 0; count < prefix; ++count) {
+//            if (((count == 0) || (count == 8) || (count == 16) || (count == 24)))
+//                System.out.println(i);
+//            if (count < 8 && count == -1 || count == -2)
+//                System.out.println(i);
+//            else if (((count < 16) && (firstInt | count) == 1) || (firstInt & count) == 0)
+//                System.out.println(i);
+//            else if (count < 24)
+//                System.out.println(i);
+//            else if (count < 32)
+//                System.out.println(i);
+//            --i;
+//        }
+//
 //        do {
 //            System.out.println(i);
 //            i--;
 //        } while (i > 1 && i == 10);
+//
+//
+//        for (count = 1; count <= 4 && count == 1; ++count) {
+//            if (count == 1)
+//                System.out.println(i);
+//
+//            if ((count == 2) && (netId != 0))
+//                System.out.println(i);
+//
+//            if ((count == 3) && (netId != 0))
+//                System.out.println(i);
+//
+//            if ((count == 4) && (netId != 0) && (netId != 0) && (netId != 0))
+//                System.out.println(i);
+//        }
+//
+//    }
 
-                /*do {
-            System.out.println(i);
-            i--;
-        } while (i > 1 && i == 10);*/
+    String whileTest = "//    public void netIdcal() {\n" +
+            "//        int count, i = 0, prefix = 10, netId = 121;\n" +
+            "//        int num1 = 30, num2 = 6, num3 =0;\n" +
+            "//\n" +
+            "//        for (count = 0; count < prefix; ++count) {\n" +
+            "//            System.out.println(count);\n" +
+            "//        }\n" +
+            "//\n" +
+            "//        while (i <= 10 && i == 3) {\n" +
+            "//            System.out.println(i);\n" +
+            "//            i++;\n" +
+            "//        }\n" +
+            "//\n" +
+            "//        int firstInt = 2;\n" +
+            "//\n" +
+            "//        if ((firstInt & 1) != 0)\n" +
+            "//            if ((firstInt & 1) > 0)\n" +
+            "//                if ((firstInt | 1) == 1)\n" +
+            "//                    System.out.println(i);\n" +
+            "//\n" +
+            "//\n" +
+            "//        for (count = 0; count < prefix; ++count) {\n" +
+            "//            if (((count == 0) || (count == 8) || (count == 16) || (count == 24)))\n" +
+            "//                System.out.println(i);\n" +
+            "//            if (count < 8 && count == -1 || count == -2)\n" +
+            "//                System.out.println(i);\n" +
+            "//            else if (((count < 16) && (firstInt | count) == 1) || (firstInt & count) == 0)\n" +
+            "//                System.out.println(i);\n" +
+            "//            else if (count < 24)\n" +
+            "//                System.out.println(i);\n" +
+            "//            else if (count < 32)\n" +
+            "//                System.out.println(i);\n" +
+            "//            --i;\n" +
+            "//        }\n" +
+            "//\n" +
+            "//        do {\n" +
+            "//            System.out.println(i);\n" +
+            "//            i--;\n" +
+            "//        } while (i > 1 && i == 10);\n" +
+            "//\n" +
+            "//\n" +
+            "//        for (count = 1; count <= 4 && count == 1; ++count) {\n" +
+            "//            if (count == 1)\n" +
+            "//                System.out.println(i);\n" +
+            "//\n" +
+            "//            if ((count == 2) && (netId != 0))\n" +
+            "//                System.out.println(i);\n" +
+            "//\n" +
+            "//            if ((count == 3) && (netId != 0))\n" +
+            "//                System.out.println(i);\n" +
+            "//\n" +
+            "//            if ((count == 4) && (netId != 0) && (netId != 0) && (netId != 0))\n" +
+            "//                System.out.println(i);\n" +
+            "//        }\n" +
+            "//\n" +
+            "//    }"
 
-        printf("Network ID = ");
-        for (count = 1; count <= 4 && count == 1; ++count) {
-            if (count ==
-                    1)
-                printf("%d", netId1);
-
-            if ((count == 2) && (netId2 != 0))
-                printf(".%d", netId2);
-
-            if ((count == 3) && (netId3 != 0))
-                printf(".%d", netId3);
-
-            if ((count == 4) && (netId4 != 0) && (netId4 != 0) && (netId4 != 0))
-                printf(".%d", netId4);
-        }
-
-        String test = "        for (count = 1; count <= 4 && count == 1; ++count) {\n" +
-                "            if (count ==\n" +
-                "                    1)\n" +
-                "                printf(\"%d\", netId1);\n" +
-                "\n" +
-                "            if ((count == 2) && (netId2 != 0))\n" +
-                "                printf(\".%d\", netId2);\n" +
-                "\n" +
-                "            if ((count == 3) && (netId3 != 0))\n" +
-                "                printf(\".%d\", netId3);\n" +
-                "\n" +
-                "            if ((count == 4) && (netId4 != 0) && (netId4 != 0) && (netId4 != 0))\n" +
-                "                printf(\".%d\", netId4);\n" +
-                "        }"
-    }
+    String forTest = "//    public void netIdcal() {\n" +
+            "//        int count, i = 0, prefix = 10, netId = 121;\n" +
+            "//        int num1 = 30, num2 = 6, num3 =0;\n" +
+            "//\n" +
+            "//        for (count = 0; count < prefix; ++count) {\n" +
+            "//            System.out.println(count);\n" +
+            "//        }\n" +
+            "//\n" +
+            "//        while (i <= 10 && i == 3) {\n" +
+            "//            System.out.println(i);\n" +
+            "//            i++;\n" +
+            "//        }\n" +
+            "//\n" +
+            "//        int firstInt = 2;\n" +
+            "//\n" +
+            "//        if ((firstInt & 1) != 0)\n" +
+            "//            if ((firstInt & 1) > 0)\n" +
+            "//                if ((firstInt | 1) == 1)\n" +
+            "//                    System.out.println(i);\n" +
+            "//\n" +
+            "//\n" +
+            "//        for (count = 0; count < prefix; ++count) {\n" +
+            "//            if (((count == 0) || (count == 8) || (count == 16) || (count == 24)))\n" +
+            "//                System.out.println(i);\n" +
+            "//            if (count < 8 && count == -1 || count == -2)\n" +
+            "//                System.out.println(i);\n" +
+            "//            else if (((count < 16) && (firstInt | count) == 1) || (firstInt & count) == 0)\n" +
+            "//                System.out.println(i);\n" +
+            "//            else if (count < 24)\n" +
+            "//                System.out.println(i);\n" +
+            "//            else if (count < 32)\n" +
+            "//                System.out.println(i);\n" +
+            "//            --i;\n" +
+            "//        }\n" +
+            "//\n" +
+            "//        do {\n" +
+            "//            System.out.println(i);\n" +
+            "//            i--;\n" +
+            "//        } while (i > 1 && i == 10);\n" +
+            "//\n" +
+            "//\n" +
+            "//        for (count = 1; count <= 4 && count == 1; ++count) {\n" +
+            "//            if (count == 1)\n" +
+            "//                System.out.println(i);\n" +
+            "//\n" +
+            "//            if ((count == 2) && (netId != 0))\n" +
+            "//                System.out.println(i);\n" +
+            "//\n" +
+            "//            if ((count == 3) && (netId != 0))\n" +
+            "//                System.out.println(i);\n" +
+            "//\n" +
+            "//            if ((count == 4) && (netId != 0) && (netId != 0) && (netId != 0))\n" +
+            "//                System.out.println(i);\n" +
+            "//        }\n" +
+            "//\n" +
+            "//    }"
 }
