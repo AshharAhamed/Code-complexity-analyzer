@@ -3,7 +3,7 @@ import Header from '../layouts/Header' ;
 import Footer from '../layouts/Footer';
 import CCAService from "../services/CCAService";
 import Modal from "react-awesome-modal";
-
+import 'bootstrap/dist/css/bootstrap.css';
 export default class CodeAnalyser extends Component {
     constructor(props) {
         super(props);
@@ -44,7 +44,7 @@ export default class CodeAnalyser extends Component {
             } else
                 this.setState({showErrorFlag: false})
 
-            if(this.state.errorMessage != null){
+            if (this.state.errorMessage != null) {
                 alert(this.state.errorMessage)
             }
         }).catch((err) => {
@@ -61,14 +61,63 @@ export default class CodeAnalyser extends Component {
 
     // The Essential render function
     render() {
+        let errorTable = () => {
+            if (this.state.errorList) {
+                return <table>
+                    <tbody>
+
+                    <tr>
+                        {this.state.errorList && this.state.errorList.map((line, index) => {
+                            return (
+
+                                <td style={{paddingRight: 100}}>
+                                    <pre style={{fontSize: 15}}>{line}</pre>
+                                </td>
+
+                            )
+                        })}
+                    </tr>
+
+                    </tbody>
+                </table>
+            }
+        };
+        let analyzedResult = () => {
+            if (this.state.sourceCode) {
+                return <table border="1" style={{marginLeft: "auto", marginRight: "auto",width:"90%"}} className="table table-striped">
+                    <thead>
+                    <tr>
+                        <th rowSpan="2">Line No</th>
+                        <th rowSpan="2">Code</th>
+                        <th rowSpan="2">Ctc</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {this.state.sourceCode && this.state.sourceCode.map((line, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{index + 1}</td>
+                                <td style={{paddingRight: 100}}>
+                                    <pre style={{fontSize: 15}}>{line}</pre>
+                                </td>
+                                <td style={{paddingRight: 100}}>
+                                    <pre style={{fontSize: 15}}>{this.state.ctcLineScore[index]}</pre>
+                                </td>
+                            </tr>
+                        )
+                    })}
+                    </tbody>
+                </table>
+            }
+        };
         return (
             <div>
                 <Header/>
-                <div id="ccaMainBody">
-                    <section id="mainBodySection">
+                <div id="ccaMainBody" style={{margin: 0}}>
+                    <section id="mainBodySection" style={{margin: "2%"}}>
                         <h3>Generate Complexity Matrices</h3>
-                        <div style={{width: 1500}}>
-                            <input name="filePath" type="text" className="btn btn-info" placeholder="File Path"
+                        <div style={{width: '100%'}} className="form-group">
+                            <input name="filePath" type="text" placeholder="File Path"
                                    onChange={this.onChange}/>
                         </div>
                         <button className="basicButton" ref="calcButton"
@@ -83,28 +132,9 @@ export default class CodeAnalyser extends Component {
                     <section id="complexityTable">
                     </section>
 
-                    <table border="1">
-                        <thead>
-                        <th rowSpan="2">Line No</th>
-                        <th rowSpan="2">Code</th>
-                        <th rowSpan="2">Ctc</th>
-                        </thead>
-                        <tbody>
-                        {this.state.sourceCode && this.state.sourceCode.map((line, index) => {
-                            return (
-                                <tr>
-                                    <td>{index + 1}</td>
-                                    <td style={{paddingRight: 100}}>
-                                        <pre style={{fontSize: 15}}>{line}</pre>
-                                    </td>
-                                    <td style={{paddingRight: 100}}>
-                                        <pre style={{fontSize: 15}}>{this.state.ctcLineScore[index]}</pre>
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                        </tbody>
-                    </table>
+                    {analyzedResult()}
+
+
                 </div>
 
                 {/*Here comes the pop up windows*/}
@@ -113,23 +143,11 @@ export default class CodeAnalyser extends Component {
 
                     <div className="container p-2" style={{marginBottom: '500px', paddingBottom: '500px'}}>
                         <div className="wrap-input100 validate-input" data-validate="Name is required">
-                            <span className="label-input100" style={{color:'red', marginLeft:980, size:100}}>Error</span>
+                            <span className="label-input100"
+                                  style={{color: 'red', marginLeft: 980, size: 100}}>Error</span>
                             <div style={{height: 100}}>
                                 <div className={"body"}>
-                                    <table>
-                                        <tr>
-
-                                            {this.state.errorList && this.state.errorList.map((line, index) => {
-                                                return (
-                                                    <tr>
-                                                        <td style={{paddingRight: 100}}>
-                                                            <pre style={{fontSize: 15}}>{line}</pre>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            })}
-                                        </tr>
-                                    </table>
+                                    {errorTable()}
                                 </div>
                                 <div className="col-lg mt-3">
                                     <input type="button" className="btn btn-info btn-block" value="Close"
