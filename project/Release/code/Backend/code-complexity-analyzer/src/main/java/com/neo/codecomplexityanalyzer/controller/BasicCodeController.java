@@ -19,6 +19,7 @@ import com.neo.codecomplexityanalyzer.service.ICNCService;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CNCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CiJavaServicesImpl;
+import com.neo.codecomplexityanalyzer.service.serviceImpl.CrServicesImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CsServicesImpl;
 
 @CrossOrigin(origins = { "http://localhost:1234", "http://localhost:3000" })
@@ -184,7 +185,12 @@ public class BasicCodeController {
 		return (new ResponseEntity<Integer>(cncService.getNestedWhileScore(), HttpStatus.OK));
 	}
 	
-	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	@GetMapping(path = "/get-cr/recursive")
+	public ResponseEntity<Integer> getCRScore(@RequestHeader("file-path") String FilePath) {
+		CrServicesImpl crService = new CrServicesImpl(FilePath);
+		return (new ResponseEntity<Integer>(crService.getControlScore(), HttpStatus.OK));
+	}
 	/*
 	 * -----------------------------------------------------------------------------
 	 * 
