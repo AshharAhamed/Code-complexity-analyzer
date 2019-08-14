@@ -45,7 +45,7 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 
 	private static final Logger LOGGER = Logger.getLogger(CiJavaServicesImpl.class.getName());
 
-	private static final String CLASS_KEY_WORD = " class ";
+	private static final String CLASS_KEY_WORD = "class ";
 	private static final String EXTENDS_KEYWORD = " extends ";
 	private static final String OPENING_BRACE = "{";
 	private static final String SINGLE_SPACE_CHARACTOR = " ";
@@ -64,7 +64,7 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 
 		while (initialIndex1 < currentIndex1) {
 			// From here it will search for the class keyword in the code.
-			classNameStartIndex = code.indexOf(CLASS_KEY_WORD, classNameEndIndex) + 7;
+			classNameStartIndex = code.indexOf(CLASS_KEY_WORD, classNameEndIndex) + 6;
 
 			if (classNameStartIndex > 0 && count1 == 0) {
 				count1++;
@@ -334,7 +334,7 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 		int complexity = 0;
 		ArrayList<String> classList = this.getClassNames();
 		for (String clzName : classList) {
-			complexity += (this.getNumberOfAnsestors(clzName) + 1);
+			complexity = calComplexityDueToInheritance(clzName);
 		}
 		return complexity;
 	}
@@ -345,8 +345,6 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 		ArrayList<String> classesOfTheCode = this.getClassNames();
 		HashMap<String, Integer> complexityMapWithClassNames = new HashMap<String, Integer>();
 		for (String clzName : classesOfTheCode) {
-			int count = this.getNumberOfAnsestors(clzName);
-			
 			complexityMapWithClassNames.put(clzName, (this.getNumberOfAnsestors(clzName) + 1));
 		}
 		return complexityMapWithClassNames;
