@@ -4,6 +4,8 @@ import Footer from '../layouts/Footer';
 import CCAService from "../services/CCAService";
 import Modal from "react-awesome-modal";
 import 'bootstrap/dist/css/bootstrap.css';
+import logo from '../../resources/images/neo_logo.png';
+
 export default class CodeAnalyser extends Component {
     constructor(props) {
         super(props);
@@ -14,11 +16,16 @@ export default class CodeAnalyser extends Component {
             ctcLineScore: '',
             errorList: '',
             showErrorFlag: false,
-            errorMessage: ''
+            errorMessage: '',
+
+            ciDetails: [],
+            ciValues: []
         };
         this.CCAService = new CCAService();
         this.getScore = this.getScore.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.getCiScore = this.getCiScore.bind(this);
+        this.returnCiValue = this.returnCiValue.bind(this);
     }
 
 
@@ -50,12 +57,41 @@ export default class CodeAnalyser extends Component {
         }).catch((err) => {
             console.log(err);
         });
+
+        this.getCiScore();
     }
+
+    getCiScore() {
+        this.CCAService.getCiDetails(this.state.filePath).then(res => {
+            let data = res.data;
+            this.setState({
+                ciDetails: data
+            })
+        });
+    }
+
 
     closeModal() {
         this.setState({
             showErrorFlag: false
         });
+    }
+
+    returnCiValue(index) {
+        if (typeof this.state.ciDetails[index + 1] !== 'undefined') {
+            if (this.state.ciDetails.hasOwnProperty(index + 1)) {
+                if (this.state.ctcLineScore[index] > 0) {
+                    return this.state.ciDetails[index + 1].totalCiValue + 2
+                } else if (this.state.ctcLineScore[index] == 0) {
+                    return this.state.ciDetails[index + 1].totalCiValue;
+                }
+            }
+        } else if (this.state.ctcLineScore[index] > 0) {
+            return 2;
+        } else {
+            return 0;
+        }
+
     }
 
 
@@ -84,12 +120,15 @@ export default class CodeAnalyser extends Component {
         };
         let analyzedResult = () => {
             if (this.state.sourceCode) {
-                return <table border="1" style={{marginLeft: "auto", marginRight: "auto",width:"90%"}} className="table table-striped">
+                return <table border="1" style={{marginLeft: "auto", marginRight: "auto", width: "90%"}}
+                              className="table table-striped">
                     <thead>
                     <tr>
                         <th rowSpan="2">Line No</th>
                         <th rowSpan="2">Code</th>
                         <th rowSpan="2">Ctc</th>
+                        <th rowSpan="2">Class Mapping</th>
+                        <th rowSpan="2">Ci</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -103,6 +142,15 @@ export default class CodeAnalyser extends Component {
                                 <td style={{paddingRight: 100}}>
                                     <pre style={{fontSize: 15}}>{this.state.ctcLineScore[index]}</pre>
                                 </td>
+
+                                <td>
+                                    {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}
+                                </td>
+                                <td>
+
+                                    {/*{(((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] > 0) ? (2 + this.state.ciDetails[index + 1].totalCiValue) : 0) || (this.state.ctcLineScore[index] > 0 ? 2 : 0) || ((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] == 0) ? (this.state.ciDetails[index + 1].totalCiValue) : 0}*/}
+                                    {this.returnCiValue(index)}
+                                </td>
                             </tr>
                         )
                     })}
@@ -113,8 +161,10 @@ export default class CodeAnalyser extends Component {
         return (
             <div>
                 <Header/>
+
                 <div id="ccaMainBody" style={{margin: 0}}>
                     <section id="mainBodySection" style={{margin: "2%"}}>
+
                         <h3>Generate Complexity Matrices</h3>
                         <div style={{width: '100%'}} className="form-group">
                             <input name="filePath" type="text" placeholder="File Path"

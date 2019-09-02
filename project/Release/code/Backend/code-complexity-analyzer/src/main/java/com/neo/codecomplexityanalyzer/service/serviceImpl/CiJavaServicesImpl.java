@@ -30,6 +30,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.DepthFirstIterator;
 
+import com.neo.codecomplexityanalyzer.model.CiResultModel;
 import com.neo.codecomplexityanalyzer.service.ICiJavaServices;
 
 public class CiJavaServicesImpl implements ICiJavaServices {
@@ -84,6 +85,45 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 			}
 		}
 		return classNames;
+	}
+
+	public HashMap<Integer, CiResultModel> getClassNameIndexByLineNumber() {
+		int classNameStartIndex = 0, classNameEndIndex = 0, currentIndex1 = 0, initialIndex1 = -1, count1 = 0;
+
+		// This is to store the class names found in the code
+		HashMap<Integer, CiResultModel> classNameWithLineNumber = new HashMap<>();
+
+		while (initialIndex1 < currentIndex1) {
+			// From here it will search for the class keyword in the code.
+			classNameStartIndex = code.indexOf(CLASS_KEY_WORD, classNameEndIndex) + 6;
+
+			if (classNameStartIndex > 0 && count1 == 0) {
+				count1++;
+				initialIndex1 = classNameStartIndex;
+			}
+
+			classNameEndIndex = code.indexOf(SINGLE_SPACE_CHARACTOR, classNameStartIndex);
+
+			currentIndex1 = classNameEndIndex;
+			if (currentIndex1 < initialIndex1) {
+				break;
+			}
+			if (classNameStartIndex > 0 && classNameEndIndex > 0 && (classNameStartIndex != classNameEndIndex)) {
+				// classNames.add(code.substring(classNameStartIndex, classNameEndIndex));
+				String className = code.substring(classNameStartIndex, classNameEndIndex);
+				GeneralServiceImpl gs = new GeneralServiceImpl();
+				gs.getSourceCode(
+						"/home/sahan/Documents/My Documents/SLIIT/SPM/Code-complexity-analyzer/project/Release/code/Backend/code-complexity-analyzer/src/main/resources/sampleData/InheritanceSample.java");
+
+				Integer numOfAncestors = this.getNumberOfAnsestors(className);
+				CiResultModel ciModel = new CiResultModel(className, (numOfAncestors + 1), numOfAncestors,
+						this.getInheritanceMapOfClass(className));
+				classNameWithLineNumber.put(gs.getFormattedLineByIndex(classNameStartIndex), ciModel);
+			} else {
+				break;
+			}
+		}
+		return classNameWithLineNumber;
 	}
 
 	public HashMap<String, String> getClassMapping() {
@@ -145,6 +185,47 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 			}
 		}
 		return (HashMap<String, String>) classMap;
+	}
+
+	public String getInheritanceMapOfClass(String pClassName) {
+		ArrayList<String> classNames = new ArrayList<String>();
+		classNames = this.getClassNames();
+
+		Map<String, String> classMap = new HashMap<String, String>();
+		classMap = this.getClassMapping();
+
+		Iterator<Entry<String, String>> it = classMap.entrySet().iterator();
+
+		// Creating a Graph
+		Graph<String, DefaultEdge> g = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+
+		// Adding the Vertices of the Graph
+		for (String clsName : classNames) {
+			g.addVertex(clsName);
+		}
+
+		// Adding the edges of the Graph
+		while (it.hasNext()) {
+			Entry<String, String> pair = it.next();
+			if (pair.getValue() != "") {
+				g.addEdge(pair.getKey(), pair.getValue());
+			}
+		}
+
+		Iterator<String> iterator = new DepthFirstIterator<>(g, pClassName);
+		int count = 0;
+		String classInheritanceMapping = new String("");
+		while (iterator.hasNext()) {
+			String string = iterator.next();
+			count++;
+			// System.out.print(string);
+			classInheritanceMapping = classInheritanceMapping.concat(string);
+			if (iterator.hasNext()) {
+				// System.out.print(" ---> ");
+				classInheritanceMapping = classInheritanceMapping.concat(" ---> ");
+			}
+		}
+		return classInheritanceMapping;
 	}
 
 	public void getClassLevelDetails() {
@@ -360,4 +441,8 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 		}
 		return numOfAnsestorsWithClassMap;
 	}
+
+//	public List<Integer> getCiFinalCountLineByLine(){
+//		
+//	}
 }

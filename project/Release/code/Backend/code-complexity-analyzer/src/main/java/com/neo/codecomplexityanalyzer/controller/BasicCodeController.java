@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.neo.codecomplexityanalyzer.model.CiResultModel;
 import com.neo.codecomplexityanalyzer.service.ICNCService;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CNCServiceImpl;
 import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
@@ -253,6 +254,12 @@ public class BasicCodeController {
 		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		ci.identifyStronglyConnectedClasses();
 	}
+	
+	@GetMapping(path = "/get-ci/by-line",produces = "application/json")
+	public HashMap<Integer, CiResultModel> getClassNameLineNumber(@RequestHeader("file-path") String FilePath) {
+		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
+		return ci.getClassNameIndexByLineNumber();
+	}
 
 	/*
 	 * ------------------------ Ci in c++ End Points ------------------------
@@ -332,7 +339,7 @@ public class BasicCodeController {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
 		return (new ResponseEntity<Integer>(cncService.getNestedWhileScore(), HttpStatus.OK));
 	}
-	
+
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping(path = "/get-cr/recursive")
 	public ResponseEntity<Integer> getCRScore(@RequestHeader("file-path") String FilePath) {

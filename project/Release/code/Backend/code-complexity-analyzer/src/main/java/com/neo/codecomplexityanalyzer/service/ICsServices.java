@@ -1,7 +1,5 @@
 package com.neo.codecomplexityanalyzer.service;
 
-import com.neo.codecomplexityanalyzer.service.serviceImpl.GeneralServiceImpl;
-
 public interface ICsServices {
 	public int[] getAllCsValues(String sourceCode);
 //	public int refAndDerefComplexity(String lineOfCode);
