@@ -17,11 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.neo.codecomplexityanalyzer.model.CiResultModel;
 import com.neo.codecomplexityanalyzer.service.ICNCService;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CNCServiceImpl;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CTCServiceImpl;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CiJavaServicesImpl;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CrServicesImpl;
-import com.neo.codecomplexityanalyzer.service.serviceImpl.CsServicesImpl;
 
 @CrossOrigin(origins = { "http://localhost:1234", "http://localhost:3000" })
 
@@ -254,11 +249,18 @@ public class BasicCodeController {
 		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
 		ci.identifyStronglyConnectedClasses();
 	}
-	
-	@GetMapping(path = "/get-ci/by-line",produces = "application/json")
+
+	@GetMapping(path = "/get-ci/by-line", produces = "application/json")
 	public HashMap<Integer, CiResultModel> getClassNameLineNumber(@RequestHeader("file-path") String FilePath) {
 		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
-		return ci.getClassNameIndexByLineNumber();
+		GeneralServiceImpl gs = new GeneralServiceImpl();
+		if ("java".equals(gs.getSourceCodeType(FilePath))) {
+			return ci.getClassNameIndexByLineNumber();
+		} else if ("cpp".equals(gs.getSourceCodeType(FilePath))) {
+			return null;
+		} else {
+			return null;
+		}
 	}
 
 	/*
