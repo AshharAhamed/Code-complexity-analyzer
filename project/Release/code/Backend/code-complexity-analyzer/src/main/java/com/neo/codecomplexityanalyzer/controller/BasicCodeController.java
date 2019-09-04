@@ -67,8 +67,13 @@ public class BasicCodeController {
 
 			ResponseClass r1 = new ResponseClass();
 			GeneralServiceImpl generalService = new GeneralServiceImpl();
-			JavaSyntaxChecker javaSyntaxChecker = new JavaSyntaxChecker(FilePath);
-			List<String> errorList = javaSyntaxChecker.check();
+
+			String fileType = generalService.getSourceCodeType(FilePath);
+			List<String> errorList = null;
+			if(fileType.equals("java")) {
+				JavaSyntaxChecker javaSyntaxChecker = new JavaSyntaxChecker(FilePath);
+				 errorList = javaSyntaxChecker.check();
+			}
 			String code = generalService.getSourceCode(FilePath);
 			r1.setCode(Arrays.asList(
 					generalService.collectAllSourceCodeLines(code, generalService.findSourceCodeLineCount(code))));
@@ -81,7 +86,7 @@ public class BasicCodeController {
 
 			HashMap<Integer, Integer> m1 = cctUtil.getLineScore();
 			String[] lineScoreArray = new String[m1.size()];
-			if (!errorList.isEmpty()) {
+			if (errorList != null) {
 				Arrays.fill(lineScoreArray, "-");
 				r1.setLineScore(Arrays.asList(lineScoreArray));
 				r1.setErrorList(errorList);
