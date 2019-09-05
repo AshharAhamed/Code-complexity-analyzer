@@ -18,12 +18,15 @@ export default class CodeAnalyser extends Component {
             showErrorFlag: false,
             errorMessage: '',
 
+            fileType: '',
+
             ciDetails: [],
             ciValues: []
         };
         this.CCAService = new CCAService();
         this.getScore = this.getScore.bind(this);
         this.onChange = this.onChange.bind(this);
+        //this.getFileType = this.getFileType.bind(this);
         this.getCiScore = this.getCiScore.bind(this);
         this.returnCiValue = this.returnCiValue.bind(this);
     }
@@ -93,6 +96,12 @@ export default class CodeAnalyser extends Component {
         }
 
     }
+
+/*
+    getFileType(){
+        this.CCAService.getFileType(this.state.file).then(res)
+    }
+*/
 
 
     // The Essential render function

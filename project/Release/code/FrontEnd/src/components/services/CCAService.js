@@ -16,12 +16,22 @@ export default class SISService {
         })
     }
 
-    getCiDetails(data){
+    getCiDetails(data) {
         return new Promise((resolve, reject) => {
             this.apiService.get('get-ci/by-line', data).then(response => {
                 resolve(response);
             }).catch(error => {
                 reject(error)
+            })
+        })
+    }
+
+    getFileType(data) {
+        return new Promise((resolve, reject) => {
+            this.apiService.get('file-type', data).then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error);
             })
         })
     }
