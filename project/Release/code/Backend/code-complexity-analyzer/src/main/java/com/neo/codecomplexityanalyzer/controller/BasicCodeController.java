@@ -86,7 +86,7 @@ public class BasicCodeController {
 
 			HashMap<Integer, Integer> m1 = cctUtil.getLineScore();
 			String[] lineScoreArray = new String[m1.size()];
-			if (errorList != null) {
+			if (!errorList.isEmpty()) {
 				Arrays.fill(lineScoreArray, "-");
 				r1.setLineScore(Arrays.asList(lineScoreArray));
 				r1.setErrorList(errorList);
