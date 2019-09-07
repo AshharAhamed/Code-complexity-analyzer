@@ -26,7 +26,7 @@ export default class CodeAnalyser extends Component {
         this.CCAService = new CCAService();
         this.getScore = this.getScore.bind(this);
         this.onChange = this.onChange.bind(this);
-        //this.getFileType = this.getFileType.bind(this);
+        this.getFileType = this.getFileType.bind(this);
         this.getCiScore = this.getCiScore.bind(this);
         this.returnCiValue = this.returnCiValue.bind(this);
     }
@@ -81,6 +81,7 @@ export default class CodeAnalyser extends Component {
     }
 
     returnCiValue(index) {
+        this.getFileType();
         if (typeof this.state.ciDetails[index + 1] !== 'undefined') {
             if (this.state.ciDetails.hasOwnProperty(index + 1)) {
                 if (this.state.ctcLineScore[index] > 0) {
@@ -97,11 +98,16 @@ export default class CodeAnalyser extends Component {
 
     }
 
-/*
-    getFileType(){
-        this.CCAService.getFileType(this.state.file).then(res)
-    }
-*/
+
+        getFileType(){
+            this.CCAService.getFileType(this.state.file).then(res=>{
+                console.log(res.data);
+                this.setState({
+                    fileType:res.data
+                })
+            })
+        }
+
 
 
     // The Essential render function
@@ -127,6 +133,12 @@ export default class CodeAnalyser extends Component {
                 </table>
             }
         };
+        let classMappingTableColumn = () => {
+            if (this.state.fileType == 'java') {
+                return <th rowSpan="2">
+                    Class Mapping</th>
+            }
+        };
         let analyzedResult = () => {
             if (this.state.sourceCode) {
                 return <table border="1" style={{marginLeft: "auto", marginRight: "auto", width: "90%"}}
@@ -136,6 +148,7 @@ export default class CodeAnalyser extends Component {
                         <th rowSpan="2">Line No</th>
                         <th rowSpan="2">Code</th>
                         <th rowSpan="2">Ctc</th>
+                        {/*{classMappingTableColumn()}*/}
                         <th rowSpan="2">Class Mapping</th>
                         <th rowSpan="2">Ci</th>
                     </tr>

@@ -443,7 +443,4 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 		return numOfAnsestorsWithClassMap;
 	}
 
-//	public List<Integer> getCiFinalCountLineByLine(){
-//		
-//	}
 }

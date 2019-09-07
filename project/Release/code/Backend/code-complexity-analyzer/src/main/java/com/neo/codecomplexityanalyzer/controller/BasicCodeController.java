@@ -262,7 +262,8 @@ public class BasicCodeController {
 		if ("java".equals(gs.getSourceCodeType(FilePath))) {
 			return ci.getClassNameIndexByLineNumber();
 		} else if ("cpp".equals(gs.getSourceCodeType(FilePath))) {
-			return null;
+			CiCppServicesImpl ciCpp = new CiCppServicesImpl(FilePath);
+			return (HashMap<Integer, CiResultModel>) ciCpp.getCiCppDetailsWithLineNumbers();
 		} else {
 			return null;
 		}

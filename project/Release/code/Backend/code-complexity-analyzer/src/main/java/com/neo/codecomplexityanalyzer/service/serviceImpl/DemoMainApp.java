@@ -15,20 +15,24 @@ public class DemoMainApp {
 		CiJavaServicesImpl ciJ = new CiJavaServicesImpl(
 				"/home/sahan/Documents/My Documents/SLIIT/SPM/Code-complexity-analyzer/project/Release/code/Backend/code-complexity-analyzer/src/main/resources/sampleData/InheritanceSample.java");
 
-	HashMap<Integer,CiResultModel> list =ciJ.getClassNameIndexByLineNumber();
-	Iterator<Integer> itr = list.keySet().iterator();
-
-	while (itr.hasNext()) 
-	{
-	    Integer key = itr.next();
-	    CiResultModel value = list.get(key);
-	    
-	    System.out.println("The key is :: " + key + ", and value is :: " + value.getClassHierachy() );
-	}
+//	HashMap<Integer,CiResultModel> list =ciJ.getClassNameIndexByLineNumber();
+//	Iterator<Integer> itr = list.keySet().iterator();
+//
+//	while (itr.hasNext()) 
+//	{
+//	    Integer key = itr.next();
+//	    CiResultModel value = list.get(key);
+//	    
+//	    System.out.println("The key is :: " + key + ", and value is :: " + value.getClassHierachy() );
+//	}
 //		 System.out.println(ciJ.calComplexityDueToInheritance("SportsCar"));
 //		ci.identifyClassStructure();
 //		System.out.println(ci.getNumberOfAncestorClasses("TA"));
-//		System.out.println(ci.getAncestorCountMapForAllClasses());
+//		ci.identifyClassStructure();
+		
+		System.out.println(ci.getClassMapping());
+		
+		
 //		System.out.println(ciJ.getClassNames());
 //		//ciJ.complexityOfAllClassesDueToInheritance();
 //		for (String string : ci.getAncestorClasses("TA")) {
@@ -46,8 +50,8 @@ public class DemoMainApp {
 //			System.out.println(key + " " + value);
 //		}
 		// System.out.println("Count Returned : " + count);
-	System.out.println(ciJ.calTotalComplexityDueToInheritance());
-	
+//	System.out.println(ciJ.calTotalComplexityDueToInheritance());
+//	
 	}
 
 }
