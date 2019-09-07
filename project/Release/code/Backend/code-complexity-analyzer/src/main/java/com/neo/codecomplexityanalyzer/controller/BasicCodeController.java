@@ -69,7 +69,7 @@ public class BasicCodeController {
 			GeneralServiceImpl generalService = new GeneralServiceImpl();
 
 			String fileType = generalService.getSourceCodeType(FilePath);
-			List<String> errorList = null;
+			List<String> errorList = new ArrayList<>();
 			if(fileType.equals("java")) {
 				JavaSyntaxChecker javaSyntaxChecker = new JavaSyntaxChecker(FilePath);
 				 errorList = javaSyntaxChecker.check();
