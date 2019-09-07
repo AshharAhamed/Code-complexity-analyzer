@@ -40,6 +40,8 @@ export default class CodeAnalyser extends Component {
     }
 
     getScore() {
+        this.getFileType();
+        console.log(this.state.filePath);
         this.CCAService.getScore(this.state.filePath).then(response => {
             this.setState({
                 ctcLineScore: response.data.lineScore,
@@ -81,7 +83,7 @@ export default class CodeAnalyser extends Component {
     }
 
     returnCiValue(index) {
-        this.getFileType();
+
         if (typeof this.state.ciDetails[index + 1] !== 'undefined') {
             if (this.state.ciDetails.hasOwnProperty(index + 1)) {
                 if (this.state.ctcLineScore[index] > 0) {
@@ -99,15 +101,14 @@ export default class CodeAnalyser extends Component {
     }
 
 
-        getFileType(){
-            this.CCAService.getFileType(this.state.file).then(res=>{
-                console.log(res.data);
-                this.setState({
-                    fileType:res.data
-                })
+    getFileType() {
+        this.CCAService.getFileType(this.state.file).then(res => {
+            console.log(res);
+            this.setState({
+                fileType: res.data
             })
-        }
-
+        })
+    }
 
 
     // The Essential render function
@@ -190,7 +191,9 @@ export default class CodeAnalyser extends Component {
                         <h3>Generate Complexity Matrices</h3>
                         <div style={{width: '100%'}} className="form-group">
                             <input name="filePath" type="text" placeholder="File Path"
-                                   onChange={this.onChange}/>
+                                   onChange={this.onChange}
+                                   onClick={this.onChange}
+                                   onBlur={this.onChange}/>
                         </div>
                         <button className="basicButton" ref="calcButton"
                                 onClick={this.getScore}>Calculate
