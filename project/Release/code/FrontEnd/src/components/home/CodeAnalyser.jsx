@@ -18,12 +18,15 @@ export default class CodeAnalyser extends Component {
             showErrorFlag: false,
             errorMessage: '',
 
+            fileType: '',
+
             ciDetails: [],
             ciValues: []
         };
         this.CCAService = new CCAService();
         this.getScore = this.getScore.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.getFileType = this.getFileType.bind(this);
         this.getCiScore = this.getCiScore.bind(this);
         this.returnCiValue = this.returnCiValue.bind(this);
     }
@@ -37,6 +40,8 @@ export default class CodeAnalyser extends Component {
     }
 
     getScore() {
+        this.getFileType();
+        console.log(this.state.filePath);
         this.CCAService.getScore(this.state.filePath).then(response => {
             this.setState({
                 ctcLineScore: response.data.lineScore,
@@ -78,6 +83,7 @@ export default class CodeAnalyser extends Component {
     }
 
     returnCiValue(index) {
+
         if (typeof this.state.ciDetails[index + 1] !== 'undefined') {
             if (this.state.ciDetails.hasOwnProperty(index + 1)) {
                 if (this.state.ctcLineScore[index] > 0) {
@@ -92,6 +98,16 @@ export default class CodeAnalyser extends Component {
             return 0;
         }
 
+    }
+
+
+    getFileType() {
+        this.CCAService.getFileType(this.state.filePath).then(res => {
+            console.log(res);
+            this.setState({
+                fileType: res.data
+            })
+        })
     }
 
 
@@ -118,6 +134,19 @@ export default class CodeAnalyser extends Component {
                 </table>
             }
         };
+        let classMappingTableColumn = () => {
+            if (this.state.fileType == 'java') {
+                return <th rowSpan="2">
+                    Class Mapping</th>
+            }
+        };
+        let classMappingTableValue = (index)=>{
+            if(this.state.fileType=='java'){
+                return <td>
+                    {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}
+                </td>
+            }
+        };
         let analyzedResult = () => {
             if (this.state.sourceCode) {
                 return <table border="1" style={{marginLeft: "auto", marginRight: "auto", width: "90%"}}
@@ -127,7 +156,8 @@ export default class CodeAnalyser extends Component {
                         <th rowSpan="2">Line No</th>
                         <th rowSpan="2">Code</th>
                         <th rowSpan="2">Ctc</th>
-                        <th rowSpan="2">Class Mapping</th>
+                        {classMappingTableColumn()}
+                        {/*<th rowSpan="2">Class Mapping</th>*/}
                         <th rowSpan="2">Ci</th>
                     </tr>
                     </thead>
@@ -143,9 +173,10 @@ export default class CodeAnalyser extends Component {
                                     <pre style={{fontSize: 15}}>{this.state.ctcLineScore[index]}</pre>
                                 </td>
 
-                                <td>
-                                    {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}
-                                </td>
+                                {/*<td>*/}
+                                {/*    {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}*/}
+                                {/*</td>*/}
+                                {classMappingTableValue(index)}
                                 <td>
 
                                     {/*{(((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] > 0) ? (2 + this.state.ciDetails[index + 1].totalCiValue) : 0) || (this.state.ctcLineScore[index] > 0 ? 2 : 0) || ((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] == 0) ? (this.state.ciDetails[index + 1].totalCiValue) : 0}*/}
@@ -168,7 +199,9 @@ export default class CodeAnalyser extends Component {
                         <h3>Generate Complexity Matrices</h3>
                         <div style={{width: '100%'}} className="form-group">
                             <input name="filePath" type="text" placeholder="File Path"
-                                   onChange={this.onChange}/>
+                                   onChange={this.onChange}
+                                   onClick={this.onChange}
+                                   onBlur={this.onChange}/>
                         </div>
                         <button className="basicButton" ref="calcButton"
                                 onClick={this.getScore}>Calculate

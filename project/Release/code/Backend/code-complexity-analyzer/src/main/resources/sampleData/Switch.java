@@ -29,6 +29,7 @@ class Day {
                 day = "Invalid day";
                 break;
         }
+		
 
 //        switch (week) {
 //            case 1:
@@ -56,6 +57,7 @@ class Day {
 //                day = "Invalid day";
 //                break;
 //        }
+
 
         String switchTest = "switch (week) {\n" +
                 "            case 1:\n" +

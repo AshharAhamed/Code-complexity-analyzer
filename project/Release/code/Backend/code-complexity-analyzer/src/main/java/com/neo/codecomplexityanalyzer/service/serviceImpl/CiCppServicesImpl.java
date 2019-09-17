@@ -1,23 +1,34 @@
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
+import com.neo.codecomplexityanalyzer.model.CiResultModel;
 import com.neo.codecomplexityanalyzer.service.ICiCppServices;
 import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedMultigraph;
+import org.jgrapht.graph.GraphWalk;
+import org.jgrapht.graph.SimpleGraph;
 import org.jgrapht.traverse.BreadthFirstIterator;
 import org.jgrapht.traverse.DepthFirstIterator;
+import org.jgrapht.util.SupplierUtil;
 
+import java.net.URI;
+import java.text.Annotation;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CiCppServicesImpl implements ICiCppServices {
 
 	private String code = "";
+	private String filePath ="";
 	private static final Logger LOGGER = Logger.getLogger(CiJavaServicesImpl.class.getName());
 
 	private static final String CLASS_KEY_WORD = "class ";
@@ -33,6 +44,7 @@ public class CiCppServicesImpl implements ICiCppServices {
 	public CiCppServicesImpl(String filePath) {
 		GeneralServiceImpl gs = new GeneralServiceImpl();
 		this.code = gs.getSourceCode(filePath);
+		this.filePath = filePath;
 	}
 
 	@Override
@@ -255,8 +267,36 @@ public class CiCppServicesImpl implements ICiCppServices {
 			}
 		}
 
-		System.out.println();
+		System.out.println("~~~~~~~~~~~~~~~~~");
 		System.out.println(g.toString());
+
+//		
+		String graph = g.toString();
+		//GraphWalk<String, DefaultEdge> graphWalk = new GraphWalk<String, DefaultEdge>(g, classNames, 0);
+//		  String start = g
+//		            .vertexSet().stream().filter(uri -> uri.equals("TA")).findAny()
+//		            .get();
+//
+//		        Iterator<String> iterator2 = new DepthFirstIterator<>(g, start);
+//		        while (iterator2.hasNext()) {
+//		            String uri = iterator2.next();
+//		            System.out.println(uri);
+//		        }
+//
+//		Iterator<String> iterator = new DepthFirstIterator<>(g, "TA");
+//		int count = 0;
+//		String classInheritanceMapping = new String("");
+//		while (iterator.hasNext()) {
+//			String string = iterator.next();
+//			count++;
+//			// System.out.print(string);
+//			classInheritanceMapping = classInheritanceMapping.concat(string);
+//			if (iterator.hasNext()) {
+//				// System.out.print(" ---> ");
+//				classInheritanceMapping = classInheritanceMapping.concat(" ---> ");
+//			}
+//		}
+	
 	}
 
 	@Override
@@ -337,4 +377,51 @@ public class CiCppServicesImpl implements ICiCppServices {
 		}
 		return classNameWithNumberOfAncestorsMap;
 	}
+	
+	public Map<Integer,CiResultModel> getCiCppDetailsWithLineNumbers(){
+		
+		Map<Integer, CiResultModel> ciOutput = new HashMap<>();
+		
+		int classNameStartIndex = 0, classNameEndIndex = 0, currentIndex1 = 0, initialIndex1 = -1, count1 = 0;
+
+		// This is to store the class names found in the code
+		ArrayList<String> classNamesList = new ArrayList<String>();
+
+		while (initialIndex1 < currentIndex1) {
+			// From here it will search for the class keyword in the code.
+			classNameStartIndex = code.indexOf(CLASS_KEY_WORD, classNameEndIndex) + 6;
+
+			if (classNameStartIndex > 0 && count1 == 0) {
+				count1++;
+				initialIndex1 = classNameStartIndex;
+			}
+
+			classNameEndIndex = code.indexOf(SINGLE_SPACE_CHARACTOR, classNameStartIndex);
+
+			currentIndex1 = classNameEndIndex;
+
+			if (currentIndex1 < initialIndex1) {
+				break;
+			}
+
+			if (classNameStartIndex > 0 && classNameEndIndex > 0 && (classNameStartIndex != classNameEndIndex)) {
+				GeneralServiceImpl gs = new GeneralServiceImpl();
+				gs.getSourceCode(filePath);
+				System.out.println(classNameStartIndex);
+				Integer lineNumber = gs.getFormattedLineByIndex(classNameStartIndex);
+				CiResultModel cModel = new CiResultModel();
+				String name = code.substring(classNameStartIndex, classNameEndIndex);
+				cModel.setClassName(name);
+				int numOfAncestors = this.getNumberOfAncestorClasses(name);
+				cModel.setNumberOfAncestors(numOfAncestors);
+				cModel.setTotalCiValue(numOfAncestors+1);
+				ciOutput.put(lineNumber, cModel);
+				classNamesList.add(name);
+			} else {
+				break;
+			}
+		}
+		return ciOutput;
+	}
+
 }

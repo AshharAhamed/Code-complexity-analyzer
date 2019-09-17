@@ -36,10 +36,12 @@ import com.neo.codecomplexityanalyzer.service.ICiJavaServices;
 public class CiJavaServicesImpl implements ICiJavaServices {
 
 	private String code = "";
+	private String filePath = "";
 
 	public CiJavaServicesImpl(String filePath) {
 		GeneralServiceImpl gs = new GeneralServiceImpl();
 		this.code = gs.getSourceCode(filePath);
+		this.filePath = filePath;
 	}
 
 	// Loading the Code File that need to be analyzed.
@@ -112,8 +114,7 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 				// classNames.add(code.substring(classNameStartIndex, classNameEndIndex));
 				String className = code.substring(classNameStartIndex, classNameEndIndex);
 				GeneralServiceImpl gs = new GeneralServiceImpl();
-				gs.getSourceCode(
-						"/home/sahan/Documents/My Documents/SLIIT/SPM/Code-complexity-analyzer/project/Release/code/Backend/code-complexity-analyzer/src/main/resources/sampleData/InheritanceSample.java");
+				gs.getSourceCode(this.filePath);
 
 				Integer numOfAncestors = this.getNumberOfAnsestors(className);
 				CiResultModel ciModel = new CiResultModel(className, (numOfAncestors + 1), numOfAncestors,
@@ -442,7 +443,4 @@ public class CiJavaServicesImpl implements ICiJavaServices {
 		return numOfAnsestorsWithClassMap;
 	}
 
-//	public List<Integer> getCiFinalCountLineByLine(){
-//		
-//	}
 }

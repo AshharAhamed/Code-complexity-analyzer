@@ -69,7 +69,7 @@ public class BasicCodeController {
 			GeneralServiceImpl generalService = new GeneralServiceImpl();
 
 			String fileType = generalService.getSourceCodeType(FilePath);
-			List<String> errorList = null;
+			List<String> errorList = new ArrayList<>();
 			if(fileType.equals("java")) {
 				JavaSyntaxChecker javaSyntaxChecker = new JavaSyntaxChecker(FilePath);
 				 errorList = javaSyntaxChecker.check();
@@ -86,7 +86,7 @@ public class BasicCodeController {
 
 			HashMap<Integer, Integer> m1 = cctUtil.getLineScore();
 			String[] lineScoreArray = new String[m1.size()];
-			if (errorList != null) {
+			if (!errorList.isEmpty()) {
 				Arrays.fill(lineScoreArray, "-");
 				r1.setLineScore(Arrays.asList(lineScoreArray));
 				r1.setErrorList(errorList);
@@ -262,7 +262,8 @@ public class BasicCodeController {
 		if ("java".equals(gs.getSourceCodeType(FilePath))) {
 			return ci.getClassNameIndexByLineNumber();
 		} else if ("cpp".equals(gs.getSourceCodeType(FilePath))) {
-			return null;
+			CiCppServicesImpl ciCpp = new CiCppServicesImpl(FilePath);
+			return (HashMap<Integer, CiResultModel>) ciCpp.getCiCppDetailsWithLineNumbers();
 		} else {
 			return null;
 		}
