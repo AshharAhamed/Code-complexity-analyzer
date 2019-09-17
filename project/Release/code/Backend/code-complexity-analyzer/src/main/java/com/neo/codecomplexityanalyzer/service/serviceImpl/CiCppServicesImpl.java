@@ -379,77 +379,49 @@ public class CiCppServicesImpl implements ICiCppServices {
 	}
 	
 	public Map<Integer,CiResultModel> getCiCppDetailsWithLineNumbers(){
-		ArrayList<String> classNames = new ArrayList<String>();
-		Map<String, String> classMap = new HashMap<String, String>();
+		
 		Map<Integer, CiResultModel> ciOutput = new HashMap<>();
+		
+		int classNameStartIndex = 0, classNameEndIndex = 0, currentIndex1 = 0, initialIndex1 = -1, count1 = 0;
 
-		classNames = this.getAllClassNames();
+		// This is to store the class names found in the code
+		ArrayList<String> classNamesList = new ArrayList<String>();
 
-		if (!classNames.isEmpty()) {
-			// System.out.println("Info : Classes Found !");
-			LOGGER.info(CLASSES_FOUND);
-			for (int i = 0; i < classNames.size(); i++) {
+		while (initialIndex1 < currentIndex1) {
+			// From here it will search for the class keyword in the code.
+			classNameStartIndex = code.indexOf(CLASS_KEY_WORD, classNameEndIndex) + 6;
 
-				System.out.println("\t# " + classNames.get(i).toString());
+			if (classNameStartIndex > 0 && count1 == 0) {
+				count1++;
+				initialIndex1 = classNameStartIndex;
 			}
-		} else {
-			// System.out.println("Info : No Classes Found !");
-			LOGGER.info(NO_CLASSES_FOUND);
-		}
 
-		int inheritanClassNameStartIndex = 0, inheritantClassNameEndIndex = 0;
+			classNameEndIndex = code.indexOf(SINGLE_SPACE_CHARACTOR, classNameStartIndex);
 
-		if (!classNames.isEmpty()) {
+			currentIndex1 = classNameEndIndex;
 
-			// System.out.println("Info : Now Checking for the inheritance in the classes
-			// found in the code...");
-			LOGGER.info(CHECKING_FOR_INHERITANCE_FOUND_IN_CODE);
-			for (int i = 0; i < classNames.size(); i++) {
+			if (currentIndex1 < initialIndex1) {
+				break;
+			}
 
-				int initialIndex = -1, currentIndex = 0, count = 0;
-
-				while (initialIndex < currentIndex) {
-
-					System.out.println("\n\t>> Checking in " + classNames.get(i).toString() + " class");
-					inheritanClassNameStartIndex = code.indexOf("class " + classNames.get(i).toString() + " : ");
-
-					if (inheritanClassNameStartIndex > 0 && count == 0) {
-						count++;
-						initialIndex = inheritanClassNameStartIndex;
-					}
-					currentIndex = inheritanClassNameStartIndex;
-
-					inheritantClassNameEndIndex = code.indexOf(OPENING_BRACE, inheritanClassNameStartIndex);
-
-					if (inheritanClassNameStartIndex > 0 && inheritantClassNameEndIndex > 0) {
-						String classHit = code.substring(inheritanClassNameStartIndex + 6, inheritantClassNameEndIndex);
-						System.out.println("\t# " + classHit);
-						String val = classHit.trim();
-						String[] classArray = val.split(":");
-						classArray[0] = classArray[0].trim();
-						
-						GeneralServiceImpl gs = new GeneralServiceImpl();
-						gs.getSourceCode(filePath);
-						Integer lineNumber = gs.getLineByIndex(inheritanClassNameStartIndex + 6);
-						CiResultModel cModel = new CiResultModel();
-						cModel.setClassName(classArray[0]);
-						int numOfAncestors = this.getNumberOfAncestorClasses(classArray[0]);
-						cModel.setNumberOfAncestors(numOfAncestors);
-						cModel.setTotalCiValue(numOfAncestors+1);
-						
-						ciOutput.put(lineNumber, cModel);
-						classArray[1] = classArray[1].replace("public", "");
-
-						classMap.put(classArray[0], classArray[1]);
-
-					} else {
-						System.out.println("Info : " + classNames.get(i).toString() + CLASS_DOES_NOT_HAVE_INHERITANCE);
-						classMap.put(classNames.get(i), "");
-						break;
-					}
-				}
+			if (classNameStartIndex > 0 && classNameEndIndex > 0 && (classNameStartIndex != classNameEndIndex)) {
+				GeneralServiceImpl gs = new GeneralServiceImpl();
+				gs.getSourceCode(filePath);
+				System.out.println(classNameStartIndex);
+				Integer lineNumber = gs.getFormattedLineByIndex(classNameStartIndex);
+				CiResultModel cModel = new CiResultModel();
+				String name = code.substring(classNameStartIndex, classNameEndIndex);
+				cModel.setClassName(name);
+				int numOfAncestors = this.getNumberOfAncestorClasses(name);
+				cModel.setNumberOfAncestors(numOfAncestors);
+				cModel.setTotalCiValue(numOfAncestors+1);
+				ciOutput.put(lineNumber, cModel);
+				classNamesList.add(name);
+			} else {
+				break;
 			}
 		}
 		return ciOutput;
 	}
+
 }

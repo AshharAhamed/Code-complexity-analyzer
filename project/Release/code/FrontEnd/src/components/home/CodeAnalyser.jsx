@@ -102,7 +102,7 @@ export default class CodeAnalyser extends Component {
 
 
     getFileType() {
-        this.CCAService.getFileType(this.state.file).then(res => {
+        this.CCAService.getFileType(this.state.filePath).then(res => {
             console.log(res);
             this.setState({
                 fileType: res.data
@@ -140,6 +140,13 @@ export default class CodeAnalyser extends Component {
                     Class Mapping</th>
             }
         };
+        let classMappingTableValue = (index)=>{
+            if(this.state.fileType=='java'){
+                return <td>
+                    {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}
+                </td>
+            }
+        };
         let analyzedResult = () => {
             if (this.state.sourceCode) {
                 return <table border="1" style={{marginLeft: "auto", marginRight: "auto", width: "90%"}}
@@ -149,8 +156,8 @@ export default class CodeAnalyser extends Component {
                         <th rowSpan="2">Line No</th>
                         <th rowSpan="2">Code</th>
                         <th rowSpan="2">Ctc</th>
-                        {/*{classMappingTableColumn()}*/}
-                        <th rowSpan="2">Class Mapping</th>
+                        {classMappingTableColumn()}
+                        {/*<th rowSpan="2">Class Mapping</th>*/}
                         <th rowSpan="2">Ci</th>
                     </tr>
                     </thead>
@@ -166,9 +173,10 @@ export default class CodeAnalyser extends Component {
                                     <pre style={{fontSize: 15}}>{this.state.ctcLineScore[index]}</pre>
                                 </td>
 
-                                <td>
-                                    {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}
-                                </td>
+                                {/*<td>*/}
+                                {/*    {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}*/}
+                                {/*</td>*/}
+                                {classMappingTableValue(index)}
                                 <td>
 
                                     {/*{(((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] > 0) ? (2 + this.state.ciDetails[index + 1].totalCiValue) : 0) || (this.state.ctcLineScore[index] > 0 ? 2 : 0) || ((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] == 0) ? (this.state.ciDetails[index + 1].totalCiValue) : 0}*/}

@@ -30,9 +30,10 @@ public class DemoMainApp {
 //		System.out.println(ci.getNumberOfAncestorClasses("TA"));
 //		ci.identifyClassStructure();
 		
-		System.out.println(ci.getClassMapping());
-		
-		
+		System.out.println(ci.getCiCppDetailsWithLineNumbers());
+		GeneralServiceImpl gs = new GeneralServiceImpl();
+		gs.getSourceCode("/home/sahan/Documents/My Documents/SLIIT/SPM/Code-complexity-analyzer/project/Release/code/Backend/code-complexity-analyzer/src/main/resources/sampleData/CppInheritanceSample.cpp");
+	System.out.println(gs.getLineByIndex(143));
 //		System.out.println(ciJ.getClassNames());
 //		//ciJ.complexityOfAllClassesDueToInheritance();
 //		for (String string : ci.getAncestorClasses("TA")) {
