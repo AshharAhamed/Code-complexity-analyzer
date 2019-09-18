@@ -329,9 +329,9 @@ public class BasicCodeController {
 	// ---------------------------------------------------------------
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping(path = "/get-cnc/nested-if")
-	public ResponseEntity<Integer> getCNCNestedIfScore(@RequestHeader("file-path") String FilePath) {
+	public ResponseEntity<?> getCNCNestedIfScore(@RequestHeader("file-path") String FilePath) {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
-		return (new ResponseEntity<Integer>(cncService.getNestedIfControlScore(), HttpStatus.OK));
+		return (new ResponseEntity<>(cncService.getNestedIfControlScore(), HttpStatus.OK));
 	}
 
 	@CrossOrigin(origins = "*", allowedHeaders = "*")

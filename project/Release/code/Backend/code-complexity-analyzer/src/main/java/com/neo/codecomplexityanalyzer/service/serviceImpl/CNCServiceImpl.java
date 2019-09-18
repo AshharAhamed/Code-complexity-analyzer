@@ -1,5 +1,7 @@
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
+import java.util.HashMap;
+
 import com.neo.codecomplexityanalyzer.Util.Queue;
 import com.neo.codecomplexityanalyzer.service.ICNCService;
 
@@ -24,12 +26,15 @@ public class CNCServiceImpl implements ICNCService {
     private String sourceCode;
     private long sourceCodeLength;
     private GeneralServiceImpl generalService;
+    private HashMap<Integer, Integer> lineScore;
+    
 	
     
    public CNCServiceImpl(String filePath) {
 	   generalService = new GeneralServiceImpl();
        this.sourceCode = generalService.getSourceCode(filePath);
        this.sourceCodeLength = generalService.getSourceCodeLength();
+       this.lineScore = generalService.getLineHashMap();
    }
 	
    /*public int getNestedControlScore() {
@@ -70,12 +75,14 @@ public class CNCServiceImpl implements ICNCService {
    }*/
    
    
-   public int getNestedIfControlScore() {
+   public HashMap<Integer, Integer> getNestedIfControlScore() {
        int nestedIfStartIndex[], nestedIfEndIndex[], ifStartIndex, ifEndIndex = 0, ifCount = 0, logicalCount = 0, score=0;
+       int lineNo;
        nestedIfStartIndex=new int[arraySize];
        nestedIfEndIndex=new int[arraySize];
        Queue queue = new Queue(queueSize);
        char tempCloseSquareBra;
+       int ifCountForLineScore=0;
        do {
     	   int tempNestedIfStart = sourceCode.indexOf(searchIf, ifEndIndex);
     	   ifStartIndex = tempNestedIfStart + 3;
@@ -84,18 +91,21 @@ public class CNCServiceImpl implements ICNCService {
     	   ++ifCount;
     	   
     	   int indexTemp = ifStartIndex;
-           
+//    	   ifCountForLineScore = 0;
            while (true) {
                if (indexTemp >= sourceCodeLength) {
                    System.out.println(errorMessage2);
-                   return -1;
+                   return null;
                }
                char strTemp = sourceCode.charAt(indexTemp);
                tempCloseSquareBra = strTemp;
                String strTempS = Character.toString(openSquareBrace);
                if (strTemp == openSquareBrace) {
+            	   ifCountForLineScore = ifCountForLineScore + 1;
             	   String subStringIfWithOps = sourceCode.substring(tempNestedIfStart, indexTemp-1);  
             	   System.out.println("String which was cut for CNC IF complex calculation "+(indexTemp-1)+" is "+ subStringIfWithOps);
+            	   lineNo = generalService.getFormattedLineByIndex(indexTemp - 1);
+            	   lineScore.put(lineNo, (lineScore.get(lineNo) + ifCountForLineScore));
             	   queue.enqueue(subStringIfWithOps);
             	   break;
                }else if (tempCloseSquareBra == closeSquareBrace) {
@@ -105,7 +115,7 @@ public class CNCServiceImpl implements ICNCService {
                            break;
                    } else {
                        System.out.println(errorMessage1);
-                       return -1;
+                       return null;
                    }
                }
                ++indexTemp;
@@ -123,8 +133,10 @@ public class CNCServiceImpl implements ICNCService {
     	   queue.dequeue();
        }
        
-       return score;
+       return lineScore;
    }
+   
+   
    
    public int getNestedForScore() {
        int nestedForStartIndex[], nestedForEndIndex[], forStartIndex, forEndIndex = 0, forCount = 0, logicalCount = 0, score=0;
@@ -134,8 +146,8 @@ public class CNCServiceImpl implements ICNCService {
        char tempCloseSquareBra;
        do {
     	   int tempNestedForStart = sourceCode.indexOf(searchFor, forEndIndex);
-    	   forStartIndex = tempNestedForStart + 4;
-    	   if (forStartIndex == 3)
+    	   forStartIndex = tempNestedForStart + 3;
+    	   if (forStartIndex == 2)
                break;
     	   ++forCount;
     	   
@@ -144,6 +156,7 @@ public class CNCServiceImpl implements ICNCService {
            while (true) {
                if (indexTemp >= sourceCodeLength) {
                    System.out.println(errorMessage2);
+                   System.out.println("this from line number 159");
                    return -1;
                }
                char strTemp = sourceCode.charAt(indexTemp);
@@ -159,6 +172,7 @@ public class CNCServiceImpl implements ICNCService {
                            break;
                    } else {
                        System.out.println(errorMessage1);
+                       System.out.println("this from line number 175");
                        return -1;
                    }
                }
