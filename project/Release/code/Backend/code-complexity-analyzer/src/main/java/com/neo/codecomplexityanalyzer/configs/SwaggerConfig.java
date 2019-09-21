@@ -1,4 +1,4 @@
-package com.neo.codecomplexityanalyzer.swagger;
+package com.neo.codecomplexityanalyzer.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

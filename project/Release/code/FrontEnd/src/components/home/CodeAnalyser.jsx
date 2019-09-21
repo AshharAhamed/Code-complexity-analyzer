@@ -6,6 +6,8 @@ import Modal from "react-awesome-modal";
 import 'bootstrap/dist/css/bootstrap.css';
 import logo from '../../resources/images/neo_logo.png';
 
+import axios from 'axios';
+
 export default class CodeAnalyser extends Component {
     constructor(props) {
         super(props);
@@ -21,7 +23,9 @@ export default class CodeAnalyser extends Component {
             fileType: '',
 
             ciDetails: [],
-            ciValues: []
+            ciValues: [],
+
+            file: ''
         };
         this.CCAService = new CCAService();
         this.getScore = this.getScore.bind(this);
@@ -29,6 +33,9 @@ export default class CodeAnalyser extends Component {
         this.getFileType = this.getFileType.bind(this);
         this.getCiScore = this.getCiScore.bind(this);
         this.returnCiValue = this.returnCiValue.bind(this);
+
+        this.testFileUpload = this.testFileUpload.bind(this);
+        this.onFileTypeSelect = this.onFileTypeSelect.bind(this);
     }
 
 
@@ -40,9 +47,11 @@ export default class CodeAnalyser extends Component {
     }
 
     getScore() {
+        const data = new FormData()
+        data.append('file', this.state.file)
         this.getFileType();
         console.log(this.state.filePath);
-        this.CCAService.getScore(this.state.filePath).then(response => {
+        this.CCAService.getScore(data).then(response => {
             this.setState({
                 ctcLineScore: response.data.lineScore,
                 sourceCode: response.data.code,
@@ -67,7 +76,9 @@ export default class CodeAnalyser extends Component {
     }
 
     getCiScore() {
-        this.CCAService.getCiDetails(this.state.filePath).then(res => {
+        const data = new FormData();
+        data.append('file', this.state.file);
+        this.CCAService.getCiDetails(data).then(res => {
             let data = res.data;
             this.setState({
                 ciDetails: data
@@ -100,9 +111,10 @@ export default class CodeAnalyser extends Component {
 
     }
 
-
     getFileType() {
-        this.CCAService.getFileType(this.state.filePath).then(res => {
+        const data = new FormData()
+        data.append('file', this.state.file)
+        this.CCAService.getFileType(data).then(res => {
             console.log(res);
             this.setState({
                 fileType: res.data
@@ -110,6 +122,19 @@ export default class CodeAnalyser extends Component {
         })
     }
 
+    onFileTypeSelect(e) {
+        this.setState({
+            file: e.target.files[0]
+        })
+    }
+
+    testFileUpload() {
+        const data = new FormData()
+        data.append('file', this.state.file)
+        axios.post('http://localhost:8080/get-file-upload', data).then(res => {
+            alert(res.data);
+        })
+    }
 
     // The Essential render function
     render() {
@@ -140,8 +165,8 @@ export default class CodeAnalyser extends Component {
                     Class Mapping</th>
             }
         };
-        let classMappingTableValue = (index)=>{
-            if(this.state.fileType=='java'){
+        let classMappingTableValue = (index) => {
+            if (this.state.fileType == 'java') {
                 return <td>
                     {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}
                 </td>
@@ -198,10 +223,10 @@ export default class CodeAnalyser extends Component {
 
                         <h3>Generate Complexity Matrices</h3>
                         <div style={{width: '100%'}} className="form-group">
-                            <input name="filePath" type="text" placeholder="File Path"
-                                   onChange={this.onChange}
-                                   onClick={this.onChange}
-                                   onBlur={this.onChange}/>
+                            <input name="filePath" type="file" placeholder="File Path"
+                                   onChange={this.onFileTypeSelect}
+                                   onClick={this.onFileTypeSelect}
+                                   onBlur={this.onFileTypeSelect}/>
                         </div>
                         <button className="basicButton" ref="calcButton"
                                 onClick={this.getScore}>Calculate

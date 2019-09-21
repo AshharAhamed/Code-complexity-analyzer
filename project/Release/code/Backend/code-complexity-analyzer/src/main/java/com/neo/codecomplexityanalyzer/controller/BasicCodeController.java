@@ -8,12 +8,18 @@
 */
 package com.neo.codecomplexityanalyzer.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import com.neo.codecomplexityanalyzer.service.serviceImpl.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.neo.codecomplexityanalyzer.model.CiResultModel;
 import com.neo.codecomplexityanalyzer.service.ICNCService;
@@ -22,6 +28,8 @@ import com.neo.codecomplexityanalyzer.service.ICNCService;
 
 @RestController
 public class BasicCodeController {
+	@Autowired
+	FileStorageService fileStorageService;
 
 	// --------------------------------------- General End Points
 	// ---------------------------------------------------------------
@@ -39,10 +47,12 @@ public class BasicCodeController {
 	}
 
 	// REST service to get the file type
-	@GetMapping(path = "/file-type")
-	public ResponseEntity<String> getFileType(@RequestHeader("file-path") String FilePath) {
+	@PostMapping(path = "/file-type")
+	public ResponseEntity<String> getFileType(@RequestParam("file") MultipartFile file) {
+		String fileName = fileStorageService.storeFile(file);
+		fileStorageService.loadFileAsResource(fileName);
 		GeneralServiceImpl ccaUtil = new GeneralServiceImpl();
-		String type = ccaUtil.getSourceCodeType(FilePath);
+		String type = ccaUtil.getSourceCodeType("./api/uploads/code/" + fileName);
 		return (new ResponseEntity<String>(type, HttpStatus.OK));
 	}
 
@@ -61,24 +71,29 @@ public class BasicCodeController {
 		return (new ResponseEntity<String[]>(lineArr, HttpStatus.OK));
 	}
 
-	@RequestMapping(value = "/get-score", method = RequestMethod.GET, produces = { "application/json" })
-	public ResponseEntity<?> getSourceCodeFormatted(@RequestHeader("file-path") String FilePath) {
+	@PostMapping(value = "/get-score", produces = { "application/json" })
+	public ResponseEntity<?> getSourceCodeFormatted(@RequestParam("file") MultipartFile file) {
 		try {
+
+			String fileName = fileStorageService.storeFile(file);
+			fileStorageService.loadFileAsResource(fileName);
+
+	
 
 			ResponseClass r1 = new ResponseClass();
 			GeneralServiceImpl generalService = new GeneralServiceImpl();
 
-			String fileType = generalService.getSourceCodeType(FilePath);
+			String fileType = generalService.getSourceCodeType("./api/uploads/code/" + fileName);
 			List<String> errorList = new ArrayList<>();
-			if(fileType.equals("java")) {
-				JavaSyntaxChecker javaSyntaxChecker = new JavaSyntaxChecker(FilePath);
-				 errorList = javaSyntaxChecker.check();
+			if (fileType.equals("java")) {
+				JavaSyntaxChecker javaSyntaxChecker = new JavaSyntaxChecker("./api/uploads/code/" + fileName);
+				errorList = javaSyntaxChecker.check();
 			}
-			String code = generalService.getSourceCode(FilePath);
+			String code = generalService.getSourceCode("./api/uploads/code/" + fileName);
 			r1.setCode(Arrays.asList(
 					generalService.collectAllSourceCodeLines(code, generalService.findSourceCodeLineCount(code))));
 
-			CTCServiceImpl cctUtil = new CTCServiceImpl(FilePath);
+			CTCServiceImpl cctUtil = new CTCServiceImpl("./api/uploads/code/" + fileName);
 			int itcScore = cctUtil.getIterativeControlScore();
 			int controlScore = cctUtil.getControlScore();
 			int catchScore = cctUtil.getCatchScore();
@@ -255,14 +270,18 @@ public class BasicCodeController {
 		ci.identifyStronglyConnectedClasses();
 	}
 
-	@GetMapping(path = "/get-ci/by-line", produces = "application/json")
-	public HashMap<Integer, CiResultModel> getClassNameLineNumber(@RequestHeader("file-path") String FilePath) {
-		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
+	@PostMapping(path = "/get-ci/by-line", produces = "application/json")
+	public HashMap<Integer, CiResultModel> getClassNameLineNumber(@RequestParam("file") MultipartFile file) {
+
+		String fileName = fileStorageService.storeFile(file);
+		fileStorageService.loadFileAsResource(fileName);
+
+		CiJavaServicesImpl ci = new CiJavaServicesImpl("./api/uploads/code/" + fileName);
 		GeneralServiceImpl gs = new GeneralServiceImpl();
-		if ("java".equals(gs.getSourceCodeType(FilePath))) {
+		if ("java".equals(gs.getSourceCodeType("./api/uploads/code/" + fileName))) {
 			return ci.getClassNameIndexByLineNumber();
-		} else if ("cpp".equals(gs.getSourceCodeType(FilePath))) {
-			CiCppServicesImpl ciCpp = new CiCppServicesImpl(FilePath);
+		} else if ("cpp".equals(gs.getSourceCodeType("./api/uploads/code/" + fileName))) {
+			CiCppServicesImpl ciCpp = new CiCppServicesImpl("./api/uploads/code/" + fileName);
 			return (HashMap<Integer, CiResultModel>) ciCpp.getCiCppDetailsWithLineNumbers();
 		} else {
 			return null;
@@ -343,16 +362,16 @@ public class BasicCodeController {
 
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping(path = "/get-cnc/nested-While")
-	public ResponseEntity</*Integer*/?> getCNCNestedWhileScore(@RequestHeader("file-path") String FilePath) {
+	public ResponseEntity</* Integer */?> getCNCNestedWhileScore(@RequestHeader("file-path") String FilePath) {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
-		return (new ResponseEntity</*Integer*/>(cncService.getNestedWhileScore(), HttpStatus.OK));
+		return (new ResponseEntity</* Integer */>(cncService.getNestedWhileScore(), HttpStatus.OK));
 	}
-	
+
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping(path = "/get-cnc/nested-do-While")
-	public ResponseEntity</*Integer*/?> getCNCNestedDoWhileScore(@RequestHeader("file-path") String FilePath) {
+	public ResponseEntity</* Integer */?> getCNCNestedDoWhileScore(@RequestHeader("file-path") String FilePath) {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
-		return (new ResponseEntity</*Integer*/>(cncService.getNestedDoWhileScore(), HttpStatus.OK));
+		return (new ResponseEntity</* Integer */>(cncService.getNestedDoWhileScore(), HttpStatus.OK));
 	}
 
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -361,7 +380,7 @@ public class BasicCodeController {
 		CrServicesImpl crService = new CrServicesImpl(FilePath);
 		return (new ResponseEntity<>(crService.getControlScore(), HttpStatus.OK));
 	}
-	
+
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping(path = "/get-cr/recursive-cpp")
 	public ResponseEntity<?> getCRScoreCpp(@RequestHeader("file-path") String FilePath) {
@@ -384,6 +403,19 @@ public class BasicCodeController {
 		String sourceCode = gs.getSourceCode(FilePath);
 		int[] csValueArray = cs.getAllCsValues(sourceCode);
 		return (new ResponseEntity<int[]>(csValueArray, HttpStatus.OK));
+	}
+
+	/**
+	 * Test File Upload Method
+	 */
+	@RequestMapping(path = "/get-file-upload")
+	public ArrayList<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+
+		String fileName = fileStorageService.storeFile(file);
+		fileStorageService.loadFileAsResource(fileName);
+
+		CiJavaServicesImpl ci = new CiJavaServicesImpl("./api/uploads/code/" + fileName);
+		return ci.getClassNames();
 	}
 
 }

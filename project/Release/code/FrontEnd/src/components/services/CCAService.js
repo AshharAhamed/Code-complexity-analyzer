@@ -8,7 +8,7 @@ export default class SISService {
     //-------------------------------------------------------Staff Functions ----------------------------------------------------------------------------
     getScore(data) {
         return new Promise((resolve, reject) => {
-            this.apiService.get('get-score', data).then(response => {
+            this.apiService.post('get-score', data).then(response => {
                 resolve(response);
             }).catch(error => {
                 reject(error)
@@ -18,7 +18,7 @@ export default class SISService {
 
     getCiDetails(data) {
         return new Promise((resolve, reject) => {
-            this.apiService.get('get-ci/by-line', data).then(response => {
+            this.apiService.post('get-ci/by-line', data).then(response => {
                 resolve(response);
             }).catch(error => {
                 reject(error)
@@ -28,7 +28,7 @@ export default class SISService {
 
     getFileType(data) {
         return new Promise((resolve, reject) => {
-            this.apiService.get('file-type', data).then(response => {
+            this.apiService.post('file-type', data).then(response => {
                 resolve(response);
             }).catch(error => {
                 reject(error);

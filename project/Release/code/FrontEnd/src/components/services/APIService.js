@@ -21,4 +21,17 @@ export default class APIService {
             });
         });
     }
+
+    post(url, data) {
+        return new Promise((resolve, reject) => {
+            axios.post(this.baseUrl + url, data).then(response => {
+                if (response.data.message === "Error") {
+                    alert("Error")
+                }
+                resolve(response);
+            }).catch(err => {
+                resolve(err);
+            })
+        })
+    }
 }
