@@ -5,7 +5,7 @@ public class Nested {
 
     public void printMessage() {
         if (time < 10) {
-            System.out.println("Good outer.");
+            System.out.println("Good outer 1.");
             if (time < 8) {
                 System.out.println("Good 2nd level.");
                 if (time < 5) {
@@ -37,7 +37,7 @@ public class Nested {
                                                         if (time < 10) {
                                                             System.out.println("Good 13th level.");
                                                             if (time < 8) {
-                                                            	
+                                                            	System.out.println("Good 14th level.");
                                                             	while(true);
                                                                 int iter = 0;
                                                                 while(queue.isEmpty()){
@@ -45,7 +45,7 @@ public class Nested {
                                                              	   score = score + iter;
                                                              	   queue.dequeue();
                                                                 }
-                                                                System.out.println("Good 14th level.");
+                                                                
                                                                 if (time < 5) {
                                                                     System.out.println("Good 15th level.");
                                                                 }

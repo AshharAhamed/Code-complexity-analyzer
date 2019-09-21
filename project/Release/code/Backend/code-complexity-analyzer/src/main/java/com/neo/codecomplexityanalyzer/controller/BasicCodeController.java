@@ -328,6 +328,13 @@ public class BasicCodeController {
 	// --------------------------------------- CNC End Points
 	// ---------------------------------------------------------------
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	@GetMapping(path = "/get-cnc/cnc-score")
+	public ResponseEntity</*Integer*/?> getCNCScore(@RequestHeader("file-path") String FilePath) {
+		ICNCService cncService = new CNCServiceImpl(FilePath);
+		return (new ResponseEntity</*Integer*/>(cncService.getScore(), HttpStatus.OK));
+	}
+	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping(path = "/get-cnc/nested-if")
 	public ResponseEntity<?> getCNCNestedIfScore(@RequestHeader("file-path") String FilePath) {
 		ICNCService cncService = new CNCServiceImpl(FilePath);

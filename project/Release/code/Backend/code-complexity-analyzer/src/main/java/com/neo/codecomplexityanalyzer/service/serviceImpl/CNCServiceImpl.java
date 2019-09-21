@@ -34,6 +34,8 @@ public class CNCServiceImpl implements ICNCService {
 	private HashMap<Integer, Integer> lineScoreFor;
 	private HashMap<Integer, Integer> lineScoreWhile;
 	private HashMap<Integer, Integer> lineScoreDoWhile;
+	private HashMap<Integer, Integer> lineScoreIf;
+	
 	private static final Logger logger = LogManager.getLogger(CNCServiceImpl.class);
 
 	private ArrayList<Integer> nestedIfCurlyBracesStartIndex = new ArrayList<Integer>();
@@ -54,140 +56,147 @@ public class CNCServiceImpl implements ICNCService {
 		this.lineScoreFor = generalService.getLineHashMap();
 		this.lineScoreWhile = generalService.getLineHashMap();
 		this.lineScoreDoWhile = generalService.getLineHashMap();
+		this.lineScoreIf = generalService.getLineHashMap();
 	}
 
+	@Override
+	public HashMap<Integer, Integer> getScore(){
+		HashMap<Integer, Integer> ifHash,forHash,whileHash,doWhileHash;
+		ifHash = this.getNestedIfControlScore();
+		forHash = this.getNestedForScore();
+		whileHash = this.getNestedWhileScore();
+		doWhileHash = this.getNestedDoWhileScore();
+		
+		for(int i = 1; i<=this.lineScore.size(); i++) {
+			this.lineScore.put(i, (this.lineScoreIf.get(i)+this.lineScoreFor.get(i)+this.lineScoreWhile.get(i)+this.lineScoreDoWhile.get(i)));
+		}
+		
+		return lineScore;
+	}
 	
-
+	@Override
 	public HashMap<Integer, Integer> getNestedIfControlScore() {
-		int ifStartIndex, ifEndIndex = 0, ifCount = 0, logicalCount = 0, score = 0;
-		int lineNo;
-		int tempForBegin = 0,tempOpenSquareBracket = 0,tempCloseSquareBracket,tempForCount = 0;
+		// TODO Auto-generated method stub
+				int ifStartIndex, ifEndIndex = 0, ifCount  = 0, score = 0;
+				int lineNo;
+				int tempIfBegin = 0,tempOpenSquareBracket = 0,tempCloseSquareBracket,tempForCount = 0;
+				int tempIfBCount =0;
 
-		Queue queue = new Queue(queueSize);
-		char tempCloseSquareBra;
-		int ifCountForLineScore = 0;
-		do {
-			int tempNestedIfStart = sourceCode.indexOf(searchIf, ifEndIndex);
-			ifStartIndex = tempNestedIfStart + 3;
-			if (ifStartIndex == 2)
-				break;
-			++ifCount;
-			
-			if(ifCount>1) {
-//				this.nestedIfStartIndex.add(tempNestedForStart);
-				tempForBegin = tempNestedIfStart;
-				tempForCount = ifCountForLineScore;
-			}
-			
-			System.out.println("code line 102:char at tempNestedIfStart = " + sourceCode.charAt(tempNestedIfStart)
-					+ " char at ifStartIndex = " + sourceCode.charAt(ifStartIndex));
-			nestedIfStartIndex.add(tempNestedIfStart);
+				Queue queue = new Queue(queueSize);
+				int ifCountForLineScore = 0;
+				char tempCloseSquareBra;
+				do {
+					int tempNestedIfStart = sourceCode.indexOf(searchIf, ifEndIndex );
+					ifStartIndex = tempNestedIfStart + 2;
+					if (ifStartIndex == 1)
+						break;
+					++ifCount;
+//					this added on 21.09.2019 11.07 p.m for new changes
+					tempIfBCount =ifCount;
+					
+					if(ifCount>1) {
+//						this.nestedIfStartIndex.add(tempNestedIfStart);
+						tempIfBegin = tempNestedIfStart;
+						tempForCount = ifCountForLineScore;
+						
+					}
+					System.out.println("ongoing if on 82nd row : "+ ifCount+" and index of if is : "+tempNestedIfStart);
 
-			int indexTemp = ifStartIndex;
-			Stack s1 = new Stack(stackSize);
-			while (true) {
-				if (indexTemp >= sourceCodeLength) {
-					System.out.println("LineNumber 108");
-					System.out.println(errorMessage2);
-					return null;
-				}
-				char strTemp = sourceCode.charAt(indexTemp);
-				tempCloseSquareBra = strTemp;
-				// String strTempS = Character.toString(openSquareBrace);
-
-				if (strTemp == openSquareBrace) {
-					/*if(ifCount>1) {
-						ArrayList<Integer> lineNumberArr1 = new ArrayList<Integer>();
-						lineNumberArr1 = this.getLineNumbersBy(tempOpenSquareBracket, tempForBegin);
-						for(int Lno:lineNumberArr1) {
-							String lineEx = this.getLineAsString(Lno);
+					int indexTemp = ifStartIndex;
+					Stack s1 = new Stack(stackSize);
+					int lineNo1 = generalService.getFormattedLineByIndex(indexTemp - 1);
+					System.out.println("this from line number 294 char at  " + lineNo1 + ":" + ifStartIndex);
+					System.out.println(sourceCode.charAt(ifStartIndex));
+					while (true) {
+						
+//					this added on 21.09.2019 11.07 p.m for new changes
+						
+						
+						if (indexTemp >= sourceCodeLength) {
+							System.out.println(errorMessage2);
+							System.out.println("this from line number 299 indexTemp : " + indexTemp + " sourceCodeLength : "
+									+ sourceCodeLength);
+//							return -1;
+//							return lineScoreIf;
+							return null;
+						}
+						char strTemp = sourceCode.charAt(indexTemp);
+						tempCloseSquareBra = strTemp;
+					
+						String tempSquareLine = this.getLineAsString(this.generalService.getFormattedLineByIndex(indexTemp));
+						String strTempS = Character.toString(openSquareBrace);
+						
+						if ((strTemp == openSquareBrace)&&(tempSquareLine.contains("if"))/*&&()*/) {
 							
-							if(lineEx.contains(";")) {
-								lineScore.put(Lno, (lineScore.get(Lno) + tempForCount)tempForCount);
+						}
+						
+						if ((strTemp == openSquareBrace) &&(tempSquareLine.contains("if"))) {
+							if(ifCount>1) {
+								ArrayList<Integer> lineNumberArr1 = new ArrayList<Integer>();
+								lineNumberArr1 = this.getLineNumbersBy(tempOpenSquareBracket+2, tempIfBegin);
+								for(int Lno:lineNumberArr1) {
+									String lineEx = this.getLineAsString(Lno);
+									
+									if((lineEx.contains(";"))||(lineEx.contains("for"))||(lineEx.contains("while"))||(lineEx.contains("do"))||(lineEx.contains("switch"))||(lineEx.contains("case"))||(lineEx.contains("try"))||(lineEx.contains("else"))) {
+										lineScoreIf.put(Lno, (lineScore.get(Lno) + tempForCount)/*tempForCount*/);
+//										lineScore.put(Lno, (lineScore.get(Lno) + tempForCount)/*tempForCount*/);
+									}
+								}
+								tempForCount = tempForCount+1;
+							}
+							
+							s1.push(strTemp);
+							queue.enqueue(strTempS);
+							
+							tempOpenSquareBracket = indexTemp;
+							String subStringIfWithOps = sourceCode.substring(tempNestedIfStart, indexTemp);
+							ifCountForLineScore = ifCountForLineScore + 1;
+							queue.enqueue(subStringIfWithOps);
+							lineNo = generalService.getFormattedLineByIndex(indexTemp - 1);
+							lineScoreIf.put(lineNo, (lineScoreIf.get(lineNo) + ifCountForLineScore));
+							System.out.println("this from line number 308");
+							/*if(sourceCode.indexOf("if", indexTemp)>indexTemp) {
+								break;
+							}*/
+							break;
+						} else if (tempCloseSquareBra == closeSquareBrace) {
+							System.out.println("this is start of close square brackets line number 122");
+							if (!queue.isEmpty()) {
+									queue.dequeue();
+									this.nestedIfCurlyBracesEndIndex.add(indexTemp);
+									ifCountForLineScore = ifCountForLineScore - 1;
+									
+									if (ifCountForLineScore == 0) {
+										break;
+									}
+
+									if (queue.isEmpty())
+										break;
+							} else {
+								System.out.println(errorMessage1);
+								System.out.println("this from line number 321");
+//								return -1;
+								return null;
 							}
 						}
-						tempForCount = tempForCount+1;
-					}*/
-					
-					String subStringIfWithOps = sourceCode.substring(tempNestedIfStart, indexTemp - 1);
-					ifCountForLineScore = ifCountForLineScore + 1;
-					System.out.println("String which was cut for CNC IF complex calculation " + (indexTemp - 1) + " is "
-							+ subStringIfWithOps);
-					lineNo = generalService.getFormattedLineByIndex(indexTemp - 1);
-					lineScore.put(lineNo, (lineScore.get(lineNo) + ifCountForLineScore));
-
-					this.nestedIfCurlyBracesStartIndex.add(indexTemp);
-					queue.enqueue(subStringIfWithOps);
-					s1.push(strTemp);
-					break;
-				} else if (tempCloseSquareBra == closeSquareBrace) {
-					
-					if(s1.isEmpty()) {
-						s1.pop();
-						if (s1.isEmpty())
-							break;
+						++indexTemp;
 					}
-					if (!queue.isEmpty()) {
-						 queue.dequeue();
-						this.nestedIfCurlyBracesEndIndex.add(indexTemp);
-						ifCountForLineScore = ifCountForLineScore - 1;
-						
-//						  if (queue.isEmpty()) break;
-						 
-
-						if (ifCountForLineScore == 0) {
-							break;
-						}
-					} else {
-						System.out.println(errorMessage1);
-						return null;
+					if (tempCloseSquareBra == closeSquareBrace) {
+						System.out.println("this from line number 328");
+						break;
 					}
+					ifEndIndex  = indexTemp;
+					System.out.println(
+							"this from line number 332: queue size is = " + queue.size() + " ifEndIndex  = " + ifEndIndex );
+				} while (true);
+				int iter = 0;
+				System.out.println("this from line number 335 ");
+				while (!queue.isEmpty()) {
+					++iter;
+					score = score + iter;
+					queue.dequeue();
 				}
-
-				++indexTemp;
-			}
-			if (tempCloseSquareBra == closeSquareBrace) {
-				break;
-			}
-			ifEndIndex = indexTemp;
-
-		} while (true);
-		int iter = 0;
-		int i, j, h;
-		i = 0;
-		j = this.nestedIfStartIndex.size() - 1;
-		h = this.nestedIfStartIndex.size() - 1;
-		while (!queue.isEmpty()) {
-			int x = 0, y;
-			ArrayList<Integer> lineNumberArr2 = new ArrayList<Integer>();
-			// System.out.println("nestedIfStartIndex size = "
-			// +this.nestedIfStartIndex.size());
-			// System.out.println("Line Number of if start :
-			// "+generalService.getFormattedLineByIndex(this.nestedIfCurlyBracesStartIndex.get(j))/*+"and
-			// end :
-			// "+generalService.getFormattedLineByIndex(this.nestedIfEndIndex.get(i))*/);
-			++iter;
-			score = score + iter;
-			if (!(h <= -1)) {
-				x = nestedIfStartIndex.get(h);
-			}
-			System.out.println("size of array =" + nestedIfStartIndex.size() + " value of j = " + j);
-			queue.dequeue();
-			++i;
-			--j;
-			--h;
-			if (!(h <= -1)) {
-				System.out.println("size of array =" + nestedIfStartIndex.size() + " value of j = " + h);
-				y = nestedIfStartIndex.get(h);
-				lineNumberArr2 = this.getLineNumbersBy(y, x);
-				for (int object : lineNumberArr2) {
-					System.out.println("Line 165 code:number of lines of " + j + 1 + "th if = " + object);
-				}
-
-			}
-		}
-
-		return lineScore;
+				return lineScoreIf;
 	}
 
 	@Override
@@ -227,16 +236,17 @@ public class CNCServiceImpl implements ICNCService {
 //					return -1;
 					return null;
 				}
+				String tempSquareLine = this.getLineAsString(this.generalService.getFormattedLineByIndex(indexTemp));
 				char strTemp = sourceCode.charAt(indexTemp);
 				tempCloseSquareBra = strTemp;
-				if (strTemp == openSquareBrace) {
+				if (strTemp == openSquareBrace &&(tempSquareLine.contains("for"))) {
 					if(forCount>1) {
 						ArrayList<Integer> lineNumberArr1 = new ArrayList<Integer>();
 						lineNumberArr1 = this.getLineNumbersBy(tempOpenSquareBracket+2, tempForBegin);
 						for(int Lno:lineNumberArr1) {
 							String lineEx = this.getLineAsString(Lno);
 							
-							if(lineEx.contains(";")) {
+							if((lineEx.contains(";"))||(lineEx.contains("if"))||(lineEx.contains("while"))||(lineEx.contains("do"))||(lineEx.contains("switch"))||(lineEx.contains("case"))||(lineEx.contains("try"))||(lineEx.contains("else"))) {
 								lineScoreFor.put(Lno, (lineScore.get(Lno) + tempForCount)/*tempForCount*/);
 //								lineScore.put(Lno, (lineScore.get(Lno) + tempForCount)/*tempForCount*/);
 							}
@@ -414,16 +424,17 @@ public class CNCServiceImpl implements ICNCService {
 //					return -1;
 					return null;
 				}
+				String tempSquareLine = this.getLineAsString(this.generalService.getFormattedLineByIndex(indexTemp));
 				char strTemp = sourceCode.charAt(indexTemp);
 				tempCloseSquareBra = strTemp;
-				if (strTemp == openSquareBrace) {
+				if (strTemp == openSquareBrace&&(tempSquareLine.contains("while"))) {
 					if(whileCount>1) {
 						ArrayList<Integer> lineNumberArr1 = new ArrayList<Integer>();
 						lineNumberArr1 = this.getLineNumbersBy(tempOpenSquareBracket+2, tempWhileBegin);
 						for(int Lno:lineNumberArr1) {
 							String lineEx = this.getLineAsString(Lno);
 							
-							if(lineEx.contains(";")) {
+							if((lineEx.contains(";"))||(lineEx.contains("for"))||(lineEx.contains("if"))||(lineEx.contains("do"))||(lineEx.contains("switch"))||(lineEx.contains("case"))||(lineEx.contains("try"))||(lineEx.contains("else"))) {
 								lineScoreWhile.put(Lno, (lineScoreWhile.get(Lno) + tempwhileCount)/*tempwhileCount*/);
 //								lineScore.put(Lno, (lineScore.get(Lno) + tempwhileCount)/*tempwhileCount*/);
 							}
@@ -529,16 +540,17 @@ public class CNCServiceImpl implements ICNCService {
 //					return -1;
 					return null;
 				}
+				String tempSquareLine = this.getLineAsString(this.generalService.getFormattedLineByIndex(indexTemp));
 				char strTemp = sourceCode.charAt(indexTemp);
 				tempCloseSquareBra = strTemp;
-				if (strTemp == openSquareBrace) {
+				if (strTemp == openSquareBrace&&(tempSquareLine.contains("do"))) {
 					if(doWhileCount>1) {
 						ArrayList<Integer> lineNumberArr1 = new ArrayList<Integer>();
 						lineNumberArr1 = this.getLineNumbersBy(tempOpenSquareBracket+2, tempDoWhileBegin);
 						for(int Lno:lineNumberArr1) {
 							String lineEx = this.getLineAsString(Lno);
 							
-							if(lineEx.contains(";")) {
+							if((lineEx.contains(";"))||(lineEx.contains("for"))||(lineEx.contains("while"))||(lineEx.contains("if"))||(lineEx.contains("switch"))||(lineEx.contains("case"))||(lineEx.contains("try"))||(lineEx.contains("else"))) {
 								lineScoreDoWhile.put(Lno, (lineScoreDoWhile.get(Lno) + tempDoWhileCount)/*tempDoWhileCount*/);
 //								lineScore.put(Lno, (lineScore.get(Lno) + tempDoWhileCount)/*tempDoWhileCount*/);
 							}
