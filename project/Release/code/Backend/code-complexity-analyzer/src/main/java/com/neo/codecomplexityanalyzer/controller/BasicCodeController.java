@@ -336,23 +336,37 @@ public class BasicCodeController {
 
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping(path = "/get-cnc/nested-for")
-	public ResponseEntity<Integer> getCNCNestedForScore(@RequestHeader("file-path") String FilePath) {
+	public ResponseEntity<?> getCNCNestedForScore(@RequestHeader("file-path") String FilePath) {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
-		return (new ResponseEntity<Integer>(cncService.getNestedForScore(), HttpStatus.OK));
+		return (new ResponseEntity<>(cncService.getNestedForScore(), HttpStatus.OK));
 	}
 
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
 	@GetMapping(path = "/get-cnc/nested-While")
-	public ResponseEntity<Integer> getCNCNestedWhileScore(@RequestHeader("file-path") String FilePath) {
+	public ResponseEntity</*Integer*/?> getCNCNestedWhileScore(@RequestHeader("file-path") String FilePath) {
 		ICNCService cncService = new CNCServiceImpl(FilePath);
-		return (new ResponseEntity<Integer>(cncService.getNestedWhileScore(), HttpStatus.OK));
+		return (new ResponseEntity</*Integer*/>(cncService.getNestedWhileScore(), HttpStatus.OK));
+	}
+	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	@GetMapping(path = "/get-cnc/nested-do-While")
+	public ResponseEntity</*Integer*/?> getCNCNestedDoWhileScore(@RequestHeader("file-path") String FilePath) {
+		ICNCService cncService = new CNCServiceImpl(FilePath);
+		return (new ResponseEntity</*Integer*/>(cncService.getNestedDoWhileScore(), HttpStatus.OK));
 	}
 
 	@CrossOrigin(origins = "*", allowedHeaders = "*")
-	@GetMapping(path = "/get-cr/recursive")
-	public ResponseEntity<Integer> getCRScore(@RequestHeader("file-path") String FilePath) {
+	@GetMapping(path = "/get-cr/recursive-java")
+	public ResponseEntity<?> getCRScoreJava(@RequestHeader("file-path") String FilePath) {
 		CrServicesImpl crService = new CrServicesImpl(FilePath);
-		return (new ResponseEntity<Integer>(crService.getControlScore(), HttpStatus.OK));
+		return (new ResponseEntity<>(crService.getControlScore(), HttpStatus.OK));
+	}
+	
+	@CrossOrigin(origins = "*", allowedHeaders = "*")
+	@GetMapping(path = "/get-cr/recursive-cpp")
+	public ResponseEntity<?> getCRScoreCpp(@RequestHeader("file-path") String FilePath) {
+		CrServicesImpl crService = new CrServicesImpl(FilePath);
+		return (new ResponseEntity<>(crService.getControlScoreInCpp(), HttpStatus.OK));
 	}
 	/*
 	 * -----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 
-public class NestedIf {
+public class Nested {
 
 	private static int time;
 
@@ -12,6 +12,10 @@ public class NestedIf {
                     System.out.println("Good 3rd level.");
                     if (time < 10) {
                         System.out.println("Good 4th level.");
+                        for() {
+                    		
+                    		
+                    	}
                         if (time < 8) {
                             System.out.println("Good 5th level.");
                             if (time < 5) {
@@ -28,10 +32,7 @@ public class NestedIf {
                                                     System.out.println("Good 11th level.");
                                                     if (time < 5) {
                                                     	
-                                                    	for() {
-                                                    		
-                                                    		
-                                                    	}
+                                                    	
                                                         System.out.println("Good 12th level.");
                                                         if (time < 10) {
                                                             System.out.println("Good 13th level.");
@@ -51,6 +52,8 @@ public class NestedIf {
                                                             }
                                                         }
                                                     }
+                                                }else if(asdfasdf) {
+                                                	System.out.println("lol");
                                                 }
                                             }
                                         }

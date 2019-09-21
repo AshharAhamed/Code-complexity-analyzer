@@ -6,9 +6,11 @@ public interface ICNCService {
 
 	public HashMap<Integer, Integer> getNestedIfControlScore();
 	
-	public int getNestedForScore();
+	public /*int*/HashMap<Integer, Integer> getNestedForScore();
 	
-	public int getNestedWhileScore();
+	public /*int*/HashMap<Integer, Integer> getNestedWhileScore();
+	
+	public /*int*/HashMap<Integer, Integer> getNestedDoWhileScore();
 	
 	
 }

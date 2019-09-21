@@ -1,5 +1,7 @@
 package com.neo.codecomplexityanalyzer.service.serviceImpl;
 
+import java.util.HashMap;
+
 import org.junit.Test;
 
 public class CrServiceTest {
@@ -7,6 +9,6 @@ public class CrServiceTest {
 	@Test
     public void getSwitchScore1() {
         CrServicesImpl underTest = new CrServicesImpl("src/main/resources/sampleData/Recursive.java");
-        int output = underTest.getControlScore();
+        HashMap<Integer, Integer> output = underTest.getControlScore();
     }
 }
