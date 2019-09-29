@@ -21,7 +21,9 @@ export default class CodeAnalyser extends Component {
             fileType: '',
 
             ciDetails: [],
-            ciValues: []
+            ciValues: [],
+            crValues: [],
+            csValues: []
         };
         this.CCAService = new CCAService();
         this.getScore = this.getScore.bind(this);
@@ -29,6 +31,10 @@ export default class CodeAnalyser extends Component {
         this.getFileType = this.getFileType.bind(this);
         this.getCiScore = this.getCiScore.bind(this);
         this.returnCiValue = this.returnCiValue.bind(this);
+        this.returnCrJavaValue = this.returnCrJavaValue.bind(this);
+        this.getCrCppFiles = this.getCrCppFiles.bind(this);
+        this.getCsValues = this.getCsValues.bind(this);
+        this.returnCsValue = this.returnCsValue.bind(this);
     }
 
 
@@ -64,6 +70,8 @@ export default class CodeAnalyser extends Component {
         });
 
         this.getCiScore();
+        this.getCrScore();
+        this.getCsValues();
     }
 
     getCiScore() {
@@ -75,6 +83,40 @@ export default class CodeAnalyser extends Component {
         });
     }
 
+    getCrScore() {
+
+        this.CCAService.getCrJavaDetails(this.state.filePath).then(res => {
+            let data = res.data;
+
+            this.setState({
+                crValues: data
+            })
+        });
+    }
+
+    getCrCppFiles() {
+        this.CCAService.getCrCppDetails(this.state.filePath).then(res => {
+            let data = res.data;
+
+            this.setState({
+                crValues: data
+            })
+        });
+    }
+
+    getCsValues() {
+        this.CCAService.getCsValues(this.state.filePath).then(res => {
+            let data = res.data;
+
+            this.setState({
+                csValues: data
+            })
+        })
+    }
+
+    returnCsValue(index) {
+        return this.state.csValues[index]
+    }
 
     closeModal() {
         this.setState({
@@ -110,6 +152,24 @@ export default class CodeAnalyser extends Component {
         })
     }
 
+    returnCrJavaValue(index) {
+        if (typeof this.state.crValues[index + 1] !== 'undefined') {
+            return this.state.crValues[index + 1];
+        } else {
+            return 0;
+        }
+
+    }
+
+    returnCrCppValue(index) {
+
+        if (typeof this.state.crValues[index + 1] !== 'undefined') {
+            return this.state.crValues[index + 1];
+        } else {
+            return 0;
+        }
+
+    }
 
     // The Essential render function
     render() {
@@ -140,13 +200,24 @@ export default class CodeAnalyser extends Component {
                     Class Mapping</th>
             }
         };
-        let classMappingTableValue = (index)=>{
-            if(this.state.fileType=='java'){
+        let classMappingTableValue = (index) => {
+            if (this.state.fileType == 'java') {
                 return <td>
                     {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}
                 </td>
             }
         };
+        let CrColumn = (index) => {
+            if (this.state.fileType == 'java') {
+                return <td>
+                    {this.returnCrJavaValue(index)}
+                </td>
+            } else if (this.state.fileType == 'cpp') {
+                return <td>
+                    {this.returnCrCppValue(index)}
+                </td>
+            }
+        }
         let analyzedResult = () => {
             if (this.state.sourceCode) {
                 return <table border="1" style={{marginLeft: "auto", marginRight: "auto", width: "90%"}}
@@ -159,6 +230,8 @@ export default class CodeAnalyser extends Component {
                         {classMappingTableColumn()}
                         {/*<th rowSpan="2">Class Mapping</th>*/}
                         <th rowSpan="2">Ci</th>
+                        <th rowSpan="2">Cr</th>
+                        <th rowSpan="2">Cs</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -182,6 +255,9 @@ export default class CodeAnalyser extends Component {
                                     {/*{(((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] > 0) ? (2 + this.state.ciDetails[index + 1].totalCiValue) : 0) || (this.state.ctcLineScore[index] > 0 ? 2 : 0) || ((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] == 0) ? (this.state.ciDetails[index + 1].totalCiValue) : 0}*/}
                                     {this.returnCiValue(index)}
                                 </td>
+
+                                {CrColumn(index)}
+                                <td>{this.returnCsValue(index)}</td>
                             </tr>
                         )
                     })}

@@ -26,6 +26,35 @@ export default class SISService {
         })
     }
 
+    getCrJavaDetails(data){
+        return new Promise((resolve, reject) => {
+            this.apiService.get('get-cr/recursive-java', data).then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
+    getCsValues(data){
+        return new Promise((resolve, reject) => {
+            this.apiService.get('get-cs', data).then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
+
+    getCrCppDetails(data){
+        return new Promise((resolve, reject) => {
+            this.apiService.get('get-cr/recursive-cpp', data).then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
+
     getFileType(data) {
         return new Promise((resolve, reject) => {
             this.apiService.get('file-type', data).then(response => {

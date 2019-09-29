@@ -366,7 +366,13 @@ public class BasicCodeController {
 	@GetMapping(path = "/get-cr/recursive-java")
 	public ResponseEntity<?> getCRScoreJava(@RequestHeader("file-path") String FilePath) {
 		CrServicesImpl crService = new CrServicesImpl(FilePath);
+		CiJavaServicesImpl ci = new CiJavaServicesImpl(FilePath);
+		GeneralServiceImpl gs = new GeneralServiceImpl();
+		if ("java".equals(gs.getSourceCodeType(FilePath))) {
 		return (new ResponseEntity<>(crService.getControlScore(), HttpStatus.OK));
+		}else {
+			return (new ResponseEntity<>(crService.getControlScoreInCpp(), HttpStatus.OK));
+		}
 	}
 	
 	@CrossOrigin(origins = "*", allowedHeaders = "*")

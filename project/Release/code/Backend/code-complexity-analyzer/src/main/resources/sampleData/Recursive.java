@@ -1,26 +1,12 @@
 class FibonacciMain {
 	public static long fibonacci(long number) {
+		int count, prefix, netArr;
 		if ((number == 0) || (number == 1)) { 
 			return number;
-		} else if{
+		} else if(number == 3){
 			return fibonacci(number - 1) + fibonacci(number - 2);
 		}else {
 			return fibonacci(number - 1) + fibonacci(number - 2);
-		}
-		for(count = 0; count < prefix; ++count){
-			netArr[count] = resultArr[count];
-			for(count = 0; count < prefix; ++count){
-				netArr[count] = resultArr[count];
-				for(count = 0; count < prefix; ++count){
-					netArr[count] = resultArr[count];
-					for(count = 0; count < prefix; ++count){
-						netArr[count] = resultArr[count];
-						for(count = 0; count < prefix; ++count){
-							netArr[count] = resultArr[count];
-						}
-					}
-				}
-			}
 		}
 	}
 
