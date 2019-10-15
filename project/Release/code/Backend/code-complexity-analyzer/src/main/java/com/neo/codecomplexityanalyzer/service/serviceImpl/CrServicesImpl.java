@@ -91,7 +91,7 @@ public class CrServicesImpl {
 			
 			if(tempRecursiveCount<recursionCount) {
 				startLine = general_Utils.getFormattedLineByIndex(publicStartIndex);
-				endLine = general_Utils.getFormattedLineByIndex(endIndex);
+				endLine = general_Utils.getFormattedLineByIndex(endIndex+1);
 //				linesOfRecursionMethod.put(startLine, endLine);
 				ArrayList<Integer> listOfLine = this.getLineNumbersBy(publicStartIndex, endIndex);
 				for(int Lno:listOfLine) {
