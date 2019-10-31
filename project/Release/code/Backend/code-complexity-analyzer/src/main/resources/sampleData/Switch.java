@@ -1,8 +1,8 @@
 class Day {
     public static void main(String[] args) {
         int week = 4;
-        String day;
-
+        String day = ;
+sasas
         switch (week) {
             case 1:
                 day = "Sunday";

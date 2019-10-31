@@ -63,7 +63,7 @@ export default class CodeAnalyser extends Component {
             console.log(err);
         });
 
-        this.getCiScore();
+        // this.getCiScore();
     }
 
     getCiScore() {
@@ -117,19 +117,14 @@ export default class CodeAnalyser extends Component {
             if (this.state.errorList) {
                 return <table>
                     <tbody>
-
-                    <tr>
                         {this.state.errorList && this.state.errorList.map((line, index) => {
                             return (
-
+                                <tr>
                                 <td style={{paddingRight: 100}}>
                                     <pre style={{fontSize: 15}}>{line}</pre>
-                                </td>
-
+                                </td></tr>
                             )
                         })}
-                    </tr>
-
                     </tbody>
                 </table>
             }
@@ -156,9 +151,9 @@ export default class CodeAnalyser extends Component {
                         <th rowSpan="2">Line No</th>
                         <th rowSpan="2">Code</th>
                         <th rowSpan="2">Ctc</th>
-                        {classMappingTableColumn()}
-                        {/*<th rowSpan="2">Class Mapping</th>*/}
-                        <th rowSpan="2">Ci</th>
+                        {/*{classMappingTableColumn()}*/}
+                        {/*/!*<th rowSpan="2">Class Mapping</th>*!/*/}
+                        {/*<th rowSpan="2">Ci</th>*/}
                     </tr>
                     </thead>
                     <tbody>
@@ -176,12 +171,12 @@ export default class CodeAnalyser extends Component {
                                 {/*<td>*/}
                                 {/*    {(this.state.ciDetails.hasOwnProperty(index + 1)) ? this.state.ciDetails[index + 1].classHierachy : ''}*/}
                                 {/*</td>*/}
-                                {classMappingTableValue(index)}
-                                <td>
+                                {/*{classMappingTableValue(index)}*/}
+                                {/*<td>*/}
 
-                                    {/*{(((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] > 0) ? (2 + this.state.ciDetails[index + 1].totalCiValue) : 0) || (this.state.ctcLineScore[index] > 0 ? 2 : 0) || ((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] == 0) ? (this.state.ciDetails[index + 1].totalCiValue) : 0}*/}
-                                    {this.returnCiValue(index)}
-                                </td>
+                                {/*    /!*{(((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] > 0) ? (2 + this.state.ciDetails[index + 1].totalCiValue) : 0) || (this.state.ctcLineScore[index] > 0 ? 2 : 0) || ((this.state.ciDetails.hasOwnProperty(index + 1)) && this.state.ctcLineScore[index] == 0) ? (this.state.ciDetails[index + 1].totalCiValue) : 0}*!/*/}
+                                {/*    {this.returnCiValue(index)}*/}
+                                {/*</td>*/}
                             </tr>
                         )
                     })}

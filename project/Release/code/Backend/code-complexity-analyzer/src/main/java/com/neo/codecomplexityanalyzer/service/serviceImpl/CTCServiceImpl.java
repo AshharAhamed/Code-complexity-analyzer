@@ -93,7 +93,7 @@ public class CTCServiceImpl {
                 if (forEndIndex != -1) {
                     ++forCount;
                     lineNo = generalUtils.getFormattedLineByIndex(forStartIndex - 2);
-                    lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
+                    lineScore.put(lineNo, (lineScore.get(lineNo) + 2));
                     logicalCountTemp = generalUtils.getLogicalCount(sourceCode.substring(forStartIndex, forEndIndex));
                     if (logicalCountTemp > 0) {
                         lineNo = generalUtils.getFormattedLineByIndex(forStartIndex - 2);
@@ -123,7 +123,7 @@ public class CTCServiceImpl {
                 if (whileEndIndex != -1) {
                     ++whileCount;
                     lineNo = generalUtils.getFormattedLineByIndex(whileStartIndex - 4);
-                    lineScore.put(lineNo, (lineScore.get(lineNo) + 1));
+                    lineScore.put(lineNo, (lineScore.get(lineNo) + 2));
                     logicalCountTemp = generalUtils.getLogicalCount(sourceCode.substring(whileStartIndex, whileEndIndex));
                     if (logicalCountTemp > 0) {
                         lineNo = generalUtils.getFormattedLineByIndex(whileStartIndex - 4);
